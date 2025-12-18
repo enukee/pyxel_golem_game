@@ -55,7 +55,7 @@ class MatrixMap:
         tile_x, tile_y = int(worldX // const.TILE_SIZE), int(worldY // const.TILE_SIZE)
         return self.__matrix[tile_x][tile_y]
 
-    def isWalkable(self, worldX: int, worldY: int):
+    def isWalkable(self, worldX: float, worldY: float):
         """
         Проверка возможности передвижения в координатах (x, y).
         :param worldX: Глобальная координата x.
