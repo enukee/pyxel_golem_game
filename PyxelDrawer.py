@@ -8,10 +8,10 @@ class PyxelDrawer(Drawer):
     def __init__(self, width: int, height: int, title: str):
         # Инициализация окна
         pyxel.init(width, height, title=title)
-        # Загрузка изображений
-        pyxel.images[0].load(0, 0, "assets/img_0.png")
         # Загрузка ресурсов(музыки и палитры)
         pyxel.load("assets/res.pyxres")
+        # Загрузка изображений
+        pyxel.images[0].load(0, 0, "assets/img_0.png")
 
     def drawSprite(self, spritePos: list, x: int, y: int):
         """
