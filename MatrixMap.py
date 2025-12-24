@@ -53,7 +53,7 @@ class MatrixMap:
             return None
 
         tile_x, tile_y = int(worldX // const.TILE_SIZE), int(worldY // const.TILE_SIZE)
-        return self.__matrix[tile_x][tile_y]
+        return self.__matrix[tile_y][tile_x]
 
     def isWalkable(self, worldX: float, worldY: float):
         """
