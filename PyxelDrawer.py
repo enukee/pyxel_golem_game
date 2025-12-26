@@ -56,3 +56,11 @@ class PyxelDrawer(Drawer):
                     pyxel.rect(x + j, y + i + 100, const.TILE_SECTOR_SIZE, 28, 9)
 
                 k += 1
+
+    def setCamera(self, x: int, y: int):
+        """
+        Установка камеры на координатах (x, y).
+        :param x: Координата для отрисовки x.
+        :param y: Координата для отрисовки y.
+        """
+        pyxel.camera(x, y)

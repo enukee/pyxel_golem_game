@@ -12,6 +12,14 @@ class Scene:
         """
         self.drawer = PyxelDrawer.PyxelDrawer(width, height, title)
 
+    def changingView(self, x: int, y: int):
+        """
+        Изменение точки обзора.
+        :param x: Координата x левого верхнего угла сцены.
+        :param y: Координата y левого верхнего угла сцены.
+        """
+        self.drawer.setCamera(x, y)
+
     def drawSprite(self, sprite: str, x: int, y: int, reverseX: bool = False, reverseY: bool = False):
         """
         Отображение спрайта на сцене.

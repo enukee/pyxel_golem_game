@@ -1,0 +1,119 @@
+from abc import ABC, abstractmethod
+
+import const
+from MatrixMap import MatrixMap
+from Scene import Scene
+from units import MovableObjects
+
+
+class GameActor(MovableObjects, ABC):
+    class Stats:
+        def __init__(self, health: int, armor: int, attackSpeed: float, baseSpeed: float, acceleration: float):
+            """
+            Параметры существа.
+            :param health: Здоровье в процентах.
+            :param armor: Броня в процентах.
+            :param attackSpeed: Скорость атаки.
+            :param baseSpeed: Начальная скорость.
+            :param acceleration: Ускорение.
+            """
+            # Параметры объекта
+            self.__health = health
+            self.__armor = armor
+            self.__attackSpeed = attackSpeed
+            self.__baseSpeed = baseSpeed
+            self.__acceleration = acceleration
+
+        @abstractmethod
+        def die(self):
+            pass
+
+        @property
+        def health(self):
+            return self.__health
+
+        @health.setter
+        def health(self, value):
+            if value < 0:
+                self.die()
+
+            if value > 100:
+                value = 100
+
+            self.__health = value
+
+        @property
+        def armor(self):
+            return self.__armor
+
+        @property
+        def attackSpeed(self):
+            return self.__attackSpeed
+
+        @property
+        def baseSpeed(self):
+            return self.__baseSpeed
+
+        @property
+        def acceleration(self):
+            return self.__acceleration
+
+    def __init__(self, x: float, y: float, sprite: str,
+                 health: int, armor: int, attackSpeed: float, baseSpeed: float, acceleration: float):
+        """
+        Объект имеющий характеристики и способный передвигаться в пространстве.
+        :param x: Координата x объекта.
+        :param y: Координата y объекта.
+        :param sprite: Наименование спрайта.
+        :param health: Значение здоровья в процентах.
+        :param armor: Значение брони в процентах.
+        :param attackSpeed: Скорость атаки.
+        :param baseSpeed: Начальная скорость.
+        :param acceleration: Ускорение.
+        """
+        super().__init__(x, y, sprite)
+
+        # Характеристики объекта
+        self._stats = self.Stats(health, armor, attackSpeed, baseSpeed, acceleration)
+
+        # Параметры объекта
+        self._currentSpeed = self._stats.baseSpeed
+        self._maxSpeed = baseSpeed + acceleration * 20
+
+    @abstractmethod
+    def draw(self, scene: Scene):
+        """
+        Отображение спрайта.
+        :param scene:  Сцена для отображения спрайтов.
+        """
+        pass
+
+    @abstractmethod
+    def update(self, dirX: float, dirY: float, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение объекта по вектору (dirX, dirY).
+        :param dirX: Направление по оси X.
+        :param dirY: Направление по оси Y.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
+        # Увеличение скорости с учётом ускорения
+        self._currentSpeed = min(max(self._currentSpeed + self._stats.acceleration * delta_time, 0), self._maxSpeed)
+
+        # Вычисление смещения за текущий кадр
+        step_x = dirX * self._currentSpeed * delta_time
+        step_y = dirY * self._currentSpeed * delta_time
+
+        # Проверка, что объект не превысил правую границу(с учётом ширины спрайта)
+        spriteWidth = const.getWidthSprite(self.baseSprite) + 2
+        if not tileMap.isWalkable(self.x + spriteWidth, self.y):
+            step_x = min(step_x, 0)
+
+        # Обновление позиции
+        super().tryMove(step_x, step_y, tileMap)
+
+    def speedReset(self):
+        """
+        Сброс скорости объекта до начальной.
+        """
+        self._currentSpeed = self._stats.baseSpeed

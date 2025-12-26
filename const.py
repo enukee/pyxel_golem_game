@@ -3,11 +3,28 @@ TILE_SIZE = 256
 TILE_SECTOR_SIZE = TILE_SIZE / 2
 
 # Размер окна
-WINDOW_WIDTH = 1000
-WINDOW_HEIGHT = 1000
+WINDOW_WIDTH = 320
+WINDOW_HEIGHT = 240
+
+
+def getWidthSprite(sprite: str):
+    if sprite in SPRITE_POS:
+        return SPRITE_POS[sprite][2]
+
+    return None
+
+
+def getHeightSprite(sprite: str):
+    if sprite in SPRITE_POS:
+        return SPRITE_POS[sprite][3]
+
+    return None
+
 
 # Параметры спрайта: положение по x, положение по y, ширина, высота, поворот
-SPRITE_POS = {}
+SPRITE_POS = {"stub_sprite": [85, 2, 6, 6, 0],
+              "player_down": [15, 1, 13, 21, 0],
+              }
 
 # Тайл делится на 4 равных сектора
 # 0 - сектор пола
