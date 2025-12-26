@@ -1,5 +1,5 @@
-import MapGenerator as g
-import Tile
+from map import MapGenerator
+from map.Tile import *
 import const
 from draw import Scene
 
@@ -13,15 +13,15 @@ class MatrixMap:
         self.__size = size
 
         # Генерация карты дорог
-        matrix = g.MapGenerator.generateMap(self.__size, self.__size)
+        matrix = MapGenerator.generateMap(self.__size, self.__size)
         # Преобразование карты в матрицу состоящую из тайлов
         self.__matrix = [
             [
-                Tile.HorizontalRoadTile(j, i) if num == 1 else
-                Tile.VerticalRoadTile(j, i) if num == 2 else
-                Tile.LowerLeftCornerTile(j, i) if num == 3 else
-                Tile.UpperRightCornerTile(j, i) if num == 4 else
-                Tile.EmptyTile(j, i)
+                HorizontalRoadTile(j, i) if num == 1 else
+                VerticalRoadTile(j, i) if num == 2 else
+                LowerLeftCornerTile(j, i) if num == 3 else
+                UpperRightCornerTile(j, i) if num == 4 else
+                EmptyTile(j, i)
                 for j, num in enumerate(row)
             ]
             for i, row in enumerate(matrix)

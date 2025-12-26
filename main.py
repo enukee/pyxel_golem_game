@@ -1,7 +1,8 @@
 import pyxel
 
+import const
 from events import Events
-from MatrixMap import *
+from map import MatrixMap
 from units import Player
 from events import PyxelController
 from draw import Scene

@@ -1,5 +1,5 @@
 import const
-from MatrixMap import MatrixMap
+from map.MatrixMap import MatrixMap
 from draw import Scene
 from units import GameActor
 

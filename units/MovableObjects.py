@@ -1,4 +1,4 @@
-from MatrixMap import MatrixMap
+from map.MatrixMap import MatrixMap
 
 
 class MovableObjects:
