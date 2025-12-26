@@ -27,7 +27,7 @@ class Game:
 
     def draw(self):
         # Очистка экрана
-        pyxel.cls(1)
+        pyxel.cls(15)
 
         self.tileMap.draw(self.scene, self.player.x, self.player.y)
         self.player.draw(self.scene)
