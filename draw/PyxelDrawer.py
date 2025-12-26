@@ -1,4 +1,4 @@
-from Drawer import Drawer
+from draw import Drawer
 import const
 
 import pyxel
@@ -9,9 +9,9 @@ class PyxelDrawer(Drawer):
         # Инициализация окна
         pyxel.init(width, height, title=title)
         # Загрузка ресурсов(музыки и палитры)
-        pyxel.load("assets/res.pyxres")
+        pyxel.load("../assets/res.pyxres")
         # Загрузка изображений
-        pyxel.images[0].load(0, 0, "assets/img_0.png")
+        pyxel.images[0].load(0, 0, "../assets/img_0.png")
 
     def drawSprite(self, spritePos: list, x: int, y: int):
         """

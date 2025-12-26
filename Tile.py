@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 import const
-from Scene import Scene
+from draw import Scene
 
 
 class Tile(ABC):

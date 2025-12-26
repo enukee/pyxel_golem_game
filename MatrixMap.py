@@ -1,7 +1,7 @@
 import MapGenerator as g
 import Tile
 import const
-from Scene import Scene
+from draw import Scene
 
 
 class MatrixMap:

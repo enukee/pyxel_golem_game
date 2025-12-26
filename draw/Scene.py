@@ -1,5 +1,5 @@
 import const
-import PyxelDrawer
+from draw import PyxelDrawer
 
 
 class Scene:
@@ -10,7 +10,7 @@ class Scene:
         :param height: Высота окна.
         :param title: Название окна.
         """
-        self.drawer = PyxelDrawer.PyxelDrawer(width, height, title)
+        self.drawer = PyxelDrawer(width, height, title)
 
     def changingView(self, x: int, y: int):
         """

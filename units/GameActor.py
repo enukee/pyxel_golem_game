@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import const
 from MatrixMap import MatrixMap
-from Scene import Scene
+from draw import Scene
 from units import MovableObjects
 
 
