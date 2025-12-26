@@ -39,6 +39,13 @@ class PyxelDrawer(Drawer):
         """
         pyxel.rect(x - 1, y - 1, const.TILE_SIZE + 2, const.TILE_SIZE + 2, 7)
 
+    def drawWall(self, x: int, y: int, w: int, h: int):
+        wall = const.SPRITE_POS["wall"]
+        size = wall[2]
+        for i in range(0, h, size):
+            for j in range(0, w, size):
+                pyxel.blt(x + j, y + i, 0, wall[0], wall[1], wall[2], wall[3], 0, rotate=wall[4])
+
     def drawTile(self, sectors: list, x: int, y: int):
         """
         Отображение тайла.
@@ -53,7 +60,7 @@ class PyxelDrawer(Drawer):
                     pyxel.rect(x + j, y + i, const.TILE_SECTOR_SIZE, const.TILE_SECTOR_SIZE, 0)
 
                 elif sectors[k] == 1:
-                    pyxel.rect(x + j, y + i + 100, const.TILE_SECTOR_SIZE, 28, 9)
+                    self.drawWall(x + j, y + i + 64, const.TILE_SECTOR_SIZE, 64)
 
                 k += 1
 
