@@ -2,16 +2,13 @@ from map.MatrixMap import MatrixMap
 
 
 class MovableObjects:
-    def __init__(self, x: float, y: float, sprite: str = None):
+    def __init__(self, x: float, y: float):
         """
         Объект способный передвигаться.
         :param x: Координата x объекта.
         :param y: Координата y объекта.
-        :param sprite: Наименование спрайта.
         """
         self.__x, self.__y = x, y
-        # Если спрайт не найден, то использовать спрайт заглушку
-        self.__spriteType = "stub_sprite" if sprite is None else sprite
 
     def tryMove(self, dx: float, dy: float, tile_map: MatrixMap) -> bool:
         """
@@ -34,7 +31,3 @@ class MovableObjects:
     @property
     def y(self):
         return self.__y
-
-    @property
-    def baseSprite(self):
-        return self.__spriteType

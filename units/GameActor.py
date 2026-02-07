@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import const
 from map.MatrixMap import MatrixMap
 from draw import Scene
-from units import MovableObjects
+from units import MovableObjects, SpriteManager
 
 
 class GameActor(MovableObjects, ABC):
@@ -58,26 +58,28 @@ class GameActor(MovableObjects, ABC):
         def acceleration(self):
             return self.__acceleration
 
-    def __init__(self, x: float, y: float, sprite: str,
+    def __init__(self, x: float, y: float, baseSpriteName: str,
                  health: int, armor: int, attackSpeed: float, baseSpeed: float, acceleration: float):
         """
         Объект имеющий характеристики и способный передвигаться в пространстве.
         :param x: Координата x объекта.
         :param y: Координата y объекта.
-        :param sprite: Наименование спрайта.
         :param health: Значение здоровья в процентах.
         :param armor: Значение брони в процентах.
         :param attackSpeed: Скорость атаки.
         :param baseSpeed: Начальная скорость.
         :param acceleration: Ускорение.
         """
-        super().__init__(x, y, sprite)
+        super().__init__(x, y)
 
         # Характеристики объекта
         self._stats = self.Stats(health, armor, attackSpeed, baseSpeed, acceleration)
 
         self._dirX = 0
         self._dirY = 0
+
+        # Менеджер спрайтов
+        self.spriteManager = SpriteManager(baseSpriteName)
 
         # Параметры объекта
         self._currentSpeed = self._stats.baseSpeed
@@ -125,7 +127,7 @@ class GameActor(MovableObjects, ABC):
         step_y = self._dirY * self._currentSpeed * delta_time
 
         # Проверка, что объект не превысил правую границу(с учётом ширины спрайта)
-        spriteWidth = const.getWidthSprite(self.baseSprite) + 2
+        spriteWidth = const.getWidthSprite(self.spriteManager.baseSpriteName) + 2
         if not tileMap.isWalkable(self.x + spriteWidth, self.y):
             step_x = min(step_x, 0)
 
