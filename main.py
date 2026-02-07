@@ -3,7 +3,7 @@ import pyxel
 import const
 from events import Events
 from map import MatrixMap
-from units import Player
+from units import Player, EggheadEnemy
 from events import PyxelController
 from draw import Scene
 
@@ -12,6 +12,7 @@ class Game:
     def __init__(self):
         self.tileMap = MatrixMap()
         self.player = Player(30, 200)
+        self.enemy = EggheadEnemy(30, 250, self.player)
 
         self.scene = Scene(const.WINDOW_WIDTH, const.WINDOW_HEIGHT, "Game")
         self.events = Events(PyxelController())
@@ -19,6 +20,8 @@ class Game:
         def movement(dirX, dirY):
             self.player.setDir(dirX, dirY)
             self.player.update(self.tileMap)
+
+            self.enemy.update(self.tileMap)
 
         self.events.addPlayerMovementHandler(movement)
 
@@ -33,6 +36,7 @@ class Game:
 
         self.tileMap.draw(self.scene, self.player.x, self.player.y)
         self.player.draw(self.scene)
+        self.enemy.draw(self.scene)
 
 
 if __name__ == "__main__":
