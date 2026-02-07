@@ -17,7 +17,8 @@ class Game:
         self.events = Events(PyxelController())
 
         def movement(dirX, dirY):
-            self.player.update(dirX, dirY, self.tileMap)
+            self.player.setDir(dirX, dirY)
+            self.player.update(self.tileMap)
 
         self.events.addPlayerMovementHandler(movement)
 

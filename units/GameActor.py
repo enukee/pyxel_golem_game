@@ -76,6 +76,9 @@ class GameActor(MovableObjects, ABC):
         # Характеристики объекта
         self._stats = self.Stats(health, armor, attackSpeed, baseSpeed, acceleration)
 
+        self._dirX = 0
+        self._dirY = 0
+
         # Параметры объекта
         self._currentSpeed = self._stats.baseSpeed
         self._maxSpeed = baseSpeed + acceleration * 20
@@ -88,12 +91,29 @@ class GameActor(MovableObjects, ABC):
         """
         pass
 
+    def setDir(self, dirX, dirY):
+        if dirX != 0:
+            self._dirX = dirX / abs(dirX)
+        else:
+            self._dirX = dirX
+
+        if dirY != 0:
+            self._dirY = dirY / abs(dirY)
+        else:
+            self._dirY = dirY
+
+    @property
+    def dirX(self):
+        return self._dirX
+
+    @property
+    def dirY(self):
+        return self._dirY
+
     @abstractmethod
-    def update(self, dirX: float, dirY: float, tileMap: MatrixMap, delta_time: float = 1):
+    def update(self, tileMap: MatrixMap, delta_time: float = 1):
         """
         Перемещение объекта по вектору (dirX, dirY).
-        :param dirX: Направление по оси X.
-        :param dirY: Направление по оси Y.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
@@ -101,8 +121,8 @@ class GameActor(MovableObjects, ABC):
         self._currentSpeed = min(max(self._currentSpeed + self._stats.acceleration * delta_time, 0), self._maxSpeed)
 
         # Вычисление смещения за текущий кадр
-        step_x = dirX * self._currentSpeed * delta_time
-        step_y = dirY * self._currentSpeed * delta_time
+        step_x = self._dirX * self._currentSpeed * delta_time
+        step_y = self._dirY * self._currentSpeed * delta_time
 
         # Проверка, что объект не превысил правую границу(с учётом ширины спрайта)
         spriteWidth = const.getWidthSprite(self.baseSprite) + 2
