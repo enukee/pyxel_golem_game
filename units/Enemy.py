@@ -37,13 +37,12 @@ class Enemy(GameActor, ABC):
         # Ссылка на игрока
         self.player = player
 
+    @abstractmethod
     def attack(self):
         """
         Атака если игрок находится в радиусе атаки.
         """
-        if self.isPlayerNearby(self.attackRadiusSquare):        # Поиск игрока в радиусе атаки
-            print("attack")
-            # self.player.
+        self.spriteManager.startAttack()
 
     def isPlayerNearby(self, radiusSquare: float):
         """
@@ -90,12 +89,20 @@ class Enemy(GameActor, ABC):
 class EggheadEnemy(Enemy):
     def __init__(self, x: float, y: float, player: Player):
         super().__init__(x, y, player, "egghead",
-                         80, 13, 2, 1, 0, 80, 15)
+                         80, 13, 2, 1, 0, 80, 10)
 
-        self.spriteManager.addSpriteModifier("_pos0")
-        self.spriteManager.addSpriteModifier("_pos1")
-        self.spriteManager.addSpriteModifier("_pos0")
-        self.spriteManager.addSpriteModifier("_pos2")
+        self.spriteManager.addSpriteMoving("_pos0")
+        self.spriteManager.addSpriteMoving("_pos1")
+        self.spriteManager.addSpriteMoving("_pos0")
+        self.spriteManager.addSpriteMoving("_pos2")
+
+        self.spriteManager.addSpriteAttack("_pos0")
+        self.spriteManager.addSpriteAttack("_pos0", shiftY=-1)
+        self.spriteManager.addSpriteAttack("_pos0", shiftY=-2)
+        self.spriteManager.addSpriteAttack("_pos0", shiftY=-1)
+
+    def attack(self):
+        super().attack()
 
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
         super().movementToTarget(tileMap)
@@ -105,7 +112,8 @@ class EggheadEnemy(Enemy):
 
     def draw(self, scene: Scene):
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName = self.spriteManager.getSpriteMoving(self._currentSpeed, applyDir=True)  # Получение имя спрайта
-
-        scene.drawSprite(spriteName,
-                         int(self.x), int(self.y) - const.getHeightSprite(self.spriteManager.baseSpriteName))
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)  # Получение имя спрайта
+        print(spriteName)
+        x = int(self.x + shifts[0])
+        y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
+        scene.drawSprite(spriteName, x, y)

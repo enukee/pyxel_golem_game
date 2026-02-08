@@ -9,14 +9,14 @@ class Player(GameActor):
         super().__init__(x, y, "player", 100, 1, 1, 1, 0.1)
 
         # Установка последовательности смены спрайтов во время движения
-        self.spriteManager.addSpriteModifier("_pos0")
-        self.spriteManager.addSpriteModifier("_pos1")
-        self.spriteManager.addSpriteModifier("_pos2")
-        self.spriteManager.addSpriteModifier("_pos1")
-        self.spriteManager.addSpriteModifier("_pos0")
-        self.spriteManager.addSpriteModifier("_pos3")
-        self.spriteManager.addSpriteModifier("_pos4")
-        self.spriteManager.addSpriteModifier("_pos3")
+        self.spriteManager.addSpriteMoving("_pos0")
+        self.spriteManager.addSpriteMoving("_pos1")
+        self.spriteManager.addSpriteMoving("_pos2")
+        self.spriteManager.addSpriteMoving("_pos1")
+        self.spriteManager.addSpriteMoving("_pos0")
+        self.spriteManager.addSpriteMoving("_pos3")
+        self.spriteManager.addSpriteMoving("_pos4")
+        self.spriteManager.addSpriteMoving("_pos3")
 
     def draw(self, scene: Scene):
         self.spriteManager.setDir(super().dirX, super().dirY)       # Установка направления игрока
