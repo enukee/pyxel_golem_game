@@ -1,12 +1,12 @@
 import const
 from map.MatrixMap import MatrixMap
 from draw import Scene
-from units import GameActor
+from units import GameActor, Stats
 
 
 class Player(GameActor):
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y, "player", 100, 1, 1, 1, 0.1)
+    def __init__(self, x: float, y: float, stats: Stats):
+        super().__init__(x, y, "player", stats)
 
         # Установка последовательности смены спрайтов во время движения
         self.spriteManager.addSpriteMoving("_pos0")

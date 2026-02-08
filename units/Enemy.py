@@ -3,29 +3,24 @@ from abc import ABC, abstractmethod
 import random
 
 import const
-from units import GameActor, Player
+from units import GameActor, Player, Stats
 from map import MatrixMap
 from draw import Scene
 
 
 class Enemy(GameActor, ABC):
-    def __init__(self, x: float, y: float, player: Player, baseSpriteName: str, health: int, armor: int,
-                 attackSpeed: float, baseSpeed: float,
-                 acceleration: float, detectionRadius: float, attackRadius: float):
+    def __init__(self, x: float, y: float, player: Player, baseSpriteName: str,
+                 stats: Stats, detectionRadius: float, attackRadius: float):
         """
         Базовый класс врага.
         :param x: Начальная координата X.
         :param y: Начальная координата Y.
         :param baseSpriteName: Базовое имя спрайта.
-        :param health: Здоровье в процентах.
-        :param armor: Броня в процентах.
-        :param attackSpeed: Скорость атаки.
-        :param baseSpeed: Начальная скорость.
-        :param acceleration: Ускорение.
+        :param stats: Характеристики врага.
         :param detectionRadius: Радиус обнаружения.
         :param attackRadius: Радиус атаки.
         """
-        super().__init__(x, y, baseSpriteName, health, armor, attackSpeed, baseSpeed, acceleration)
+        super().__init__(x, y, baseSpriteName, stats)
         self.bullet = None
         # Радиус обнаружения игрока
         self.detectionRadiusSquare = detectionRadius * detectionRadius
@@ -87,9 +82,9 @@ class Enemy(GameActor, ABC):
 
 
 class EggheadEnemy(Enemy):
-    def __init__(self, x: float, y: float, player: Player):
+    def __init__(self, x: float, y: float, player: Player, stats: Stats):
         super().__init__(x, y, player, "egghead",
-                         80, 13, 2, 1, 0, 80, 10)
+                         stats, 80, 13)
 
         self.spriteManager.addSpriteMoving("_pos0")
         self.spriteManager.addSpriteMoving("_pos1")
