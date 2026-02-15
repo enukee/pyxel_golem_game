@@ -2,4 +2,4 @@ from .SpriteManager import SpriteManager
 from .MovableObjects import MovableObjects
 from .GameActor import GameActor, Stats
 from .Player import Player
-from .Enemy import Enemy, EggheadEnemy
+from .Enemy import Enemy, EggheadEnemy, MimicEnemy

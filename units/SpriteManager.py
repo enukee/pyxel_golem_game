@@ -25,7 +25,9 @@ class SpriteManager:
         self.__spritesAttack = SpriteManager.SpritesTuple()   # Стандартные спрайты атаки
 
     def startAttack(self):
-        self.__isStartAttack = True
+        if not self.__isStartAttack:
+            self.__isStartAttack = True
+            self.__step = 0
 
     def setDir(self, dirX: int, dirY: int):
         """
@@ -47,10 +49,12 @@ class SpriteManager:
                 self.__direction = "_left"
 
     def getSprite(self, speed: float = 1,  applyDir=False):
-        if self.__spritesAttack.count and self.__isStartAttack:      # Если режим атаки активен
-            return self.getSpriteAttack(speed), self.__spritesAttack.spritesShift[int(self.__step)]
+        dir = self.__direction if applyDir else ""
 
-        return self.getSpriteMoving(speed, applyDir), self.__spritesMoving.spritesShift[int(self.__step)]
+        if self.__spritesAttack.count and self.__isStartAttack:      # Если режим атаки активен
+            return self.getSpriteAttack(speed) + dir, self.__spritesAttack.spritesShift[int(self.__step)]
+
+        return self.getSpriteMoving(speed) + dir, self.__spritesMoving.spritesShift[int(self.__step)]
 
     def addSpriteAttack(self, sprite: str, time: float = 0.3, shiftX=0, shiftY=0):
         """
@@ -67,12 +71,12 @@ class SpriteManager:
     def getSpriteAttack(self, speed: float = 1):
         # Увеличение шага
         self.__step += self.__spritesAttack.spritesShowTime[int(self.__step)] * speed
-        if round(self.__step) + 1 >= self.__spritesAttack.count:
+        if round(self.__step) >= self.__spritesAttack.count:
             self.__step = 0
             self.__isStartAttack = False        # Анимация атаки срабатывает один раз
             # после флаг активности атаки сбрасывается автоматически
 
-        return self.__spritesAttack.sprites[int(self.__step)] + self.__direction
+        return self.__spritesAttack.sprites[int(self.__step)]
 
     def addSpriteMoving(self, sprite: str, time: float = 0.3, shiftX=0, shiftY=0):
         """
@@ -86,14 +90,11 @@ class SpriteManager:
         self.__spritesMoving.spritesShowTime.append(time)
         self.__spritesMoving.spritesShift.append([shiftX, shiftY])
 
-    def getSpriteMoving(self, speed: float = 1,  applyDir=False):
+    def getSpriteMoving(self, speed: float = 1):
         """
         Получение спрайта для текущего шага.
         :return имя спрайта.
         """
-        if not applyDir:        # Движение без направления(не направленные виды спрайта без "_<direction>" в имени)
-            return self.__spritesMoving.sprites[int(self.__step)]
-
         if self.__isMoving:     # Передвижение с направлением
             # Увеличение шага
             self.__step += self.__spritesMoving.spritesShowTime[int(self.__step)] * speed
@@ -102,7 +103,7 @@ class SpriteManager:
         else:
             self.__step = 0     # Отрисовка спрайта без движения
 
-        return self.__spritesMoving.sprites[int(self.__step)] + self.__direction
+        return self.__spritesMoving.sprites[int(self.__step)]
 
     @property
     def baseSpriteName(self):

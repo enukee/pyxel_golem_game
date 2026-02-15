@@ -109,3 +109,79 @@ class EggheadEnemy(Enemy):
         x = int(self.x + shifts[0])
         y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
         scene.drawSprite(spriteName, x, y)
+
+
+class MimicEnemy(Enemy):
+    def __init__(self, x: float, y: float, player: Player, stats: Stats):
+        super().__init__(x, y, player, "mimic", stats, 90, 15)
+
+        self.jump_height = 10  # Максимальная высота прыжка
+        self.jump_duration = 10  # Длительность прыжка в кадрах
+        self.isJumping = False
+        self.jump_progress = 0
+
+        self.start_x = 0
+        self.start_y = 0
+        self.target_x = 0
+        self.target_y = 0
+
+        self.spriteManager.addSpriteMoving("")
+        self.spriteManager.addSpriteMoving("")
+        self.spriteManager.addSpriteMoving("")
+        self.spriteManager.addSpriteMoving("")
+        self.spriteManager.addSpriteMoving("_bite", shiftY=2)
+
+        self.spriteManager.addSpriteAttack("")
+        self.spriteManager.addSpriteAttack("_bite", shiftY=2)
+
+    def setDir(self, dirX, dirY):
+        super().setDir(dirX, dirY)
+        self.start_x = self.x
+        self.start_y = self.y
+        self.target_x = self.start_x + self.jump_duration * super().dirX
+        self.target_y = self.start_y + self.jump_duration * super().dirY
+        self.isJumping = True
+        self.jump_progress = 0
+
+    def attack(self):
+        super().attack()
+
+    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+        if self.isJumping:
+            self.jumping(tileMap)
+
+        else:
+            self.setDir(int(self.player.x - self.x), int(self.player.y - self.y))
+
+    def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+        if self.isJumping:
+            self.jumping(tileMap)
+
+        # Случайное изменение направления (опционально)
+        elif random.random() < 0.05:  # 5% шанс сменить направление
+            self.setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
+
+    def jumping(self, tileMap: MatrixMap):
+        self.jump_progress += 1
+        # Прогресс прыжка от 0 до 1
+        progress = self.jump_progress / self.jump_duration
+
+        if progress <= 1:
+            # Вычисляем приращения dx и dy
+            dx = (self.target_x - self.start_x) * (1 / self.jump_duration)
+            dy = (self.target_y - self.start_y) * (1 / self.jump_duration) - self.jump_height * math.sin(
+                math.pi * progress) + self.jump_height * math.sin(math.pi * (progress - 1 / self.jump_duration))
+
+            # Перемещаем
+            super().tryMove(dx, dy, tileMap)
+        else:
+            # Прыжок завершён
+            self.isJumping = False
+
+    def draw(self, scene: Scene):
+        self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=False)  # Получение имя спрайта
+
+        x = int(self.x + shifts[0])
+        y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
+        scene.drawSprite(spriteName, x, y)

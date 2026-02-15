@@ -20,7 +20,7 @@ class Player(GameActor):
 
     def draw(self, scene: Scene):
         self.spriteManager.setDir(super().dirX, super().dirY)       # Установка направления игрока
-        spriteName = self.spriteManager.getSpriteMoving(self._currentSpeed, applyDir=True)    # Получение имя спрайта
+        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)    # Получение имя спрайта
 
         scene.changingView(int(self.x) - const.WINDOW_WIDTH // 2, int(self.y) - const.WINDOW_HEIGHT // 2)
         scene.drawSprite(spriteName,

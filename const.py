@@ -60,6 +60,9 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "egghead_pos2_left":    [25, 111, 11, 15, 0],
               "egghead_pos2_right":   [25, 111, -11, 15, 0],
 
+              "mimic":                  [34, 236, 17, 20, 0],
+              "mimic_bite":             [16, 238, 17, 18, 0],
+
               "wall":               [0, 240, 16, 16, 0]
               }
 
