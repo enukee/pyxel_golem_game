@@ -67,7 +67,6 @@ class Enemy(GameActor, ABC):
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
         super().setDir(int(self.player.x - self.x), int(self.player.y - self.y))
         super().update(tileMap, delta_time)
-        print("move to target")
 
     @abstractmethod
     def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
@@ -77,8 +76,6 @@ class Enemy(GameActor, ABC):
         # Случайное изменение направления (опционально)
         if random.random() < 0.05:  # 5% шанс сменить направление
             super().setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
-
-        print("random move")
 
 
 class EggheadEnemy(Enemy):
@@ -108,7 +105,7 @@ class EggheadEnemy(Enemy):
     def draw(self, scene: Scene):
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
         spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)  # Получение имя спрайта
-        print(spriteName)
+
         x = int(self.x + shifts[0])
         y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
         scene.drawSprite(spriteName, x, y)
