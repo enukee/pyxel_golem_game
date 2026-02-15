@@ -5,7 +5,7 @@ from draw import PyxelDrawer
 class Scene:
     def __init__(self, width: int, height: int, title: str):
         """
-        Сцена для отображения объектов
+        Сцена для отображения объектов.
         :param width: Ширина окна.
         :param height: Высота окна.
         :param title: Название окна.

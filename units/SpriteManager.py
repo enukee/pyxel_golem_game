@@ -2,17 +2,24 @@
 class SpriteManager:
     class SpritesTuple:
         def __init__(self):
+            """
+            Набор модификаторов спрайтов.
+            """
             self.sprites = []               # Названия спрайтов
             self.spritesShowTime = []       # Время показа спрайтов
             self.spritesShift = []          # Сдвиг спрайта при отрисовке
 
         @property
         def count(self):
+            """
+            Количество спрайтов.
+            """
             return len(self.sprites)
 
     def __init__(self, baseSpriteName: str):
         """
         Менеджер спрайтов.
+        :param baseSpriteName: Базовое имя спрайта.
         """
         self.__step = 0
         self.__baseName = baseSpriteName        # Базовое имя спрайта(имя спрайта должно начинаться с базового имени)
@@ -25,6 +32,9 @@ class SpriteManager:
         self.__spritesAttack = SpriteManager.SpritesTuple()   # Стандартные спрайты атаки
 
     def startAttack(self):
+        """
+        Начало атаки.
+        """
         if not self.__isStartAttack:
             self.__isStartAttack = True
             self.__step = 0
@@ -49,6 +59,12 @@ class SpriteManager:
                 self.__direction = "_left"
 
     def getSprite(self, speed: float = 1,  applyDir=False):
+        """
+        Получение спрайта для текущего шага в зависимости от флагов.
+        :param speed: Время между кадрами.
+        :param applyDir: Флаг добавления модификатора направления.
+        :return: Имя спрайта.
+        """
         dir = self.__direction if applyDir else ""
 
         if self.__spritesAttack.count and self.__isStartAttack:      # Если режим атаки активен
@@ -69,6 +85,11 @@ class SpriteManager:
         self.__spritesAttack.spritesShift.append([shiftX, shiftY])
 
     def getSpriteAttack(self, speed: float = 1):
+        """
+        Получение спрайта для текущего шага.
+        :param speed: Время между кадрами.
+        :return имя спрайта.
+        """
         # Увеличение шага
         self.__step += self.__spritesAttack.spritesShowTime[int(self.__step)] * speed
         if round(self.__step) >= self.__spritesAttack.count:
@@ -93,6 +114,7 @@ class SpriteManager:
     def getSpriteMoving(self, speed: float = 1):
         """
         Получение спрайта для текущего шага.
+        :param speed: Время между кадрами.
         :return имя спрайта.
         """
         if self.__isMoving:     # Передвижение с направлением

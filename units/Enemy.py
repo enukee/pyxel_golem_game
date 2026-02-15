@@ -50,6 +50,11 @@ class Enemy(GameActor, ABC):
         return dx * dx + dy * dy <= radiusSquare
 
     def update(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Обновление(перемещение) врага.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         if self.isPlayerNearby(self.detectionRadiusSquare):     # Поиск игрока в радиусе обнаружения
             # Игрок рядом: передвижение к игроку
             if self.isPlayerNearby(self.attackRadiusSquare):
@@ -65,11 +70,21 @@ class Enemy(GameActor, ABC):
 
     @abstractmethod
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение к игроку.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         super().setDir(int(self.player.x - self.x), int(self.player.y - self.y))
         super().update(tileMap, delta_time)
 
     @abstractmethod
     def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение в случайном направлении.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         # Движение в случайном направлении
         super().update(tileMap, delta_time)
 
@@ -80,6 +95,13 @@ class Enemy(GameActor, ABC):
 
 class EggheadEnemy(Enemy):
     def __init__(self, x: float, y: float, player: Player, stats: Stats):
+        """
+        Юнит врага Egghead.
+        :param x: Начальная координата X.
+        :param y: Начальная координата Y.
+        :param player: Ссылка на игрока.
+        :param stats: Характеристики врага.
+        """
         super().__init__(x, y, player, "egghead",
                          stats, 80, 13)
 
@@ -97,12 +119,26 @@ class EggheadEnemy(Enemy):
         super().attack()
 
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение к игроку.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         super().movementToTarget(tileMap)
 
     def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение в случайном направлении.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         super().randomMovement(tileMap)
 
     def draw(self, scene: Scene):
+        """
+        Отрисовка врага.
+        :param scene: Сцена для отображения объектов
+        """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
         spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)  # Получение имя спрайта
 
@@ -113,6 +149,13 @@ class EggheadEnemy(Enemy):
 
 class MimicEnemy(Enemy):
     def __init__(self, x: float, y: float, player: Player, stats: Stats):
+        """
+        Юнит врага Mimic.
+        :param x: Начальная координата X.
+        :param y: Начальная координата Y.
+        :param player: Ссылка на игрока.
+        :param stats: Характеристики врага.
+        """
         super().__init__(x, y, player, "mimic", stats, 90, 15)
 
         self.jump_height = 10  # Максимальная высота прыжка
@@ -120,8 +163,10 @@ class MimicEnemy(Enemy):
         self.isJumping = False
         self.jump_progress = 0
 
+        # Стартовая позиция при прыжке
         self.start_x = 0
         self.start_y = 0
+        # Целевая позиция при прыжке
         self.target_x = 0
         self.target_y = 0
 
@@ -135,18 +180,29 @@ class MimicEnemy(Enemy):
         self.spriteManager.addSpriteAttack("_bite", shiftY=2)
 
     def setDir(self, dirX, dirY):
-        super().setDir(dirX, dirY)
+        """
+        Установка стартовых параметров при прыжке.
+        :param dirX: Направление по оси X.
+        :param dirY: Направление по оси Y.
+        """
+        super().setDir(dirX, dirY)      # Установка направления у базового класса
         self.start_x = self.x
         self.start_y = self.y
+        # Вычисление целевой позиции при прыжке
         self.target_x = self.start_x + self.jump_duration * super().dirX
         self.target_y = self.start_y + self.jump_duration * super().dirY
-        self.isJumping = True
+        self.isJumping = True       # Флаг начала прыжка
         self.jump_progress = 0
 
     def attack(self):
         super().attack()
 
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение в случайном направлении.
+        :param tileMap: Карта тайлов.
+        :param delta_time: Время между кадрами.
+        """
         if self.isJumping:
             self.jumping(tileMap)
 
@@ -154,6 +210,11 @@ class MimicEnemy(Enemy):
             self.setDir(int(self.player.x - self.x), int(self.player.y - self.y))
 
     def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+        """
+        Перемещение в случайном направлении.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         if self.isJumping:
             self.jumping(tileMap)
 
@@ -162,6 +223,10 @@ class MimicEnemy(Enemy):
             self.setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
 
     def jumping(self, tileMap: MatrixMap):
+        """
+        Итерация прыжка из точки (self.start_x, self.start_y) в точку (self.target_x, self.target_y).
+        :param tileMap: Карта тайлов.
+        """
         self.jump_progress += 1
         # Прогресс прыжка от 0 до 1
         progress = self.jump_progress / self.jump_duration
@@ -179,6 +244,10 @@ class MimicEnemy(Enemy):
             self.isJumping = False
 
     def draw(self, scene: Scene):
+        """
+        Отрисовка врага.
+        :param scene: Сцена для отображения объектов
+        """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
         spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=False)  # Получение имя спрайта
 

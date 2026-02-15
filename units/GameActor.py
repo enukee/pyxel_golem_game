@@ -106,7 +106,7 @@ class GameActor(MovableObjects, ABC):
     @abstractmethod
     def update(self, tileMap: MatrixMap, delta_time: float = 1):
         """
-        Перемещение объекта по вектору (dirX, dirY).
+        Обновление(перемещение) юнита.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """

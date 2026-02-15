@@ -6,6 +6,12 @@ from units import GameActor, Stats
 
 class Player(GameActor):
     def __init__(self, x: float, y: float, stats: Stats):
+        """
+        Класс игрока.
+        :param x: Координата по оси X.
+        :param y: Координата по оси Y.
+        :param stats: Характеристики игрока.
+        """
         super().__init__(x, y, "player", stats)
 
         # Установка последовательности смены спрайтов во время движения
@@ -19,6 +25,10 @@ class Player(GameActor):
         self.spriteManager.addSpriteMoving("_pos3")
 
     def draw(self, scene: Scene):
+        """
+        Отрисовка игрока.
+        :param scene: Сцена для отображения объектов
+        """
         self.spriteManager.setDir(super().dirX, super().dirY)       # Установка направления игрока
         spriteName, shift = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)    # Получение имя спрайта
 
@@ -27,6 +37,11 @@ class Player(GameActor):
                          int(self.x), int(self.y) - const.getHeightSprite(self.spriteManager.baseSpriteName))
 
     def update(self, tileMap: MatrixMap,  delta_time: float = 1):
+        """
+        Обновление(перемещение) игрока.
+        :param tileMap: Карта тайлов.
+        :param delta_time:  Время между кадрами.
+        """
         if super().dirX == 0 and super().dirY == 0:
             super().speedReset()
             return
