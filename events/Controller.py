@@ -11,7 +11,7 @@ class Controller(ABC):
         self.buttonRaise = buttonRaise
 
     @abstractmethod
-    def isBtnPress(self, btn):
+    def isBtnPress(self, btn) -> bool:
         pass
 
     def isLeftButtonPressed(self) -> bool:
