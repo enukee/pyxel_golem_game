@@ -3,53 +3,7 @@ from abc import ABC, abstractmethod
 import const
 from map.MatrixMap import MatrixMap
 from draw import Scene
-from units import MovableObjects, SpriteManager
-
-
-class Stats:
-    def __init__(self, health: int, armor: int, attackSpeed: float, speed: float, acceleration: float):
-        """
-        Базовые параметры юнита.
-        :param health: Базовое здоровье.
-        :param armor: Очки брони.
-        :param attackSpeed: Скорость атаки.
-        :param speed: Начальная скорость.
-        :param acceleration: Ускорение.
-        """
-        # Параметры объекта
-        self.__health = health
-        self.__armor = armor
-        self.__attackSpeed = attackSpeed
-        self.__speed = speed
-        self.__acceleration = acceleration
-
-    @abstractmethod
-    def die(self):
-        pass
-
-    @property
-    def health(self):
-        return self.__health
-
-    @health.setter
-    def health(self, value):
-        self.__health = value
-
-    @property
-    def armor(self):
-        return self.__armor
-
-    @property
-    def attackSpeed(self):
-        return self.__attackSpeed
-
-    @property
-    def baseSpeed(self):
-        return self.__speed
-
-    @property
-    def acceleration(self):
-        return self.__acceleration
+from units import MovableObjects, SpriteManager, Stats
 
 
 class GameActor(MovableObjects, ABC):
@@ -73,8 +27,8 @@ class GameActor(MovableObjects, ABC):
 
         # Параметры юнита
         self._currentHealth = self._stats.health
-        self._currentSpeed = self._stats.baseSpeed
-        self._maxSpeed = self._stats.baseSpeed + self._stats.acceleration * 20
+        self._currentSpeed = self._stats.speed
+        self._maxSpeed = self._stats.speed + self._stats.acceleration * 20
 
     @abstractmethod
     def draw(self, scene: Scene):
@@ -129,4 +83,4 @@ class GameActor(MovableObjects, ABC):
         """
         Сброс скорости объекта до начальной.
         """
-        self._currentSpeed = self._stats.baseSpeed
+        self._currentSpeed = self._stats.speed
