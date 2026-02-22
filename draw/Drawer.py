@@ -18,5 +18,13 @@ class Drawer(ABC):
     def drawTile(self, sectors: list, x: int, y: int):
         pass
 
+    @abstractmethod
+    def drawButton(self, x: int, y: int, width: int, height: int, title: str):
+        pass
+
+    @abstractmethod
+    def drawBackground(self):
+        pass
+
     def setCamera(self, x: int, y: int):
         pass

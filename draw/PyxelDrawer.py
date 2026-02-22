@@ -64,6 +64,25 @@ class PyxelDrawer(Drawer):
 
                 k += 1
 
+    def drawButton(self, x: int, y: int, width: int, height: int, title: str):
+        """
+        Отображение кнопки на экране.
+        :param x: Координата для отрисовки x.
+        :param y: Координата для отрисовки y.
+        :param width: Ширина кнопки.
+        :param height: Высота кнопки.
+        :param title: Надпись на кнопке.
+        """
+        pyxel.rect(x, y, width, height, 3)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
+        pyxel.text(x + 5, y + 7, title, 7)
+
+    def drawBackground(self):
+        """
+        Отрисовка фона любого окна.
+        """
+        pyxel.cls(0)
+
     def setCamera(self, x: int, y: int):
         """
         Установка камеры на координатах (x, y).

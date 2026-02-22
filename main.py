@@ -1,39 +1,51 @@
 import pyxel
 
 import const
-from events import Events
-from map import MatrixMap
-from units import Player
+from Game import Game
+from Menu import Menu
+from draw import PyxelDrawer
 from events import PyxelController
-from draw import Scene
 
 
-class Game:
+class Start:
     def __init__(self):
-        self.tileMap = MatrixMap()
-        self.player = Player(30, 200)
+        self.drawer = PyxelDrawer(const.WINDOW_WIDTH, const.WINDOW_HEIGHT, "Game")
+        self.control = PyxelController()
 
-        self.scene = Scene(const.WINDOW_WIDTH, const.WINDOW_HEIGHT, "Game")
-        self.events = Events(PyxelController())
+        self.game = None
+        self.mainMenu = Menu()
 
-        def movement(dirX, dirY):
-            self.player.setDir(dirX, dirY)
-            self.player.update(self.tileMap)
+        def startGame():
+            self.game = Game(self.drawer, self.control)
+            pyxel.mouse(False)
 
-        self.events.addPlayerMovementHandler(movement)
+        def exitApp():
+            pyxel.quit()
 
+        self.mainMenu.setHandler("play", startGame)
+        self.mainMenu.setHandler("exit", exitApp)
+
+        self.gameIsActive = False
+
+        pyxel.mouse(True)
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        self.events.update()
+        if self.game is not None:
+            self.game.update()
+
+        else:
+            self.mainMenu.update(self.control)
 
     def draw(self):
-        # Очистка экрана
-        pyxel.cls(15)
+        if self.game is not None:
+            # Очистка экрана
+            pyxel.cls(15)
+            self.game.draw()
 
-        self.tileMap.draw(self.scene, self.player.x, self.player.y)
-        self.player.draw(self.scene)
+        else:
+            self.mainMenu.draw(self.drawer)
 
 
 if __name__ == "__main__":
-    Game()
+    Start()

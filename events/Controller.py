@@ -2,17 +2,26 @@ from abc import ABC, abstractmethod
 
 
 class Controller(ABC):
-    def __init__(self, buttonLeft, buttonRight, buttonDown, buttonUp, buttonShoot, buttonRaise):
+    def __init__(self, buttonLeft, buttonRight, buttonDown, buttonUp, buttonShoot, buttonRaise, mouseBtnLeft):
         self.buttonLeft = buttonLeft
         self.buttonRight = buttonRight
         self.buttonDown = buttonDown
         self.buttonUp = buttonUp
         self.buttonShoot = buttonShoot
         self.buttonRaise = buttonRaise
+        self.mouseBtnLeft = mouseBtnLeft
 
     @abstractmethod
     def isBtnPress(self, btn) -> bool:
         pass
+
+    @abstractmethod
+    def getMouse(self):
+        pass
+
+    def isMouseClicked(self, x: int, y: int, w: int, h: int):
+        mouseX, mouseY = self.getMouse()
+        return x < mouseX < x + w and y < mouseY < y + h and self.isBtnPress(self.mouseBtnLeft)
 
     def isLeftButtonPressed(self) -> bool:
         if self.isBtnPress(self.buttonLeft):

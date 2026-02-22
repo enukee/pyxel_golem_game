@@ -1,16 +1,16 @@
 import const
-from draw import PyxelDrawer
+from draw import Drawer
 
 
 class Scene:
-    def __init__(self, width: int, height: int, title: str):
+    def __init__(self, drawer: Drawer):
         """
         Сцена для отображения объектов
-        :param width: Ширина окна.
-        :param height: Высота окна.
-        :param title: Название окна.
+        :param drawer: Инструмент отрисовки объектов на сцене.
         """
-        self.drawer = PyxelDrawer(width, height, title)
+        self.drawer = drawer
+        self.cameraPosX = 0
+        self.cameraPosY = 0
 
     def changingView(self, x: int, y: int):
         """
@@ -18,6 +18,8 @@ class Scene:
         :param x: Координата x левого верхнего угла сцены.
         :param y: Координата y левого верхнего угла сцены.
         """
+        self.cameraPosX = x
+        self.cameraPosY = y
         self.drawer.setCamera(x, y)
 
     def drawSprite(self, sprite: str, x: int, y: int, reverseX: bool = False, reverseY: bool = False):
