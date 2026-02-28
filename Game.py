@@ -16,7 +16,8 @@ class Game:
         self.tileMap = MatrixMap()
         self.player = Player(30, 200)
 
-        self.scene = Scene(drawer)
+        self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
+                           self.player.y - const.WINDOW_HEIGHT // 2)
         self.events = Events(control)
 
         def movement(dirX, dirY):

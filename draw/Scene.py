@@ -3,24 +3,29 @@ from draw import Drawer
 
 
 class Scene:
-    def __init__(self, drawer: Drawer):
+    def __init__(self, drawer: Drawer, cameraX: int, cameraY: int):
         """
         Сцена для отображения объектов
         :param drawer: Инструмент отрисовки объектов на сцене.
         """
         self.drawer = drawer
-        self.cameraPosX = 0
-        self.cameraPosY = 0
+        self.cameraPosX = cameraX
+        self.cameraPosY = cameraY
 
-    def changingView(self, x: int, y: int):
+    def changingView(self, playerX: int, playerY: int, lerpFactor: float = 0.1):
         """
         Изменение точки обзора.
-        :param x: Координата x левого верхнего угла сцены.
-        :param y: Координата y левого верхнего угла сцены.
+        :param playerX: Координата x игрока.
+        :param playerY: Координата y игрока.
+        :param lerpFactor: Скорость сглаживания перемещения камеры.
         """
-        self.cameraPosX = x
-        self.cameraPosY = y
-        self.drawer.setCamera(x, y)
+        def lerp(a: float, b: float, t: float) -> float:
+            # Линейная интерполяция между a и b с коэффициентом t (0.0 <= t <= 1.0)
+            return a + (b - a) * t
+
+        self.cameraPosX = lerp(self.cameraPosX, playerX - const.WINDOW_WIDTH // 2, lerpFactor)
+        self.cameraPosY = lerp(self.cameraPosY, playerY - const.WINDOW_HEIGHT // 2, lerpFactor)
+        self.drawer.setCamera(int(self.cameraPosX), int(self.cameraPosY))
 
     def drawSprite(self, sprite: str, x: int, y: int, reverseX: bool = False, reverseY: bool = False):
         """
