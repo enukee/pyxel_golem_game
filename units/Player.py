@@ -24,6 +24,8 @@ class Player(GameActor):
         self.spriteManager.addSpriteMoving("_pos4")
         self.spriteManager.addSpriteMoving("_pos3")
 
+        self.isAlive = True
+
     def draw(self, scene: Scene):
         """
         Отрисовка игрока.
@@ -36,11 +38,14 @@ class Player(GameActor):
         scene.drawSprite(spriteName,
                          int(self.x), int(self.y) - const.getHeightSprite(self.spriteManager.baseSpriteName))
 
+        self._stats.draw(scene)
+
     def update(self, tileMap: MatrixMap,  delta_time: float = 1):
         """
         Обновление(перемещение) игрока.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
+        :return: Возвращает False если игрок жив.
         """
         if super().dirX == 0 and super().dirY == 0:
             super().speedReset()
@@ -48,6 +53,9 @@ class Player(GameActor):
 
         super().update(tileMap, delta_time)
 
-    def die(self):
-        pass
+        return not self.isAlive
+
+    def getDamage(self, val):
+        if self._stats.takingDamage(val) is None:
+            self.isAlive = False
 

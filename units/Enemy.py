@@ -38,6 +38,7 @@ class Enemy(GameActor, ABC):
         Атака если игрок находится в радиусе атаки.
         """
         self.spriteManager.startAttack()
+        self.player.getDamage(self._stats.attack * self._stats.attackSpeed)
 
     def isPlayerNearby(self, radiusSquare: float):
         """
@@ -49,11 +50,12 @@ class Enemy(GameActor, ABC):
         dy = self.player.y - self.y
         return dx * dx + dy * dy <= radiusSquare
 
-    def update(self, tileMap: MatrixMap, delta_time: float = 1):
+    def update(self, tileMap: MatrixMap, delta_time: float = 1) -> bool:
         """
         Обновление(перемещение) врага.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
+        :return: Возвращает False если юнит жив.
         """
         if self.isPlayerNearby(self.detectionRadiusSquare):     # Поиск игрока в радиусе обнаружения
             # Игрок рядом: передвижение к игроку
@@ -67,6 +69,8 @@ class Enemy(GameActor, ABC):
         else:
             # Игрока нет рядом: свободное передвижение
             self.randomMovement(tileMap, delta_time)
+
+        return False
 
     @abstractmethod
     def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):

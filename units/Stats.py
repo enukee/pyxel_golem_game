@@ -1,63 +1,15 @@
-from abc import ABC, abstractmethod
+from typing import Union
 
-
-class IncreaseParam(ABC):
-    def __init__(self, name: str, value):
-        """
-        Увеличение некоторого параметра.
-        :param name: Имя характеристики.
-        :param value: Значение прибавки к характеристике.
-        """
-        self.__name = name
-        self.__value = value
-
-    @property
-    def name(self):
-        return self.__name
-
-    @abstractmethod
-    def increase(self, base):
-        """
-        Увеличение параметра.
-        :param base: Базовое значение параметра.
-        :return: Обновлённое значение параметра.
-        """
-        pass
-
-
-class IncreaseBySummation(IncreaseParam):
-    def __init__(self, name: str, value):
-        """
-        Увеличение некоторого параметра суммированием.
-        :param name: Имя характеристики.
-        :param value: Значение прибавки к характеристике.
-        """
-        super().__init__(name, value)
-
-    def increase(self, base):
-        return base + self.__value
-
-
-class PercentageIncrease(IncreaseParam):
-    def __init__(self, name: str, value):
-        """
-        Процентное увеличение некоторого параметра.
-        :param name: Имя характеристики.
-        :param value: Значение прибавки к характеристике.
-        """
-        if not 0 < abs(value) < 100:
-            raise ValueError('The value must be a percentage.')
-
-        super().__init__(name, 1 + value / 100)
-
-    def increase(self, base):
-        return base * self.__value
+from draw import Scene
+from objects import IncreaseParam
 
 
 class Stats:
 
     # Ключи(имена) характеристик
     STAT_KEYS = ["health", "attack", "attack_speed", "speed", "acceleration"]
+
+    INC_STAT_KEYS = ["health"]
 
     def __init__(self, health: int, attack: int, attackSpeed: float, speed: float, acceleration: float):
         """
@@ -73,6 +25,12 @@ class Stats:
 
         # Полные параметры объекта(с учётом всех усилений)
         self.__fullStats = self.__baseStats
+
+        # Текущие параметры
+        self.__currentStats = [health]
+
+    def draw(self, scene: Scene):
+        scene.drawHealth(self.currentHealth)
 
     def getParam(self, name: str):
         """
@@ -95,22 +53,59 @@ class Stats:
         """
         self.__fullStats = self.__baseStats
 
+    def healing(self, val: int):
+        self.health = min(self.health + val, self.__fullStats[Stats.STAT_KEYS.index("health")])
+
+    def takingDamage(self, val: int) -> Union[None, int]:
+        self.currentHealth -= val
+        if self.currentHealth <= 0:
+            return 1
+        return None
+
+    @property
+    def currentHealth(self):
+        return self.__currentStats[Stats.INC_STAT_KEYS.index("health")]
+
+    @currentHealth.setter
+    def currentHealth(self, curHealth):
+        self.__currentStats[Stats.INC_STAT_KEYS.index("health")] = curHealth
+
     @property
     def health(self):
         return self.__fullStats[Stats.STAT_KEYS.index("health")]
+
+    @health.setter
+    def health(self, health):
+        self.__fullStats[Stats.INC_STAT_KEYS.index("health")] = health
 
     @property
     def attack(self):
         return self.__fullStats[Stats.STAT_KEYS.index("attack")]
 
+    @attack.setter
+    def attack(self, attack):
+        self.__fullStats[Stats.INC_STAT_KEYS.index("attack")] = attack
+
     @property
     def attackSpeed(self):
         return self.__fullStats[Stats.STAT_KEYS.index("attack_speed")]
+
+    @attackSpeed.setter
+    def attackSpeed(self, attackSpeed):
+        self.__fullStats[Stats.INC_STAT_KEYS.index("attack_speed")] = attackSpeed
 
     @property
     def speed(self):
         return self.__fullStats[Stats.STAT_KEYS.index("speed")]
 
+    @speed.setter
+    def speed(self, speed):
+        self.__fullStats[Stats.INC_STAT_KEYS.index("speed")] = speed
+
     @property
     def acceleration(self):
         return self.__fullStats[Stats.STAT_KEYS.index("acceleration")]
+
+    @acceleration.setter
+    def acceleration(self, acceleration):
+        self.__fullStats[Stats.INC_STAT_KEYS.index("acceleration")] = acceleration

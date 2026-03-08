@@ -13,6 +13,8 @@ class PyxelDrawer(Drawer):
         # Загрузка изображений
         pyxel.images[0].load(0, 0, "../assets/img_0.png")
 
+        self.x, self.y = 0, 0
+
     def drawSprite(self, spritePos: list, x: int, y: int):
         """
         Отображение спрйта.
@@ -70,4 +72,11 @@ class PyxelDrawer(Drawer):
         :param x: Координата для отрисовки x.
         :param y: Координата для отрисовки y.
         """
+        self.x, self.y = x, y
         pyxel.camera(x, y)
+
+    def drawHealth(self, val: int):
+        # Отрисовка полоски здоровья в левом верхнем углу
+        pyxel.rect(self.x + 2, self.y + 2, 102, 5, 6)
+        pyxel.rect(self.x + 3, self.y + 3, 100, 3, 0)
+        pyxel.rect(self.x + 3, self.y + 3, val, 3, 8)
