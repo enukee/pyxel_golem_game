@@ -1,3 +1,5 @@
+import random
+
 from map import MapGenerator
 from map.Tile import *
 import const
@@ -70,3 +72,13 @@ class MatrixMap:
         local_y = (worldY % const.TILE_SIZE) / const.TILE_SIZE
 
         return tile.isWalkable(local_x, local_y)
+
+    def randomPoint(self):
+        size = self.__size * const.TILE_SIZE
+        x, y = (random.randint(0, size),
+                random.randint(0, size))
+        while not self.isWalkable(x, y):
+            x, y = (random.randint(0, size),
+                    random.randint(0, size))
+
+        return x, y
