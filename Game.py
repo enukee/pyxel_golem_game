@@ -1,7 +1,7 @@
 import const
-from events import Events
+from events import Events, PyxelController
 from map import MatrixMap
-from units import Player
+from units import Player, Stats, UnitsManager
 from events import Controller
 from draw import Scene, Drawer
 
@@ -14,7 +14,13 @@ class Game:
         :param control: Инструмент получения событий.
         """
         self.tileMap = MatrixMap()
-        self.player = Player(30, 200)
+        self.player = Player(30, 200, Stats(100, 12, 1, 1, 0.1))
+
+        chanceEnemy = {
+            "mimic":    0.65,
+            "egg_head": 0.35
+        }
+        self.units = UnitsManager(self.player, self.tileMap, chanceEnemy)
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
@@ -27,7 +33,7 @@ class Game:
             :param dirY: Направление движения по оси Y.
             """
             self.player.setDir(dirX, dirY)
-            self.player.update(self.tileMap)
+            self.units.update(self.tileMap)
 
         self.events.addPlayerMovementHandler(movement)
 
@@ -36,4 +42,4 @@ class Game:
 
     def draw(self):
         self.tileMap.draw(self.scene, self.player.x, self.player.y)
-        self.player.draw(self.scene)
+        self.units.draw(self.scene)

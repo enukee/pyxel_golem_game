@@ -28,3 +28,6 @@ class Drawer(ABC):
 
     def setCamera(self, x: int, y: int):
         pass
+
+    def drawHealth(self, val: int):
+        pass

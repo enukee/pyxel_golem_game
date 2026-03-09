@@ -50,6 +50,24 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "player_pos4_left":   [29, 89, 13, 21, 0],
               "player_pos4_right":  [29, 89, -13, 21, 0],
               "player_shoot":       [71, 23, 13, 21, 0],
+
+              "egghead":              [1, 111, 11, 15, 0],
+              "egghead_pos0_down":    [1, 111, 11, 15, 0],
+              "egghead_pos0_up":      [1, 127, 11, 15, 0],
+              "egghead_pos0_left":    [1, 111, 11, 15, 0],
+              "egghead_pos0_right":   [1, 111, -11, 15, 0],
+              "egghead_pos1_down":    [13, 111, 11, 15, 0],
+              "egghead_pos1_up":      [13, 127, 11, 15, 0],
+              "egghead_pos1_left":    [13, 111, 11, 15, 0],
+              "egghead_pos1_right":   [13, 111, -11, 15, 0],
+              "egghead_pos2_down":    [25, 111, 11, 15, 0],
+              "egghead_pos2_up":      [25, 127, 11, 15, 0],
+              "egghead_pos2_left":    [25, 111, 11, 15, 0],
+              "egghead_pos2_right":   [25, 111, -11, 15, 0],
+
+              "mimic":                  [34, 236, 17, 20, 0],
+              "mimic_bite":             [16, 238, 17, 18, 0],
+
               "wall":               [0, 240, 16, 16, 0]
               }
 

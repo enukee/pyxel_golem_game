@@ -59,3 +59,20 @@ class Scene:
             tileSectors = const.TILE_STRUCTURE[tile]
             self.drawer.drawTile(tileSectors, x, y)
 
+    def drawIcon(self, icon: str, x: int, y: int):
+        """
+        Отображение иконки.
+        :param icon: Тип иконки.
+        :param x: Положение левого верхнего угла иконки по x.
+        :param y: Положение левого верхнего угла иконки по y.
+        """
+        if icon in const.SPRITE_POS:
+            spritePos = const.SPRITE_POS[icon]
+
+        else:
+            spritePos = const.SPRITE_POS["stub_sprite"]
+
+        self.drawer.drawSprite(spritePos, x, y)
+
+    def drawHealth(self, value: int):
+        self.drawer.drawHealth(value)
