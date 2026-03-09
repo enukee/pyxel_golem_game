@@ -49,13 +49,13 @@ class Player(GameActor):
         """
         if super().dirX == 0 and super().dirY == 0:
             super().speedReset()
-            return
 
-        super().update(tileMap, delta_time)
+        else:
+            super().update(tileMap, delta_time)
 
         return not self.isAlive
 
     def getDamage(self, val):
-        if self._stats.takingDamage(val) is None:
+        if self._stats.takingDamage(val) is not None:
             self.isAlive = False
 

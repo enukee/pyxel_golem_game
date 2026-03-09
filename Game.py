@@ -33,12 +33,12 @@ class Game:
             :param dirY: Направление движения по оси Y.
             """
             self.player.setDir(dirX, dirY)
-            self.units.update(self.tileMap)
 
         self.events.addPlayerMovementHandler(movement)
 
-    def update(self):
+    def update(self) -> bool:
         self.events.update()
+        return self.units.update(self.tileMap)
 
     def draw(self):
         self.tileMap.draw(self.scene, self.player.x, self.player.y)

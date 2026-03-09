@@ -26,6 +26,10 @@ class Drawer(ABC):
     def drawBackground(self):
         pass
 
+    @abstractmethod
+    def mouseVisible(self, visible: bool):
+        pass
+
     def setCamera(self, x: int, y: int):
         pass
 

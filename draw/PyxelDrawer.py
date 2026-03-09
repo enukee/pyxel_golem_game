@@ -85,6 +85,9 @@ class PyxelDrawer(Drawer):
         """
         pyxel.cls(0)
 
+    def mouseVisible(self, visible: bool):
+        pyxel.mouse(visible)
+
     def setCamera(self, x: int, y: int):
         """
         Установка камеры на координатах (x, y).

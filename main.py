@@ -17,7 +17,7 @@ class Start:
 
         def startGame():
             self.game = Game(self.drawer, self.control)
-            pyxel.mouse(False)
+            self.drawer.mouseVisible(False)
 
         def exitApp():
             pyxel.quit()
@@ -25,14 +25,15 @@ class Start:
         self.mainMenu.setHandler("play", startGame)
         self.mainMenu.setHandler("exit", exitApp)
 
-        self.gameIsActive = False
-
         pyxel.mouse(True)
         pyxel.run(self.update, self.draw)
 
     def update(self):
         if self.game is not None:
-            self.game.update()
+            if self.game.update():
+                self.game = None
+                self.drawer.mouseVisible(True)
+                self.drawer.setCamera(0, 0)
 
         else:
             self.mainMenu.update(self.control)
