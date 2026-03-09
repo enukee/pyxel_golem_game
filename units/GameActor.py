@@ -58,7 +58,7 @@ class GameActor(MovableObjects, ABC):
         return self._dirY
 
     @abstractmethod
-    def update(self, tileMap: MatrixMap, delta_time: float = 1):
+    def update(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Обновление(перемещение) юнита.
         :param tileMap: Карта тайлов.

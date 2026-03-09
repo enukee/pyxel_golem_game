@@ -6,6 +6,11 @@ TILE_SECTOR_SIZE = TILE_SIZE // 2
 WINDOW_WIDTH = 320
 WINDOW_HEIGHT = 240
 
+# Частота кадров
+FPS = 60
+# Время между кадрами
+DELTA_TIME = 1 / FPS
+
 BUTTON_MENU_WIDTH = 40
 BUTTON_MENU_HEIGHT = 20
 

@@ -42,14 +42,14 @@ class UnitsManager:
                               Stats(80,
                                     random.randint(10, 30),
                                     random.randint(1, 10) * 0.001,
-                                    1, 0))
+                                    40, 0))
 
         elif enemy == "egg_head":
             return EggheadEnemy(x, y, self.player,
                                 Stats(60,
                                       random.randint(15, 30),
                                       random.randint(1, 10) * 0.001,
-                                      1, 0))
+                                      50, 0))
 
     def update(self, tileMap: MatrixMap) -> bool:
         """

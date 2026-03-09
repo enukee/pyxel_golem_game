@@ -50,7 +50,7 @@ class Enemy(GameActor, ABC):
         dy = self.player.y - self.y
         return dx * dx + dy * dy <= radiusSquare
 
-    def update(self, tileMap: MatrixMap, delta_time: float = 1) -> bool:
+    def update(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME) -> bool:
         """
         Обновление(перемещение) врага.
         :param tileMap: Карта тайлов.
@@ -73,7 +73,7 @@ class Enemy(GameActor, ABC):
         return False
 
     @abstractmethod
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение к игроку.
         :param tileMap: Карта тайлов.
@@ -83,7 +83,7 @@ class Enemy(GameActor, ABC):
         super().update(tileMap, delta_time)
 
     @abstractmethod
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
         :param tileMap: Карта тайлов.
@@ -122,7 +122,7 @@ class EggheadEnemy(Enemy):
     def attack(self):
         super().attack()
 
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение к игроку.
         :param tileMap: Карта тайлов.
@@ -130,7 +130,7 @@ class EggheadEnemy(Enemy):
         """
         super().movementToTarget(tileMap)
 
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
         :param tileMap: Карта тайлов.
@@ -201,7 +201,7 @@ class MimicEnemy(Enemy):
     def attack(self):
         super().attack()
 
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = 1):
+    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
         :param tileMap: Карта тайлов.
@@ -213,33 +213,36 @@ class MimicEnemy(Enemy):
         else:
             self.setDir(int(self.player.x - self.x), int(self.player.y - self.y))
 
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = 1):
+    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
         if self.isJumping:
-            self.jumping(tileMap)
+            self.jumping(tileMap, delta_time)
 
         # Случайное изменение направления (опционально)
         elif random.random() < 0.05:  # 5% шанс сменить направление
             self.setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
 
-    def jumping(self, tileMap: MatrixMap):
+    def jumping(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Итерация прыжка из точки (self.start_x, self.start_y) в точку (self.target_x, self.target_y).
         :param tileMap: Карта тайлов.
+        :param delta_time: Время между кадрами.
         """
         self.jump_progress += 1
+        step = delta_time * self._stats.speed
+        self.jump_progress += step
         # Прогресс прыжка от 0 до 1
         progress = self.jump_progress / self.jump_duration
 
         if progress <= 1:
             # Вычисляем приращения dx и dy
-            dx = (self.target_x - self.start_x) * (1 / self.jump_duration)
-            dy = (self.target_y - self.start_y) * (1 / self.jump_duration) - self.jump_height * math.sin(
-                math.pi * progress) + self.jump_height * math.sin(math.pi * (progress - 1 / self.jump_duration))
+            dx = (self.target_x - self.start_x) * (step / self.jump_duration)
+            dy = (self.target_y - self.start_y) * (step / self.jump_duration) - self.jump_height * math.sin(
+                math.pi * progress) + self.jump_height * math.sin(math.pi * (progress - step / self.jump_duration))
 
             # Перемещаем
             super().tryMove(dx, dy, tileMap)

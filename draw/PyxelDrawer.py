@@ -7,7 +7,7 @@ import pyxel
 class PyxelDrawer(Drawer):
     def __init__(self, width: int, height: int, title: str):
         # Инициализация окна
-        pyxel.init(width, height, title=title)
+        pyxel.init(width, height, title=title, fps=const.FPS)
         # Загрузка ресурсов(музыки и палитры)
         pyxel.load("../assets/res.pyxres")
         # Загрузка изображений

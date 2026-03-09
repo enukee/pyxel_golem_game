@@ -14,7 +14,7 @@ class Game:
         :param control: Инструмент получения событий.
         """
         self.tileMap = MatrixMap()
-        self.player = Player(30, 200, Stats(100, 12, 1, 1, 0.1))
+        self.player = Player(30, 200, Stats(100, 12, 1, 80, 5))
 
         chanceEnemy = {
             "mimic":    0.65,
