@@ -43,6 +43,8 @@ class Enemy(GameActor, ABC):
             self.spriteManager.startAttack()
             self.player.getDamage(self._stats.attack)
 
+        self.spriteManager.startAttack()
+
     def isPlayerNearby(self, radiusSquare: float):
         """
         Поиск игрока в радиусе radiusSquare.
@@ -146,13 +148,14 @@ class EggheadEnemy(Enemy):
         """
         super().randomMovement(events, tileMap, delta_time)
 
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         """
         Отрисовка врага.
+        :param delta_time: Время между кадрами.
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=True)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
         y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
@@ -259,13 +262,14 @@ class MimicEnemy(Enemy):
             # Прыжок завершён
             self.isJumping = False
 
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         """
         Отрисовка врага.
+        :param delta_time: Время между кадрами.
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed, applyDir=False)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=False)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
         y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)

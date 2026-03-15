@@ -30,13 +30,14 @@ class Player(GameActor):
 
         self.bullets = []
 
-    def draw(self, scene: Scene,  delta_time: float = const.DELTA_TIME):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         """
         Отрисовка игрока.
+        :param delta_time: Время между кадрами.
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)       # Установка направления игрока
-        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed, applyDir=True)    # Получение имя спрайта
+        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=True)    # Получение имя спрайта
 
         scene.changingView(int(self.x), int(self.y))
         scene.drawSprite(spriteName,
