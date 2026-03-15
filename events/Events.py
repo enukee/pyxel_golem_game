@@ -20,12 +20,18 @@ class Events:
         """
         Обработка событий.
         """
-        # Обработка события движения игрока
         if not self._isInventoryAvailable:
             # Получаем направление движения игрока от контроллера
             dirX, dirY = self._controller.getDirection()
+
+            # Обработка события движения игрока
             for handler in self._playerMovementHandler:
                 handler(dirX, dirY)
+
+            # Обработка события атаки
+            if self._controller.isShootButtonPressed():
+                for handler in self._playerAttackHandler:
+                    handler(self.frameCount)
 
     def addPlayerMovementHandler(self, handler):
         """
@@ -33,3 +39,10 @@ class Events:
         :param handler: Обработчика движения игрока(принимает два аргумента: направление по оси X и по оси Y).
         """
         self._playerMovementHandler.append(handler)
+
+    def addPlayerAttackHandler(self, handler):
+        """
+        Метод для добавления обработчика атаки игрока.
+        :param handler: Обработчик атаки игрока(принимает два аргумента: направление по оси X и по оси Y).
+        """
+        self._playerAttackHandler.append(handler)

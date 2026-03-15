@@ -36,6 +36,14 @@ class Game:
 
         self.events.addPlayerMovementHandler(movement)
 
+        def attack(frameCount):
+            """
+            Обработчик события атаки игрока.
+            """
+            self.player.attack(frameCount)
+
+        self.events.addPlayerAttackHandler(attack)
+
     def update(self) -> bool:
         self.events.update()
         return self.units.update(self.events, self.tileMap)

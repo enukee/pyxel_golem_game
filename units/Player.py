@@ -3,6 +3,7 @@ from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
 from units import GameActor, Stats
+from units import BaseBullet
 
 
 class Player(GameActor):
@@ -41,6 +42,10 @@ class Player(GameActor):
         scene.drawSprite(spriteName,
                          int(self.x), int(self.y) - const.getHeightSprite(self.spriteManager.baseSpriteName))
 
+        # Отрисовка всех снарядов
+        for bul in self.bullets:
+            bul.draw(scene)
+
         self._stats.draw(scene)
 
     def update(self, events: Events, tileMap: MatrixMap,  delta_time: float = const.DELTA_TIME):
@@ -62,6 +67,12 @@ class Player(GameActor):
             bul.update(tileMap)
 
         return not self.isAlive
+
+    def attack(self, frameCount):
+        if frameCount - self.lastAttackTime > self._stats.attackSpeed:
+            self.lastAttackTime = frameCount
+            self.bullets.append(BaseBullet(self.x, self.y - const.getHeightSprite(
+                self.spriteManager.baseSpriteName) / 2, self.spriteManager.dirX, self.spriteManager.dirY))
 
     def getDamage(self, val):
         if self._stats.takingDamage(val) is not None:

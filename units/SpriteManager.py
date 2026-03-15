@@ -39,6 +39,26 @@ class SpriteManager:
             self.__isStartAttack = True
             self.__step = 0
 
+    @property
+    def dirX(self):
+        if self.__direction == "_left":
+            return -1
+
+        elif self.__direction == "_right":
+            return 1
+
+        return 0
+
+    @property
+    def dirY(self):
+        if self.__direction == "_up":
+            return -1
+
+        elif self.__direction == "_down":
+            return 1
+
+        return 0
+
     def setDir(self, dirX: int, dirY: int):
         """
         Установка определённого направления

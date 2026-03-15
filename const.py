@@ -73,6 +73,24 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "mimic":                  [34, 236, 17, 20, 0],
               "mimic_bite":             [16, 238, 17, 18, 0],
 
+              "base_bullet_right": [103, 6, 5, 1, 0],
+              "base_bullet_left": [103, 6, -5, 1, 0],
+              "base_bullet_up": [103, 6, 5, 1, 90],
+              "base_bullet_down": [103, 6, 5, -1, 90],
+              "fire_bullet": [97, 2, 5, 5, 0],
+              "fire_bullet_rotate90": [97, 2, 5, 5, 90],
+              "fire_bullet_rotate180": [97, 2, -5, -5, 0],
+              "fire_bullet_rotate270": [97, 2, -5, -5, 90],
+              "lightning_bullet_right": [103, 2, 7, 3, 0],
+              "lightning_bullet_left": [103, 2, -7, 3, 0],
+              "lightning_bullet_up": [103, 2, 7, 3, 90],
+              "lightning_bullet_down": [103, 2, 7, -3, 90],
+              "enemy_bullet_right": [92, 2, 4, 4, 0],
+              "enemy_bullet_left": [92, 2, -4, 4, 0],
+              "enemy_bullet_up": [92, 2, 4, 4, 90],
+              "enemy_bullet_down": [92, 2, 4, -4, 90],
+
+
               "wall":               [0, 240, 16, 16, 0]
               }
 
