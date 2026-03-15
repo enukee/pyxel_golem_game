@@ -41,16 +41,16 @@ class UnitsManager:
         if enemy == "mimic":
             return MimicEnemy(x, y, self.player,
                               Stats(80,
-                                    random.randint(10, 30),
-                                    random.randint(1, 10) * 0.001,
-                                    40, 0))
+                                    random.randint(5, 10),
+                                    random.randint(50, 150),
+                                    25, 0))
 
         elif enemy == "egg_head":
             return EggheadEnemy(x, y, self.player,
                                 Stats(60,
-                                      random.randint(15, 30),
-                                      random.randint(1, 10) * 0.001,
-                                      50, 0))
+                                      random.randint(3, 8),
+                                      random.randint(70, 100),
+                                      55, 0))
 
     def update(self, events: Events, tileMap: MatrixMap) -> bool:
         """
