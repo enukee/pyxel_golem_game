@@ -242,7 +242,6 @@ class MimicEnemy(Enemy):
         :param tileMap: Карта тайлов.
         :param delta_time: Время между кадрами.
         """
-        self.jump_progress += 1
         step = delta_time * self._stats.speed
         self.jump_progress += step
         # Прогресс прыжка от 0 до 1
