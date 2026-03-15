@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import random
 
 import const
+from events import Events
 from units import GameActor, Player, Stats
 from map import MatrixMap
 from draw import Scene
@@ -33,12 +34,14 @@ class Enemy(GameActor, ABC):
         self.player = player
 
     @abstractmethod
-    def attack(self):
+    def attack(self, frameCount):
         """
         Атака если игрок находится в радиусе атаки.
         """
-        self.spriteManager.startAttack()
-        self.player.getDamage(self._stats.attack * self._stats.attackSpeed)
+        if frameCount - self.lastAttackTime > self._stats.attackSpeed:
+            self.lastAttackTime = frameCount
+            self.spriteManager.startAttack()
+            self.player.getDamage(self._stats.attack)
 
     def isPlayerNearby(self, radiusSquare: float):
         """
@@ -50,9 +53,10 @@ class Enemy(GameActor, ABC):
         dy = self.player.y - self.y
         return dx * dx + dy * dy <= radiusSquare
 
-    def update(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME) -> bool:
+    def update(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME) -> bool:
         """
         Обновление(перемещение) врага.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         :return: Возвращает False если юнит жив.
@@ -61,36 +65,38 @@ class Enemy(GameActor, ABC):
             # Игрок рядом: передвижение к игроку
             if self.isPlayerNearby(self.attackRadiusSquare):
                 # Игрок в радиусе атаки
-                self.attack()
+                self.attack(events.frameCount)
                 super().setDir(0, 0)
             else:
-                self.movementToTarget(tileMap, delta_time)
+                self.movementToTarget(events, tileMap, delta_time)
 
         else:
             # Игрока нет рядом: свободное передвижение
-            self.randomMovement(tileMap, delta_time)
+            self.randomMovement(events, tileMap, delta_time)
 
         return False
 
     @abstractmethod
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def movementToTarget(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение к игроку.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
         super().setDir(int(self.player.x - self.x), int(self.player.y - self.y))
-        super().update(tileMap, delta_time)
+        super().update(events, tileMap, delta_time)
 
     @abstractmethod
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def randomMovement(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
         # Движение в случайном направлении
-        super().update(tileMap, delta_time)
+        super().update(events, tileMap, delta_time)
 
         # Случайное изменение направления (опционально)
         if random.random() < 0.05:  # 5% шанс сменить направление
@@ -119,24 +125,26 @@ class EggheadEnemy(Enemy):
         self.spriteManager.addSpriteAttack("_pos0", shiftY=-2)
         self.spriteManager.addSpriteAttack("_pos0", shiftY=-1)
 
-    def attack(self):
-        super().attack()
+    def attack(self, frameCount):
+        super().attack(frameCount)
 
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def movementToTarget(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение к игроку.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
-        super().movementToTarget(tileMap)
+        super().movementToTarget(events, tileMap, delta_time)
 
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def randomMovement(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
-        super().randomMovement(tileMap)
+        super().randomMovement(events, tileMap, delta_time)
 
     def draw(self, scene: Scene):
         """
@@ -198,12 +206,13 @@ class MimicEnemy(Enemy):
         self.isJumping = True       # Флаг начала прыжка
         self.jump_progress = 0
 
-    def attack(self):
-        super().attack()
+    def attack(self, frameCount):
+        super().attack(frameCount)
 
-    def movementToTarget(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def movementToTarget(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time: Время между кадрами.
         """
@@ -213,9 +222,10 @@ class MimicEnemy(Enemy):
         else:
             self.setDir(int(self.player.x - self.x), int(self.player.y - self.y))
 
-    def randomMovement(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def randomMovement(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Перемещение в случайном направлении.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """

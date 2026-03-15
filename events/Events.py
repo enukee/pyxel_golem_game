@@ -10,6 +10,11 @@ class Events:
         self._controller = controller
         self._isInventoryAvailable = False  # Флаг, указывающий, доступен ли инвентарь игрока
         self._playerMovementHandler = []    # Список обработчиков движения игрока
+        self._playerAttackHandler = []    # Список обработчиков движения игрока
+
+    @property
+    def frameCount(self):
+        return self._controller.getFrameCount()
 
     def update(self):
         """

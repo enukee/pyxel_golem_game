@@ -1,4 +1,5 @@
 import const
+from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
 from units import GameActor, Stats
@@ -26,7 +27,9 @@ class Player(GameActor):
 
         self.isAlive = True
 
-    def draw(self, scene: Scene):
+        self.bullets = []
+
+    def draw(self, scene: Scene,  delta_time: float = const.DELTA_TIME):
         """
         Отрисовка игрока.
         :param scene: Сцена для отображения объектов
@@ -40,9 +43,10 @@ class Player(GameActor):
 
         self._stats.draw(scene)
 
-    def update(self, tileMap: MatrixMap,  delta_time: float = 1):
+    def update(self, events: Events, tileMap: MatrixMap,  delta_time: float = const.DELTA_TIME):
         """
         Обновление(перемещение) игрока.
+        :param events: Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         :return: Возвращает False если игрок жив.
@@ -51,7 +55,11 @@ class Player(GameActor):
             super().speedReset()
 
         else:
-            super().update(tileMap, delta_time)
+            super().update(events, tileMap, delta_time)
+
+        # Отрисовка всех снарядов
+        for bul in self.bullets:
+            bul.update(tileMap)
 
         return not self.isAlive
 

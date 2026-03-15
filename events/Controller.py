@@ -19,6 +19,10 @@ class Controller(ABC):
     def getMouse(self):
         pass
 
+    @abstractmethod
+    def getFrameCount(self):
+        pass
+
     def isMouseClicked(self, x: int, y: int, w: int, h: int):
         mouseX, mouseY = self.getMouse()
         return x < mouseX < x + w and y < mouseY < y + h and self.isBtnPress(self.mouseBtnLeft)

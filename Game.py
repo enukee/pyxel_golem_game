@@ -38,7 +38,7 @@ class Game:
 
     def update(self) -> bool:
         self.events.update()
-        return self.units.update(self.tileMap)
+        return self.units.update(self.events, self.tileMap)
 
     def draw(self):
         self.tileMap.draw(self.scene, self.player.x, self.player.y)

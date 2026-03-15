@@ -2,6 +2,7 @@ import random
 
 import const
 from draw import Scene
+from events import Events
 from map import MatrixMap
 from units import EggheadEnemy, MimicEnemy, Stats
 
@@ -51,9 +52,10 @@ class UnitsManager:
                                       random.randint(1, 10) * 0.001,
                                       50, 0))
 
-    def update(self, tileMap: MatrixMap) -> bool:
+    def update(self, events: Events, tileMap: MatrixMap) -> bool:
         """
         Обновление юнитов.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :return: Возвращает False если игрок жив.
         """
@@ -75,14 +77,14 @@ class UnitsManager:
 
         # Обновление отображаемых юнитов
         for u in self.nearbyUnits:
-            if u.update(tileMap) and u in self.nearbyUnits:
+            if u.update(events, tileMap) and u in self.nearbyUnits:
                 # Удаление юнита из всех списков в случае его смерти
                 self.units.remove(u)
                 self.nearbyUnits.remove(u)
 
         # Добавление игрока в список отображаемых юнитов
         self.nearbyUnits.append(self.player)
-        return self.player.update(tileMap)
+        return self.player.update(events, tileMap)
 
     def draw(self, scene: Scene):
         """

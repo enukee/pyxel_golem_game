@@ -14,3 +14,6 @@ class PyxelController(Controller):
 
     def getMouse(self):
         return pyxel.mouse_x, pyxel.mouse_y
+
+    def getFrameCount(self):
+        return pyxel.frame_count

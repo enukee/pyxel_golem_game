@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import const
+from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
 from units import MovableObjects, SpriteManager, Stats
@@ -30,6 +31,9 @@ class GameActor(MovableObjects, ABC):
         self._currentSpeed = self._stats.speed
         self._maxSpeed = self._stats.speed + self._stats.acceleration * 20
 
+        # Время последний атаки
+        self.lastAttackTime = 0
+
     @abstractmethod
     def draw(self, scene: Scene):
         """
@@ -58,9 +62,10 @@ class GameActor(MovableObjects, ABC):
         return self._dirY
 
     @abstractmethod
-    def update(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
+    def update(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Обновление(перемещение) юнита.
+        :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :param delta_time:  Время между кадрами.
         """
