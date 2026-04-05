@@ -36,12 +36,9 @@ class Player(GameActor):
         :param delta_time: Время между кадрами.
         :param scene: Сцена для отображения объектов
         """
-        self.spriteManager.setDir(super().dirX, super().dirY)       # Установка направления игрока
-        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=True)    # Получение имя спрайта
-
         scene.changingView(int(self.x), int(self.y))
-        scene.drawSprite(spriteName,
-                         int(self.x), int(self.y) - const.getHeightSprite(self.spriteManager.baseSpriteName))
+
+        super().draw(scene, delta_time)
 
         # Отрисовка всех снарядов
         for bul in self.bullets:

@@ -34,13 +34,18 @@ class GameActor(MovableObjects, ABC):
         # Время последний атаки
         self.lastAttackTime = 0
 
-    @abstractmethod
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         """
         Отображение спрайта.
         :param scene:  Сцена для отображения спрайтов.
+        :param delta_time: Время между кадрами.
         """
-        pass
+        self.spriteManager.setDir(self.dirX, self.dirY)  # Установка направления игрока
+        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed * delta_time,
+                                                         applyDir=True)  # Получение имя спрайта
+
+        super().setSprite(spriteName)
+        super().draw(scene, delta_time)
 
     def setDir(self, dirX, dirY):
         if dirX != 0:
@@ -75,11 +80,6 @@ class GameActor(MovableObjects, ABC):
         # Вычисление смещения за текущий кадр
         step_x = self._dirX * self._currentSpeed * delta_time
         step_y = self._dirY * self._currentSpeed * delta_time
-
-        # Проверка, что объект не превысил правую границу(с учётом ширины спрайта)
-        spriteWidth = const.getWidthSprite(self.spriteManager.baseSpriteName) + 2
-        if not tileMap.isWalkable(self.x + spriteWidth, self.y):
-            step_x = min(step_x, 0)
 
         # Обновление позиции
         super().tryMove(step_x, step_y, tileMap)

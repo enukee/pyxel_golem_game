@@ -77,7 +77,9 @@ class Bullet(MovableObjects, ABC):
         step_y = self.direction_y * self.currentSpeed * delta_time
 
         # Обновление позиции
-        super().tryMove(step_x, step_y, tile_map)
+        if not super().tryMove(step_x, step_y, tile_map):
+            self.isActive = False
+            return
 
         # Подсчёт пройденной дистанции
         step_distance = (step_x ** 2 + step_y ** 2) ** 0.5
@@ -99,7 +101,7 @@ class FireBullet(Bullet):
                          9, 5, 10,
                          "fire_bullet")
 
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         if not self.isActive:
             return
 
@@ -117,7 +119,8 @@ class FireBullet(Bullet):
         else:
             sprite = self.spriteType + "_rotate270"
 
-        scene.drawSprite(sprite, int(self.x), int(self.y))
+        super().setSprite(sprite)
+        super().draw(scene)
 
 
 class EnemyBullet(Bullet):
@@ -127,7 +130,7 @@ class EnemyBullet(Bullet):
                          5, 5, 10,
                          "enemy_bullet")
 
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         if not self.isActive:
             return
 
@@ -144,7 +147,8 @@ class EnemyBullet(Bullet):
             else:
                 sprite = self.spriteType + "_down"
 
-        scene.drawSprite(sprite, int(self.x), int(self.y))
+        super().setSprite(sprite)
+        super().draw(scene)
 
 
 class MultiShellBullet(Bullet, ABC):
@@ -162,10 +166,11 @@ class MultiShellBullet(Bullet, ABC):
         """Абстрактный метод для отрисовки одного заряда пули."""
         pass
 
-    def draw(self, scene: Scene):
+    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         """
         Отрисовка всех зарядов пули.
         :param scene: Сцена для отображения спрайтов.
+        :param delta_time: Время между кадрами.
         """
         if not self.isActive:
             return
