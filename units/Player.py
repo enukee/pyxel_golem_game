@@ -3,7 +3,7 @@ from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
 from units import GameActor, Stats
-from units import BaseBullet
+from units import FireBullet
 
 
 class Player(GameActor):
@@ -69,7 +69,7 @@ class Player(GameActor):
     def attack(self, frameCount):
         if frameCount - self.lastAttackTime > self._stats.attackSpeed:
             self.lastAttackTime = frameCount
-            self.bullets.append(BaseBullet(self.x, self.y - const.getHeightSprite(
+            self.bullets.append(FireBullet(self.x, self.y + const.getHeightSprite(
                 self.spriteManager.baseSpriteName) / 2, self.spriteManager.dirX, self.spriteManager.dirY))
 
     def getDamage(self, val):
