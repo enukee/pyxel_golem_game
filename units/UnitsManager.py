@@ -91,6 +91,6 @@ class UnitsManager:
         Отрисовка спрайтов.
         :param scene: Сцена.
         """
-        self.nearbyUnits.sort(key=lambda x: x.y)
+        self.nearbyUnits.sort(key=lambda x: x.standY)
         for u in self.nearbyUnits:
             u.draw(scene)

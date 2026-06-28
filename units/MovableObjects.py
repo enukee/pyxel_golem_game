@@ -57,3 +57,10 @@ class MovableObjects:
     @property
     def y(self):
         return self.__y
+
+    @property
+    def standY(self):
+        """
+        :return: Координата по Y соответсвующая позиции в которой "стоит" объект
+        """
+        return self.__y + abs(const.getHeightSprite(self.currentSprite))
