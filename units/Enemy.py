@@ -155,10 +155,14 @@ class EggheadEnemy(Enemy):
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=True)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time,
+                                                          applyDir=True)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
-        y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
+        y = int(self.y + shifts[1]) #- const.getHeightSprite(self.spriteManager.baseSpriteName)
+
+        # Установка спрайта гарантирует корректный расчёт столкновения спрайтов
+        super().setSprite(spriteName)
         scene.drawSprite(spriteName, x, y)
 
 
@@ -269,8 +273,12 @@ class MimicEnemy(Enemy):
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time, applyDir=False)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time,
+                                                          applyDir=False)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
-        y = int(self.y + shifts[1]) - const.getHeightSprite(self.spriteManager.baseSpriteName)
+        y = int(self.y + shifts[1])# - const.getHeightSprite(self.spriteManager.baseSpriteName)
+
+        # Установка спрайта гарантирует корректный расчёт столкновения спрайтов
+        super().setSprite(spriteName)
         scene.drawSprite(spriteName, x, y)
