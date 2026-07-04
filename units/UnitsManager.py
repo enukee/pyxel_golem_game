@@ -22,10 +22,14 @@ class UnitsManager:
         self.chance = list(chanceEnemy.values())
 
         self.player = player
+        self.player.setUnitManager(self)
+        self.bullets = []
 
         for i in range(countEnemy):
             x, y = tileMap.randomPoint()
-            self.units.append(self.randomEnemy(x, y))
+            enemy = self.randomEnemy(x, y)
+            self.units.append(enemy)
+            # enemy.setUnitManager(self)
 
     def randomEnemy(self, x: int, y: int):
         """
@@ -76,11 +80,11 @@ class UnitsManager:
         self.nearbyUnits = list(gen())
 
         # Обновление отображаемых юнитов
-        for u in self.nearbyUnits:
-            if u.update(events, tileMap) and u in self.nearbyUnits:
-                # Удаление юнита из всех списков в случае его смерти
-                self.units.remove(u)
-                self.nearbyUnits.remove(u)
+        # for u in self.nearbyUnits:
+        #     if u.update(events, tileMap) and u in self.nearbyUnits:
+        #         # Удаление юнита из всех списков в случае его смерти
+        #         self.units.remove(u)
+        #         self.nearbyUnits.remove(u)
 
         # Добавление игрока в список отображаемых юнитов
         self.nearbyUnits.append(self.player)
@@ -94,3 +98,16 @@ class UnitsManager:
         self.nearbyUnits.sort(key=lambda x: x.standY)
         for u in self.nearbyUnits:
             u.draw(scene)
+
+    def isWalkable(self, x2, y2, unit):
+        for u in self.nearbyUnits:
+            # Проверка, что это не один и тот же юнит
+            if unit == u:
+                continue
+
+            x1, y1, w1, h1 = u.standPos
+            _, _, w2, h2 = unit.standPos
+            if const.rectanglesIntersect(x1, y1, w1, h1, x2, y2, w2, h2):
+                return False, u
+
+        return True, None

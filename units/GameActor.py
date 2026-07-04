@@ -94,5 +94,6 @@ class GameActor(MovableObjects, ABC):
         self._currentSpeed = self._stats.speed
 
     def getDamage(self, val):
+        pass
         if self._stats.takingDamage(val) is not None:
             self.isAlive = False

@@ -16,19 +16,41 @@ BUTTON_MENU_HEIGHT = 20
 
 BUTTON_MENU_POS_X = (WINDOW_WIDTH - BUTTON_MENU_WIDTH) / 2
 
+CONST_WIDTH_ALL_UNIT = 4
+
 
 def getWidthSprite(sprite: str):
     if sprite in SPRITE_POS:
-        return SPRITE_POS[sprite][2]
+        return abs(SPRITE_POS[sprite][2])
 
     return None
 
 
 def getHeightSprite(sprite: str):
     if sprite in SPRITE_POS:
-        return SPRITE_POS[sprite][3]
+        return abs(SPRITE_POS[sprite][3])
 
     return None
+
+
+def rectanglesIntersect(x1, y1, width1, height1, x2, y2, width2, height2):
+    left1 = x1
+    right1 = x1 + width1
+    top1 = y1
+    bottom1 = y1 + height1
+
+    left2 = x2
+    right2 = x2 + width2
+    top2 = y2
+    bottom2 = y2 + height2
+
+    if right1 < left2 or right2 < left1:
+        return False
+
+    if bottom1 < top2 or bottom2 < top1:
+        return False
+
+    return True
 
 
 # Параметры спрайта: положение по x, положение по y, ширина, высота, поворот
