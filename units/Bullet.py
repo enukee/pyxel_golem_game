@@ -32,7 +32,7 @@ class Bullet(MovableObjects, ABC):
 
         self.baseSpeed = baseSpeed
         self.acceleration = acceleration
-        self.maxDistance = maxDistance
+        self.maxDistance = baseSpeed * maxDistance * const.DELTA_TIME + self.acceleration * (maxDistance * const.DELTA_TIME**2) / 2
         self.idlenessTime = idlenessTime
         self.damage = damage
         self.criticalDamageChance = criticalDamageChance
@@ -64,7 +64,7 @@ class Bullet(MovableObjects, ABC):
             return
 
         # Увеличение скорости с учётом ускорения
-        self.currentSpeed = max(self.currentSpeed + self.acceleration / 2 * delta_time, 0)
+        self.currentSpeed = max(self.currentSpeed + self.acceleration, 0)
 
         # Если скорость нулевая заряд ещё существует некоторое время idlenessTime
         if self.currentSpeed == 0:
@@ -95,9 +95,9 @@ class Bullet(MovableObjects, ABC):
 
 
 class FireBullet(Bullet):
-    def __init__(self, startX, startY, directionX, directionY):
+    def __init__(self, startX, startY, directionX, directionY, baseSpeedOwner):
         super().__init__(startX, startY, directionX, directionY,
-                         5, -0.5, 60, 40,
+                         baseSpeedOwner + 80, -0.5, 60, 40,
                          9, 5, 10,
                          "fire_bullet")
 
@@ -124,9 +124,9 @@ class FireBullet(Bullet):
 
 
 class EnemyBullet(Bullet):
-    def __init__(self, startX, startY, directionX, directionY):
+    def __init__(self, startX, startY, directionX, directionY, baseSpeedOwner):
         super().__init__(startX, startY, directionX, directionY,
-                         2, 0.5, 70, 0,
+                         baseSpeedOwner + 100, 9, 70, 0,
                          5, 5, 10,
                          "enemy_bullet")
 

@@ -26,8 +26,6 @@ class Player(GameActor):
         self.spriteManager.addSpriteMoving("_pos4")
         self.spriteManager.addSpriteMoving("_pos3")
 
-        self.isAlive = True
-
         self.bullets = []
 
     def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
@@ -55,6 +53,9 @@ class Player(GameActor):
         :return: Возвращает False если игрок жив.
         """
         if super().dirX == 0 and super().dirY == 0:
+            self._currentSpeed = 0
+
+        elif self._currentSpeed == 0:
             super().speedReset()
 
         else:
@@ -69,10 +70,8 @@ class Player(GameActor):
     def attack(self, frameCount):
         if frameCount - self.lastAttackTime > self._stats.attackSpeed:
             self.lastAttackTime = frameCount
-            self.bullets.append(FireBullet(self.x, self.y + const.getHeightSprite(
-                self.spriteManager.baseSpriteName) / 2, self.spriteManager.dirX, self.spriteManager.dirY))
-
-    def getDamage(self, val):
-        if self._stats.takingDamage(val) is not None:
-            self.isAlive = False
-
+            y = self.y + const.getHeightSprite(self.spriteManager.baseSpriteName) / 2
+            self.bullets.append(FireBullet(self.x, y,
+                                           self.spriteManager.dirX,
+                                           self.spriteManager.dirY,
+                                           self._currentSpeed))

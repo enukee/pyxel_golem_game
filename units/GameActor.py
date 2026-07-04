@@ -23,13 +23,16 @@ class GameActor(MovableObjects, ABC):
         self._dirX = 0
         self._dirY = 0
 
+        # Флаг, что юнит не убит
+        self.isAlive = True
+
         # Менеджер спрайтов
         self.spriteManager = SpriteManager(baseSpriteName)
 
         # Параметры юнита
         self._currentHealth = self._stats.health
         self._currentSpeed = self._stats.speed
-        self._maxSpeed = self._stats.speed + self._stats.acceleration * 20
+        self._maxSpeed = self._stats.speed + self._stats.acceleration * 6
 
         # Время последний атаки
         self.lastAttackTime = 0
@@ -89,3 +92,7 @@ class GameActor(MovableObjects, ABC):
         Сброс скорости объекта до начальной.
         """
         self._currentSpeed = self._stats.speed
+
+    def getDamage(self, val):
+        if self._stats.takingDamage(val) is not None:
+            self.isAlive = False
