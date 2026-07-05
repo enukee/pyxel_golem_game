@@ -29,7 +29,7 @@ class UnitsManager:
             x, y = tileMap.randomPoint()
             enemy = self.randomEnemy(x, y)
             self.units.append(enemy)
-            # enemy.setUnitManager(self)
+            enemy.setUnitManager(self)
 
     def randomEnemy(self, x: int, y: int):
         """
@@ -80,11 +80,11 @@ class UnitsManager:
         self.nearbyUnits = list(gen())
 
         # Обновление отображаемых юнитов
-        # for u in self.nearbyUnits:
-        #     if u.update(events, tileMap) and u in self.nearbyUnits:
-        #         # Удаление юнита из всех списков в случае его смерти
-        #         self.units.remove(u)
-        #         self.nearbyUnits.remove(u)
+        for u in self.nearbyUnits:
+            if u.update(events, tileMap) and u in self.nearbyUnits:
+                # Удаление юнита из всех списков в случае его смерти
+                self.units.remove(u)
+                self.nearbyUnits.remove(u)
 
         # Добавление игрока в список отображаемых юнитов
         self.nearbyUnits.append(self.player)
@@ -108,6 +108,6 @@ class UnitsManager:
             x1, y1, w1, h1 = u.standPos
             _, _, w2, h2 = unit.standPos
             if const.rectanglesIntersect(x1, y1, w1, h1, x2, y2, w2, h2):
-                return False, u
+                return u
 
-        return True, None
+        return None

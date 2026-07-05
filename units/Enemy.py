@@ -69,6 +69,7 @@ class Enemy(GameActor, ABC):
                 # Игрок в радиусе атаки
                 self.attack(events.frameCount)
                 super().setDir(0, 0)
+                super().update(events, tileMap, delta_time)
             else:
                 self.movementToTarget(events, tileMap, delta_time)
 

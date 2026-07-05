@@ -94,6 +94,9 @@ class GameActor(MovableObjects, ABC):
         self._currentSpeed = self._stats.speed
 
     def getDamage(self, val):
-        pass
+        # Настройка отладки
+        if not const.DEBUG_SET_TURNING_ON_DAMAGE:
+            return
+
         if self._stats.takingDamage(val) is not None:
             self.isAlive = False
