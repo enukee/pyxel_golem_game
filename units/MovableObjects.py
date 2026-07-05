@@ -31,10 +31,6 @@ class MovableObjects:
         """
         dx += self.pushOffsetX
         dy += self.pushOffsetY
-        if self.pushOffsetX != 0 or self.pushOffsetY != 0:
-            print()
-            print("push: " + str(self.pushOffsetX) + ' : ' + str(self.pushOffsetY))
-            print()
 
         self.pushOffsetX, self.pushOffsetY = 0, 0
         ret = True
@@ -64,7 +60,6 @@ class MovableObjects:
                     self.__x, self.__y = new_x, new_y
                 else:
                     unit.setPush(dx, dy)
-                    print(str(dx) + ' : ' + str(dy))
 
         else:
             ret = False
