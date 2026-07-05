@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import const
 from draw import Scene
 from map import MatrixMap
-from units import MovableObjects
+from units import MovableObjects, GameActor
 
 
 class Bullet(MovableObjects, ABC):
@@ -92,6 +92,11 @@ class Bullet(MovableObjects, ABC):
     def isAlive(self) -> bool:
         """Проверка, активна ли пуля."""
         return self.isActive
+
+    def pushUnit(self, unit):
+        if isinstance(unit, GameActor):
+            unit.getDamage(self.damage)
+            self.isActive = False
 
 
 class FireBullet(Bullet):

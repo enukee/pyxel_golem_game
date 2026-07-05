@@ -62,6 +62,11 @@ class Stats:
             return 1
         return None
 
+    def isAlive(self):
+        if self.currentHealth <= 0:
+            return False
+        return True
+
     @property
     def currentHealth(self):
         return self.__currentStats[Stats.INC_STAT_KEYS.index("health")]

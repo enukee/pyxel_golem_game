@@ -77,6 +77,9 @@ class Enemy(GameActor, ABC):
             # Игрока нет рядом: свободное передвижение
             self.randomMovement(events, tileMap, delta_time)
 
+        if not self._stats.isAlive():
+            return True
+
         return False
 
     @abstractmethod

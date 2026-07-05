@@ -20,7 +20,7 @@ class Game:
             "mimic":    0.65,
             "egg_head": 0.35
         }
-        self.units = UnitsManager(self.player, self.tileMap, chanceEnemy)
+        self.units = UnitsManager(self.player, self.tileMap, chanceEnemy, 50)
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)

@@ -65,13 +65,21 @@ class Player(GameActor):
         for bul in self.bullets:
             bul.update(tileMap)
 
-        return not self.isAlive
+        return not self._stats.isAlive()
 
     def attack(self, frameCount):
         if frameCount - self.lastAttackTime > self._stats.attackSpeed:
             self.lastAttackTime = frameCount
             y = self.y + const.getHeightSprite(self.spriteManager.baseSpriteName) / 2
-            self.bullets.append(FireBullet(self.x, y,
-                                           self.spriteManager.dirX,
-                                           self.spriteManager.dirY,
-                                           self._currentSpeed))
+
+            # Костыль, если игрок стреляет вниз, то координата y сдвинута так,
+            # чтобы игрок не попадал сам по себе
+            if self.spriteManager.dirY == 1:
+                y += 10
+
+            bullet = FireBullet(self.x, y,
+                                self.spriteManager.dirX,
+                                self.spriteManager.dirY,
+                                self._currentSpeed)
+            bullet.setUnitManager(self.unitManager)
+            self.bullets.append(bullet)

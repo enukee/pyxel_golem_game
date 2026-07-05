@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 import const
 from draw import Scene
 from map.MatrixMap import MatrixMap
@@ -60,6 +58,8 @@ class MovableObjects:
                     self.__x, self.__y = new_x, new_y
                 else:
                     unit.setPush(dx, dy)
+                    self.pushUnit(unit)
+                    unit.pushUnit(self)
 
         else:
             ret = False
@@ -74,6 +74,13 @@ class MovableObjects:
         :param y: Смещение по Y
         """
         self.pushOffsetX, self.pushOffsetY = x, y
+
+    def pushUnit(self, unit):
+        """
+        В этом методе можно задать обработку столкновения с юнитом
+        :param unit: Юнит с котором столкнулся self
+        """
+        pass
 
     def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
         scene.drawSprite(self.currentSprite, int(self.x), int(self.y))

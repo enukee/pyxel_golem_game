@@ -133,4 +133,4 @@ TILE_STRUCTURE = {
 
 # Выкл./Вкл. нанесение урона по врагам и игроку.
 # Установите False для выключения урона
-DEBUG_SET_TURNING_ON_DAMAGE = False
+DEBUG_SET_TURNING_ON_DAMAGE = True

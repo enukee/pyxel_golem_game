@@ -23,9 +23,6 @@ class GameActor(MovableObjects, ABC):
         self._dirX = 0
         self._dirY = 0
 
-        # Флаг, что юнит не убит
-        self.isAlive = True
-
         # Менеджер спрайтов
         self.spriteManager = SpriteManager(baseSpriteName)
 
@@ -98,5 +95,4 @@ class GameActor(MovableObjects, ABC):
         if not const.DEBUG_SET_TURNING_ON_DAMAGE:
             return
 
-        if self._stats.takingDamage(val) is not None:
-            self.isAlive = False
+        self._stats.takingDamage(val)
