@@ -79,6 +79,19 @@ class PyxelDrawer(Drawer):
         pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
         pyxel.text(x + 5, y + 7, title, 7)
 
+    def drawTextBox(self, x: int, y: int, width: int, height: int, text: str):
+        """
+        Отображение текстового поля на экране.
+        :param x: Координата для отрисовки x.
+        :param y: Координата для отрисовки y.
+        :param width: Ширина кнопки.
+        :param height: Высота кнопки.
+        :param text: Текст в поле.
+        """
+        pyxel.rect(x, y, width, height, 3)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
+        pyxel.text(x + 5, y + 7, text, 7)
+
     def drawBackground(self):
         """
         Отрисовка фона любого окна.

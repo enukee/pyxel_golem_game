@@ -1,34 +1,18 @@
 from typing import Union
+from abc import ABC
 
 from draw import Drawer
 from events import Controller
 
 
-class Button:
-    def __init__(self, posX: int, posY: int, width: int, height: int, title: str = "button"):
-        """
-        Кнопка интерфейса.
-        :param posX: Позиция кнопки по оис X.
-        :param posY: Позиция кнопки по оис Y.
-        :param width: Ширина кнопки.
-        :param height: Высота кнопки.
-        :param title: Надпись кнопки.
-        """
+class BaseWindowsWidget(ABC):
+    def __init__(self, posX: int, posY: int, width: int, height: int, title: str):
         self.__posX = posX
         self.__posY = posY
         self.__width = width
         self.__height = height
 
         self.__title = title
-
-        self.handler = None
-
-    def draw(self, drawer: Drawer):
-        """
-        Отрисовка кнопки.
-        :param drawer: Инструмент отрисовки.
-        """
-        drawer.drawButton(self.__posX, self.__posY, self.__width, self.__height, self.__title)
 
     @property
     def posX(self):
@@ -51,20 +35,84 @@ class Button:
         return self.__title
 
 
+class Button(BaseWindowsWidget):
+    def __init__(self, posX: int, posY: int, width: int, height: int, title: str = "button"):
+        """
+        Кнопка интерфейса.
+        :param posX: Позиция кнопки по оис X.
+        :param posY: Позиция кнопки по оис Y.
+        :param width: Ширина кнопки.
+        :param height: Высота кнопки.
+        :param title: Надпись кнопки.
+        """
+        super().__init__(posX, posY, width, height, title)
+
+        self.handler = None
+
+    def draw(self, drawer: Drawer):
+        """
+        Отрисовка кнопки.
+        :param drawer: Инструмент отрисовки.
+        """
+        drawer.drawButton(self.posX, self.posY, self.width, self.height, self.title)
+
+
+class TextBox(BaseWindowsWidget):
+    def __init__(self, posX: int, posY: int, width: int, height: int, text: str = "text", title: str = None):
+        """
+        Поле для отображения текста.
+        :param posX: Позиция кнопки по оис X.
+        :param posY: Позиция кнопки по оис Y.
+        :param width: Ширина кнопки.
+        :param height: Высота кнопки.
+        :param text: Текст в поле.
+        """
+        super().__init__(posX, posY, width, height, title)
+
+        self.__text = text
+
+        # Имя поля
+        self.__title = title
+
+    def draw(self, drawer: Drawer):
+        """
+        Отрисовка текстового поля.
+        :param drawer: Инструмент отрисовки.
+        """
+        drawer.drawTextBox(self.posX, self.posY, self.width, self.height, self.text)
+
+    @property
+    def text(self):
+        return self.__text
+
+    @text.setter
+    def text(self, text):
+        self.__text = text
+
+
 class Screen:
     def __init__(self):
         """
         Базовый класс любого окна в игре(например меню и инвентарь).
         """
-        self.__buttons = []     # Набор кнопок окна.
+        self.__buttons = []  # Набор кнопок окна.
+        self.__textBoxs = []  # Набор текстовых полей окна.
 
     def addBtn(self, btn: Button):
         """
         Добавление кнопки.
         :param btn: Кнопка с уникальным(для этого окна именем).
         """
-        if self._findBtn(btn.title) == -1:      # Надпись кнопки является уникальным ключом.
+        if self._findBtn(btn.title) == -1:  # Надпись кнопки является уникальным ключом.
             self.__buttons.append(btn)
+
+    def addTxBox(self, txBox: TextBox):
+        """
+        Добавление текстового поля.
+        :param txBox: Текстовое поле с уникальным именем.
+        """
+        if self._findBtn(txBox.title) == -1:  # Название поля является уникальным ключом.
+            self.__textBoxs.append(txBox)
 
     def setHandler(self, buttonTitle: str, handler):
         """
@@ -105,3 +153,6 @@ class Screen:
         drawer.drawBackground()
         for btn in self.__buttons:
             btn.draw(drawer)
+
+        for tx in self.__textBoxs:
+            tx.draw(drawer)

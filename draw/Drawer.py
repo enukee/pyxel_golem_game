@@ -23,6 +23,10 @@ class Drawer(ABC):
         pass
 
     @abstractmethod
+    def drawTextBox(self, x: int, y: int, width: int, height: int, text: str):
+        pass
+
+    @abstractmethod
     def drawBackground(self):
         pass
 

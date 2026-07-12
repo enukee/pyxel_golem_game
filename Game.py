@@ -4,6 +4,7 @@ from map import MatrixMap
 from units import Player, Stats, UnitsManager
 from events import Controller
 from draw import Scene, Drawer
+from game_windows import Inventory
 
 
 class Game:
@@ -16,6 +17,9 @@ class Game:
         self.tileMap = MatrixMap()
         self.player = Player(30, 200, Stats(100, 12, 10, 50, 5))
 
+        # Окно инвентаря и характеристик
+        self.inventory = Inventory()
+
         chanceEnemy = {
             "mimic":    0.65,
             "egg_head": 0.35
@@ -25,6 +29,18 @@ class Game:
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
         self.events = Events(control)
+
+        def openWindow():
+            self.scene.resetCameraPos()
+            print("null")
+
+        self.events.addOpenInventoryHandler(openWindow)
+
+        def closeWindow():
+            self.scene.returnCameraPos()
+            print("ret")
+
+        self.events.addCloseInventoryHandler(closeWindow)
 
         def movement(dirX, dirY):
             """
@@ -46,8 +62,23 @@ class Game:
 
     def update(self) -> bool:
         self.events.update()
+
+        # Обновление инвентаря
+        if self.events.isInventoryAvailable():
+            self.events.updateWindow(self.inventory)
+            # Пока открыт инвентарь игра не может закончиться
+            # так как игрок не может умереть
+            return False
+
+        # Юниты обновляются если не открыты какие-либо окна,
+        # При открытии окон игра приостанавливается
         return self.units.update(self.events, self.tileMap)
 
     def draw(self):
+        # Отрисовка инвентаря
+        if self.events.isInventoryAvailable():
+            self.scene.drawWindow(self.inventory)
+            return
+
         self.tileMap.draw(self.scene, self.player.x, self.player.y)
         self.units.draw(self.scene)

@@ -2,7 +2,7 @@ import pyxel
 
 import const
 from Game import Game
-from Menu import Menu
+from game_windows import Menu
 from draw import PyxelDrawer
 from events import PyxelController
 

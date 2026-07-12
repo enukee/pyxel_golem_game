@@ -2,17 +2,23 @@ from abc import ABC, abstractmethod
 
 
 class Controller(ABC):
-    def __init__(self, buttonLeft, buttonRight, buttonDown, buttonUp, buttonShoot, buttonRaise, mouseBtnLeft):
+    def __init__(self, buttonLeft, buttonRight, buttonDown, buttonUp, buttonShoot,
+                 buttonRaise, buttonInventory, mouseBtnLeft):
         self.buttonLeft = buttonLeft
         self.buttonRight = buttonRight
         self.buttonDown = buttonDown
         self.buttonUp = buttonUp
         self.buttonShoot = buttonShoot
         self.buttonRaise = buttonRaise
+        self.buttonInventory = buttonInventory
         self.mouseBtnLeft = mouseBtnLeft
 
     @abstractmethod
     def isBtnPress(self, btn) -> bool:
+        pass
+
+    @abstractmethod
+    def isBtnClick(self, btn) -> bool:
         pass
 
     @abstractmethod
@@ -52,12 +58,27 @@ class Controller(ABC):
         return False
 
     def isShootButtonPressed(self) -> bool:
+        """
+        Кнопка стрельбы.
+        """
         if self.isBtnPress(self.buttonShoot):
             return True
 
         return False
 
+    def isInventoryButtonPressed(self) -> bool:
+        """
+        Кнопка открыть/закрыть инвентарь.
+        """
+        if self.isBtnClick(self.buttonInventory):
+            return True
+
+        return False
+
     def isRaiseButtonPressed(self) -> bool:
+        """
+        Кнопка открыть/закрыть сундук.
+        """
         if self.isBtnPress(self.buttonRaise):
             return True
 
