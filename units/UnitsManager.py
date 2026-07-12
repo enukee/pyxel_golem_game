@@ -4,11 +4,11 @@ import const
 from draw import Scene
 from events import Events
 from map import MatrixMap
-from units import EggheadEnemy, MimicEnemy, Stats
+from units import EggheadEnemy, MimicEnemy, Stats, BackgroundMapObject
 
 
 class UnitsManager:
-    def __init__(self, player, tileMap: MatrixMap, chanceEnemy: dict, countEnemy=200):
+    def __init__(self, player, tileMap: MatrixMap, chanceEnemy: dict, countEnemy=200, countBackObj=500):
         """
         Менеджер юнитов, отображает и обновляет юниты на карте.
         :param player: Игрок.
@@ -30,6 +30,10 @@ class UnitsManager:
             enemy = self.randomEnemy(x, y)
             self.units.append(enemy)
             enemy.setUnitManager(self)
+
+        for i in range(countBackObj):
+            x, y = tileMap.randomPoint()
+            self.units.append(BackgroundMapObject(x, y))
 
     def randomEnemy(self, x: int, y: int):
         """
@@ -81,6 +85,10 @@ class UnitsManager:
 
         # Обновление отображаемых юнитов
         for u in self.nearbyUnits:
+            # Фоновые объекты не нужно обновлять т.к. они чисто декоративные
+            if isinstance(u, BackgroundMapObject):
+                continue
+
             if u.update(events, tileMap) and u in self.nearbyUnits:
                 # Удаление юнита из всех списков в случае его смерти
                 self.units.remove(u)
@@ -103,6 +111,10 @@ class UnitsManager:
         for u in self.nearbyUnits:
             # Проверка, что это не один и тот же юнит
             if unit == u:
+                continue
+
+            # Фоновые объекты неосязаемы
+            if isinstance(u, BackgroundMapObject):
                 continue
 
             x1, y1, w1, h1 = u.standPos

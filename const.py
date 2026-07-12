@@ -113,7 +113,25 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "enemy_bullet_down": [92, 2, 4, -4, 90],
 
 
-              "wall":               [0, 240, 16, 16, 0]
+              "wall":               [0, 240, 16, 16, 0],
+
+              # Фоновые объекты
+              "back_obj_grass":               [85, 8, 5, 4, 0],
+              "back_obj_grass_r":             [85, 8, -5, 4, 0],
+              "back_obj_flower":              [91, 8, 3, 5, 0],
+              "back_obj_flower_r":            [91, 8, -3, 5, 0],
+              "back_obj_stone":               [95, 8, 4, 2, 0],
+              "back_obj_stone_r":             [95, 8, -4, 2, 0],
+              "back_obj_bush":                [140, 0, 10, 7, 0],
+              "back_obj_bush_r":              [140, 0, 10, -7, 0],
+              "back_obj_stone_floor_1":       [110, 0, 18, 12, 0],
+              "back_obj_stone_floor_2":       [110, 0, 18, -12, 0],
+              "back_obj_stone_floor_3":       [110, 0, -18, 12, 0],
+              "back_obj_stone_floor_4":       [110, 0, -18, -12, 0],
+              "back_obj_stone_floor_2_1":     [128, 0, 12, 10, 0],
+              "back_obj_stone_floor_2_2":     [128, 0, 12, -10, 0],
+              "back_obj_stone_floor_2_3":     [128, 0, -12, 10, 0],
+              "back_obj_stone_floor_2_4":     [128, 0, -12, -10, 0],
               }
 
 # Тайл делится на 4 равных сектора
