@@ -90,7 +90,14 @@ class PyxelDrawer(Drawer):
         """
         pyxel.rect(x, y, width, height, 3)
         pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
-        pyxel.text(x + 5, y + 7, text, 7)
+
+        textList = text.split("/n")
+
+        # Перебираем все подстроки в цикле
+        strY = y + 7
+        for s in textList:
+            pyxel.text(x + 5, strY, s, 7)
+            strY += 7
 
     def drawBackground(self):
         """

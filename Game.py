@@ -15,10 +15,11 @@ class Game:
         :param control: Инструмент получения событий.
         """
         self.tileMap = MatrixMap()
-        self.player = Player(30, 200, Stats(100, 12, 10, 50, 5))
+        playerStats = Stats(100, 12, 10, 50, 5)
+        self.player = Player(30, 200, playerStats)
 
         # Окно инвентаря и характеристик
-        self.inventory = Inventory()
+        self.inventory = Inventory(playerStats)
 
         chanceEnemy = {
             "mimic":    0.65,

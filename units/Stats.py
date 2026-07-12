@@ -5,7 +5,6 @@ from objects import IncreaseParam
 
 
 class Stats:
-
     # Ключи(имена) характеристик
     STAT_KEYS = ["health", "attack", "attack_speed", "speed", "acceleration"]
 
@@ -114,3 +113,10 @@ class Stats:
     @acceleration.setter
     def acceleration(self, acceleration):
         self.__fullStats[Stats.INC_STAT_KEYS.index("acceleration")] = acceleration
+
+    def getAllStats(self):
+        return ("Health: " + str(self.currentHealth) + "/" + str(self.health) +
+                "/nAttack: " + str(self.attack) +
+                "/nAttack speed: " + str(self.attackSpeed) +
+                "/nSpeed: " + str(self.speed) +
+                "/nAcceleration: " + str(self.acceleration))
