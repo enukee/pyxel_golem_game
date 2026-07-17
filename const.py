@@ -18,6 +18,11 @@ BUTTON_MENU_POS_X = (WINDOW_WIDTH - BUTTON_MENU_WIDTH) / 2
 
 CONST_WIDTH_ALL_UNIT = 4
 
+# Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE
+BLOCK_SIZE = 16
+# Расстояние между ячейками блоков при отображении
+BLOCK_SIZE_OFFSET = 3
+
 
 def getWidthSprite(sprite: str):
     if sprite in SPRITE_POS:

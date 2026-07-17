@@ -19,7 +19,23 @@ class Drawer(ABC):
         pass
 
     @abstractmethod
+    def drawBox(self, x: int, y: int, width: int, height: int):
+        pass
+
+    @abstractmethod
+    def drawBlock(self, x: int, y: int, width: int, height: int):
+        pass
+
+    @abstractmethod
+    def drawSelectBlock(self, x: int, y: int, width: int, height: int):
+        pass
+
+    @abstractmethod
     def drawButton(self, x: int, y: int, width: int, height: int, title: str):
+        pass
+
+    @abstractmethod
+    def drawButtonPress(self, x: int, y: int, width: int, height: int, title: str):
         pass
 
     @abstractmethod

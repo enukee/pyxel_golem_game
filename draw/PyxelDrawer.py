@@ -66,30 +66,46 @@ class PyxelDrawer(Drawer):
 
                 k += 1
 
-    def drawButton(self, x: int, y: int, width: int, height: int, title: str):
+    def drawBox(self, x: int, y: int, width: int, height: int):
         """
-        Отображение кнопки на экране.
-        :param x: Координата для отрисовки x.
-        :param y: Координата для отрисовки y.
-        :param width: Ширина кнопки.
-        :param height: Высота кнопки.
-        :param title: Надпись на кнопке.
+        Отображение поля на экране.
         """
         pyxel.rect(x, y, width, height, 3)
         pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
+
+    def drawBlock(self, x: int, y: int, width: int, height: int):
+        """
+        Отображение блока с иконкой.
+        """
+        self.drawBox(x, y, width, height)
+
+    def drawSelectBlock(self, x: int, y: int, width: int, height: int):
+        """
+        Отображение блока с иконкой.
+        """
+        pyxel.rect(x, y, width, height, 3)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 9)
+
+    def drawButton(self, x: int, y: int, width: int, height: int, title: str):
+        """
+        Отображение кнопки на экране.
+        """
+        self.drawBox(x, y, width, height)
+        pyxel.text(x + 5, y + 7, title, 7)
+
+    def drawButtonPress(self, x: int, y: int, width: int, height: int, title: str):
+        """
+        Отображение нажатой кнопки на экране.
+        """
+        pyxel.rect(x, y, width, height, 3)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 4)
         pyxel.text(x + 5, y + 7, title, 7)
 
     def drawTextBox(self, x: int, y: int, width: int, height: int, text: str):
         """
         Отображение текстового поля на экране.
-        :param x: Координата для отрисовки x.
-        :param y: Координата для отрисовки y.
-        :param width: Ширина кнопки.
-        :param height: Высота кнопки.
-        :param text: Текст в поле.
         """
-        pyxel.rect(x, y, width, height, 3)
-        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
+        self.drawBox(x, y, width, height)
 
         textList = text.split("/n")
 

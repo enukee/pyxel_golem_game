@@ -29,7 +29,7 @@ class Game:
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
-        self.events = Events(control)
+        self.events = Events(control, drawer)
 
         def openWindow():
             self.scene.resetCameraPos()

@@ -1,13 +1,15 @@
+from draw import Drawer
 from events import Controller
 
 
 class Events:
-    def __init__(self, controller: Controller):
+    def __init__(self, controller: Controller, drawer: Drawer):
         """
         Конструктор класса Events.
         :param controller: Объект отвечающий за управление игрой
         """
         self._controller = controller
+        self._drawer = drawer
         self._isInventoryAvailable = False  # Флаг, указывающий, доступен ли инвентарь игрока
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
@@ -28,6 +30,7 @@ class Events:
                 for handler in self._closeInventory:
                     handler()
 
+                self._drawer.mouseVisible(False)
                 self._isInventoryAvailable = False
 
         else:
@@ -48,6 +51,7 @@ class Events:
                 for handler in self._openInventory:
                     handler()
 
+                self._drawer.mouseVisible(True)
                 self._isInventoryAvailable = True
 
     def addPlayerMovementHandler(self, handler):
