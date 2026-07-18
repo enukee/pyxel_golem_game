@@ -13,8 +13,6 @@ class Events:
         self._isInventoryAvailable = False  # Флаг, указывающий, доступен ли инвентарь игрока
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
-        self._openInventory = []
-        self._closeInventory = []
 
     @property
     def frameCount(self):
@@ -27,9 +25,6 @@ class Events:
         if self._isInventoryAvailable:
             # Закрытие инвентаря
             if self._controller.isInventoryButtonPressed():
-                for handler in self._closeInventory:
-                    handler()
-
                 self._drawer.mouseVisible(False)
                 self._isInventoryAvailable = False
 
@@ -48,9 +43,6 @@ class Events:
 
             # Открытие инвентаря
             if self._controller.isInventoryButtonPressed():
-                for handler in self._openInventory:
-                    handler()
-
                 self._drawer.mouseVisible(True)
                 self._isInventoryAvailable = True
 
@@ -67,20 +59,6 @@ class Events:
         :param handler: Обработчик атаки игрока(принимает два аргумента: направление по оси X и по оси Y).
         """
         self._playerAttackHandler.append(handler)
-
-    def addOpenInventoryHandler(self, handler):
-        """
-        Метод для добавления обработчика открытия инвентаря.
-        :param handler: Обработчик.
-        """
-        self._openInventory.append(handler)
-
-    def addCloseInventoryHandler(self, handler):
-        """
-        Метод для добавления обработчика закрытия инвентаря.
-        :param handler: Обработчик.
-        """
-        self._closeInventory.append(handler)
 
     def isInventoryAvailable(self):
         return self._isInventoryAvailable

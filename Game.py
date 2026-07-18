@@ -31,18 +31,6 @@ class Game:
                            self.player.y - const.WINDOW_HEIGHT // 2)
         self.events = Events(control, drawer)
 
-        def openWindow():
-            self.scene.resetCameraPos()
-            print("null")
-
-        self.events.addOpenInventoryHandler(openWindow)
-
-        def closeWindow():
-            self.scene.returnCameraPos()
-            print("ret")
-
-        self.events.addCloseInventoryHandler(closeWindow)
-
         def movement(dirX, dirY):
             """
             Обработчик события движения игрока.
@@ -78,7 +66,7 @@ class Game:
     def draw(self):
         # Отрисовка инвентаря
         if self.events.isInventoryAvailable():
-            self.scene.drawWindow(self.inventory)
+            self.inventory.draw()
             return
 
         self.tileMap.draw(self.scene, self.player.x, self.player.y)

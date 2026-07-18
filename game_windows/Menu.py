@@ -4,11 +4,11 @@ from events import Controller
 
 
 class Menu(Screen):
-    def __init__(self):
+    def __init__(self, drawer: Drawer):
         """
         Главное меню игры.
         """
-        super().__init__()
+        super().__init__(drawer)
 
         # Добавление кнопки начала игры.
         super().addBtn(Button(const.BUTTON_MENU_POS_X, int(const.WINDOW_HEIGHT * 2 / 3),
@@ -21,5 +21,5 @@ class Menu(Screen):
     def update(self, control: Controller):
         super().update(control)
 
-    def draw(self, drawer: Drawer):
-        super().draw(drawer)
+    def draw(self):
+        super().draw()

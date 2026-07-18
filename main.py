@@ -13,7 +13,7 @@ class Start:
         self.control = PyxelController()
 
         self.game = None
-        self.mainMenu = Menu()
+        self.mainMenu = Menu(self.drawer)
 
         def startGame():
             self.game = Game(self.drawer, self.control)
@@ -45,7 +45,7 @@ class Start:
             self.game.draw()
 
         else:
-            self.mainMenu.draw(self.drawer)
+            self.mainMenu.draw()
 
 
 if __name__ == "__main__":

@@ -5,11 +5,11 @@ from units import Stats
 
 
 class Inventory(Screen):
-    def __init__(self, playerStats: Stats):
+    def __init__(self, drawer: Drawer, playerStats: Stats):
         """
         Окно инвентаря игрока и характеристик.
         """
-        super().__init__()
+        super().__init__(drawer)
 
         self.stats = playerStats
 
@@ -35,6 +35,6 @@ class Inventory(Screen):
     def update(self, control: Controller):
         super().update(control)
 
-    def draw(self, drawer: Drawer):
+    def draw(self):
         self.statsTxBox.text = self.stats.getAllStats()
-        super().draw(drawer)
+        super().draw()

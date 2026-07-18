@@ -12,18 +12,6 @@ class Scene:
         self.cameraPosX = cameraX
         self.cameraPosY = cameraY
 
-    def resetCameraPos(self):
-        """
-        Сброс камеры в начало для отображения окон
-        """
-        self.drawer.setCamera(0, 0)
-
-    def returnCameraPos(self):
-        """
-        Возвращение камеры в позицию до сброса
-        """
-        self.drawer.setCamera(int(self.cameraPosX), int(self.cameraPosY))
-
     def changingView(self, playerX: int, playerY: int, lerpFactor: float = 0.1):
         """
         Изменение точки обзора.
@@ -37,6 +25,10 @@ class Scene:
 
         self.cameraPosX = lerp(self.cameraPosX, playerX - const.WINDOW_WIDTH // 2, lerpFactor)
         self.cameraPosY = lerp(self.cameraPosY, playerY - const.WINDOW_HEIGHT // 2, lerpFactor)
+        self.drawer.setCamera(int(self.cameraPosX), int(self.cameraPosY))
+
+    def changeView(self, cameraX: int, cameraY: int):
+        self.cameraPosX, self.cameraPosY = cameraX, cameraY
         self.drawer.setCamera(int(self.cameraPosX), int(self.cameraPosY))
 
     def drawSprite(self, sprite: str, x: int, y: int, reverseX: bool = False, reverseY: bool = False):
@@ -88,7 +80,3 @@ class Scene:
 
     def drawHealth(self, value: int):
         self.drawer.drawHealth(value)
-
-    def drawWindow(self, window):
-        # Для обновления все окна принимаю drawer
-        window.draw(self.drawer)

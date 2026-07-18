@@ -2,7 +2,7 @@ from typing import Union
 from abc import ABC
 
 import const
-from draw import Drawer
+from draw import Drawer, Scene
 from events import Controller
 
 
@@ -54,12 +54,12 @@ class Button(BaseWindowsWidget):
         if control.isMouseClicked(self.posX, self.posY, self.width, self.height) and self.handler:
             self.handler()
 
-    def draw(self, drawer: Drawer):
+    def draw(self, scene: Scene):
         """
         Отрисовка кнопки.
-        :param drawer: Инструмент отрисовки.
+        :param scene: Сцена отрисовки.
         """
-        drawer.drawButton(self.posX, self.posY, self.width, self.height, self.title)
+        scene.drawer.drawButton(self.posX, self.posY, self.width, self.height, self.title)
 
 
 class TextBox(BaseWindowsWidget):
@@ -76,12 +76,12 @@ class TextBox(BaseWindowsWidget):
 
         self.__text = text
 
-    def draw(self, drawer: Drawer):
+    def draw(self, scene: Scene):
         """
         Отрисовка текстового поля.
-        :param drawer: Инструмент отрисовки.
+        :param scene: Сцена отрисовки.
         """
-        drawer.drawTextBox(self.posX, self.posY, self.width, self.height, self.text)
+        scene.drawer.drawTextBox(self.posX, self.posY, self.width, self.height, self.text)
 
     @property
     def text(self):
@@ -113,11 +113,15 @@ class Block(Button):
             Block.selectBlock = self
         super().update(control)
 
-    def draw(self, drawer: Drawer):
+    def draw(self, scene: Scene):
+        """
+        Отрисовка блока с иконкой.
+        :param scene: Сцена отрисовки.
+        """
         if Block.selectBlock == self:
-            drawer.drawSelectBlock(self.posX, self.posY, self.width, self.height)
+            scene.drawer.drawSelectBlock(self.posX, self.posY, self.width, self.height)
         else:
-            super().draw(drawer)
+            scene.drawer.drawBlock(self.posX, self.posY, self.width, self.height)
 
 
 class BlockBox(BaseWindowsWidget):
@@ -156,17 +160,25 @@ class BlockBox(BaseWindowsWidget):
         for bl in self._table:
             bl.update(control)
 
-    def draw(self, drawer: Drawer):
-        drawer.drawBox(self.posX, self.posY, self.width, self.height)
+    def draw(self, scene: Scene):
+        """
+        Отрисовка контейнера блоков.
+        :param scene: Сцена отрисовки.
+        """
+        scene.drawer.drawBox(self.posX, self.posY, self.width, self.height)
         for bl in self._table:
-            bl.draw(drawer)
+            bl.draw(scene)
+
 
 
 class Screen:
-    def __init__(self):
+    def __init__(self, drawer: Drawer):
         """
         Базовый класс любого окна в игре(например меню и инвентарь).
         """
+        # Свой объект сцены имеющий собственные координаты экрана
+        self._scene = Scene(drawer, 0, 0)
+
         self.__buttons = []  # Набор кнопок окна.
         self.__textBoxs = []  # Набор текстовых полей окна.
         self.__blockBox = []    # Набор контейнеров с блоками.
@@ -236,18 +248,18 @@ class Screen:
         for bl in self.__blockBox:
             bl.update(control)
 
-    def draw(self, drawer: Drawer):
+    def draw(self):
         """
         Отображение окна.
-        :param drawer: Инструмент отображения объектов.
         """
-        drawer.drawBackground()
+        self._scene.drawer.drawBackground()
+        self._scene.changeView(0, 0)
 
         for btn in self.__buttons:
-            btn.draw(drawer)
+            btn.draw(self._scene)
 
         for tx in self.__textBoxs:
-            tx.draw(drawer)
+            tx.draw(self._scene)
 
         for bl in self.__blockBox:
-            bl.draw(drawer)
+            bl.draw(self._scene)
