@@ -19,9 +19,9 @@ BUTTON_MENU_POS_X = (WINDOW_WIDTH - BUTTON_MENU_WIDTH) / 2
 CONST_WIDTH_ALL_UNIT = 4
 
 # Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE
-BLOCK_SIZE = 16
+BLOCK_SIZE = 18
 # Расстояние между ячейками блоков при отображении
-BLOCK_SIZE_OFFSET = 3
+BLOCK_SIZE_OFFSET = 2
 
 
 def getWidthSprite(sprite: str):
@@ -138,6 +138,29 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "back_obj_stone_floor_2_3":     [128, 0, -12, 10, 0],
               "back_obj_stone_floor_2_4":     [128, 0, -12, -10, 0],
               }
+
+# Константы отображения окон
+WIN_COLOR_TEXT = 5
+WIN_COLOR_BACKGROUND = 14
+WIN_COLOR_BOX = 1
+WIN_COLOR_BOX_EDGING = 5
+WIN_COLOR_BOX_EDGING_SELECT = 8
+
+WIN_COLOR_BLOCK = 0
+WIN_COLOR_BLOCK_EDGING = 0
+WIN_COLOR_BLOCK_EDGING_SELECT = 9
+
+# Позиции иконок
+ICON_POS = {"fork":                 [0, 0, 16, 16, 0],
+            "vine":                 [16, 0, 16, 16, 0],
+            "clover":               [32, 0, 16, 16, 0],
+            "bug":                  [48, 0, 16, 16, 0],
+
+            "ring":                 [0, 16, 16, 16, 0],
+            "eye":                  [16, 16, 16, 16, 0],
+            "book":                 [32, 16, 16, 16, 0],
+            "amanita":              [48, 16, 16, 16, 0],
+            }
 
 # Тайл делится на 4 равных сектора
 # 0 - сектор пола

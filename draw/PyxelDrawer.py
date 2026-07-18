@@ -12,6 +12,7 @@ class PyxelDrawer(Drawer):
         pyxel.load("../assets/res.pyxres")
         # Загрузка изображений
         pyxel.images[0].load(0, 0, "../assets/img_0.png")
+        pyxel.images[1].load(0, 0, "../assets/img_1.png")
 
         self.x, self.y = 0, 0
 
@@ -31,7 +32,7 @@ class PyxelDrawer(Drawer):
         :param x: Координата для отрисовки x.
         :param y: Координата для отрисовки y.
         """
-        pass
+        pyxel.blt(x, y, 1, iconPos[0], iconPos[1], iconPos[2], iconPos[3], 0)
 
     def drawTileBorders(self, x: int, y: int):
         """
@@ -70,36 +71,41 @@ class PyxelDrawer(Drawer):
         """
         Отображение поля на экране.
         """
-        pyxel.rect(x, y, width, height, 3)
-        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 6)
+        x -= 2
+        y -= 2
+        width += 2
+        height += 2
+        pyxel.rect(x, y, width, height, const.WIN_COLOR_BOX)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, const.WIN_COLOR_BOX_EDGING)
 
     def drawBlock(self, x: int, y: int, width: int, height: int):
         """
         Отображение блока с иконкой.
         """
-        self.drawBox(x, y, width, height)
+        pyxel.rect(x, y, width, height, const.WIN_COLOR_BLOCK)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, const.WIN_COLOR_BLOCK_EDGING)
 
     def drawSelectBlock(self, x: int, y: int, width: int, height: int):
         """
         Отображение блока с иконкой.
         """
-        pyxel.rect(x, y, width, height, 3)
-        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 9)
+        self.drawBlock(x, y, width, height)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, const.WIN_COLOR_BLOCK_EDGING_SELECT)
 
     def drawButton(self, x: int, y: int, width: int, height: int, title: str):
         """
         Отображение кнопки на экране.
         """
         self.drawBox(x, y, width, height)
-        pyxel.text(x + 5, y + 7, title, 7)
+        pyxel.text(x + 5, y + 7, title, const.WIN_COLOR_TEXT)
 
     def drawButtonPress(self, x: int, y: int, width: int, height: int, title: str):
         """
         Отображение нажатой кнопки на экране.
         """
-        pyxel.rect(x, y, width, height, 3)
-        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, 4)
-        pyxel.text(x + 5, y + 7, title, 7)
+        pyxel.rect(x, y, width, height, const.WIN_COLOR_BOX)
+        pyxel.rectb(x + 1, y + 1, width - 2, height - 2, const.WIN_COLOR_BOX_EDGING_SELECT)
+        pyxel.text(x + 5, y + 7, title, const.WIN_COLOR_TEXT)
 
     def drawTextBox(self, x: int, y: int, width: int, height: int, text: str):
         """
@@ -112,14 +118,14 @@ class PyxelDrawer(Drawer):
         # Перебираем все подстроки в цикле
         strY = y + 7
         for s in textList:
-            pyxel.text(x + 5, strY, s, 7)
+            pyxel.text(x + 5, strY, s, const.WIN_COLOR_TEXT)
             strY += 7
 
     def drawBackground(self):
         """
         Отрисовка фона любого окна.
         """
-        pyxel.cls(0)
+        pyxel.cls(const.WIN_COLOR_BACKGROUND)
 
     def mouseVisible(self, visible: bool):
         pyxel.mouse(visible)

@@ -70,13 +70,15 @@ class Scene:
         :param x: Положение левого верхнего угла иконки по x.
         :param y: Положение левого верхнего угла иконки по y.
         """
-        if icon in const.SPRITE_POS:
-            spritePos = const.SPRITE_POS[icon]
+        if icon in const.ICON_POS:
+            spritePos = const.ICON_POS[icon]
 
         else:
-            spritePos = const.SPRITE_POS["stub_sprite"]
+            spritePos = const.ICON_POS["eye"]
 
-        self.drawer.drawSprite(spritePos, x, y)
+        # Размер иконки 16x16 размер блока 18x18
+        # иконка должна находится посередине
+        self.drawer.drawIcon(spritePos, x + 1, y + 1)
 
     def drawHealth(self, value: int):
         self.drawer.drawHealth(value)

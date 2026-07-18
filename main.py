@@ -41,7 +41,7 @@ class Start:
     def draw(self):
         if self.game is not None:
             # Очистка экрана
-            pyxel.cls(15)
+            self.drawer.drawBackground()
             self.game.draw()
 
         else:

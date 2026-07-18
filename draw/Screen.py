@@ -136,8 +136,8 @@ class BlockBox(BaseWindowsWidget):
         super().__init__(
             posX,
             posY,
-            sizeX * const.BLOCK_SIZE + (sizeX + 1) * const.BLOCK_SIZE_OFFSET,
-            sizeY * const.BLOCK_SIZE + (sizeY + 1) * const.BLOCK_SIZE_OFFSET,
+            sizeX * const.BLOCK_SIZE + (sizeX + 2) * const.BLOCK_SIZE_OFFSET,
+            sizeY * const.BLOCK_SIZE + (sizeY + 2) * const.BLOCK_SIZE_OFFSET,
             title)
 
         self._table = []
@@ -146,15 +146,17 @@ class BlockBox(BaseWindowsWidget):
         self._sizeX = sizeX
         self._sizeY = sizeY
 
+    def fill(self):
+        for i in range(self._sizeX):
+            for j in range(self._sizeY):
+                self.pushBlock(i, j, "art" + str(i) + str(j))
+
     def pushBlock(self, i: int, j: int, blockName: str):
         if (len(self._table) < self._max_size_table and
                 i < self._sizeX and j < self._sizeY):
             i = self.posX + i * const.BLOCK_SIZE + (i + 1) * const.BLOCK_SIZE_OFFSET
             j = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
             self._table.append(Block(i, j, const.BLOCK_SIZE, const.BLOCK_SIZE, blockName))
-
-    def pop(self):
-        pass
 
     def update(self, control: Controller):
         for bl in self._table:
@@ -169,6 +171,24 @@ class BlockBox(BaseWindowsWidget):
         for bl in self._table:
             bl.draw(scene)
 
+    @property
+    def maxCount(self):
+        return self._max_size_table
+
+    def getPos(self, n: int):
+        """
+        Вычисление позиции блока на экране по позиции в таблице.
+        :param n: Номер блока по порядку.
+        :return: Координаты x и y.
+        """
+        x, y, = -1, -1
+
+        i, j = n % self._sizeX, int(n / self._sizeX)
+        if i < self._sizeX and j < self._sizeY:
+            x = self.posX + i * const.BLOCK_SIZE + (i + 1) * const.BLOCK_SIZE_OFFSET
+            y = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
+
+        return x, y
 
 
 class Screen:

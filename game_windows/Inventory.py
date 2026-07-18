@@ -1,5 +1,5 @@
 import const
-from draw import Screen, Drawer, Button, TextBox, BlockBox
+from draw import Screen, Drawer, TextBox, BlockBox, Scene
 from events import Controller
 from units import Stats
 
@@ -11,6 +11,7 @@ class Inventory(Screen):
         """
         super().__init__(drawer)
 
+        # Характеристики игрока
         self.stats = playerStats
 
         self.statsTxBox = TextBox(235, 50,
@@ -24,13 +25,12 @@ class Inventory(Screen):
                                      4, 4,
                                      "inventory_box")
 
-        self.inventoryBox.pushBlock(0, 0, "art1")
-        self.inventoryBox.pushBlock(1, 0, "art2")
-        self.inventoryBox.pushBlock(3, 0, "art3 ")
-        self.inventoryBox.pushBlock(3, 3, "art3 ")
+        self.inventoryBox.fill()
 
         # Добавление контейнера с предметами.
         super().addBlBox(self.inventoryBox)
+
+        self.__artifacts = dict()
 
     def update(self, control: Controller):
         super().update(control)
@@ -38,3 +38,12 @@ class Inventory(Screen):
     def draw(self):
         self.statsTxBox.text = self.stats.getAllStats()
         super().draw()
+        for _, art in self.__artifacts.items():
+            art.draw(self._scene)
+
+    def pushArtifact(self, artifact):
+        for i in range(self.inventoryBox.maxCount):
+            if i not in self.__artifacts:
+                artifact.x, artifact.y = self.inventoryBox.getPos(i)
+                self.__artifacts[i] = artifact
+                return

@@ -63,8 +63,16 @@ class Artifact(GameObject):
 
         self.__increase = []
 
+        # Описание предмета
+        self.__description = ""
+
     def update(self):
         pass
 
     def draw(self, scene: Scene):
         super().draw(scene)
+
+
+class SilverFork(Artifact):
+    def __init__(self, x: float, y: float):
+        super().__init__(x, y, "fork")
