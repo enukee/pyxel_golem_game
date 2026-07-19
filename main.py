@@ -20,6 +20,10 @@ class Start:
             self.game = Game(self.drawer, self.control)
             self.drawer.mouseVisible(False)
 
+            if DEBUG_MAKE_IMG_MAP:
+                self.game.player._MovableObjects__x = 0
+                self.game.player._MovableObjects__y = 0
+
         def exitApp():
             self.drawer.exit()
 
@@ -39,16 +43,23 @@ class Start:
                 self.drawer.mouseVisible(True)
                 self.drawer.setCamera(0, 0)
 
+            if DEBUG_MAKE_IMG_MAP:
+                self.game.player._MovableObjects__x += 500
+                self.game.player._MovableObjects__y += 500
+
         else:
             self.mainMenu.update(self.control)
 
     def draw(self):
         if self.game is not None:
+            if DEBUG_MAKE_IMG_MAP:
+                self.drawer.setCamera(0, 0)
+
             # Очистка экрана
             self.drawer.drawBackground()
             self.game.draw()
-            if DEBUG_MAKE_IMG_MAP:
-                self.game.update()
+            if (DEBUG_MAKE_IMG_MAP and self.game.player.x > const.TILE_SIZE*const.TILE_COUNT
+                    and self.game.player.y > const.TILE_SIZE*const.TILE_COUNT):
                 mapSaveImg(self.drawer)
                 self.drawer.exit()
 

@@ -10,15 +10,20 @@ import const
 from draw import Scene
 
 
-def generate_poisson(r, k, width, height):
+def generate_poisson(r, k, width, height, count=1000):
     # Результат и активный список
     points = []
     active = []
 
-    # Первая точка в центре
-    first_point = (width / 2, height / 2)
-    points.append(first_point)
-    active.append(first_point)
+    pointsCount = 0
+    c = int(width / 400)
+    for i in range(c):
+        for j in range(c):
+            x, y = i * 400, j * 400
+            first_point = (x, y)
+            points.append(first_point)
+            active.append(first_point)
+            pointsCount += 1
 
     while active:
         # Выбираем случайную точку из активного списка
@@ -30,7 +35,7 @@ def generate_poisson(r, k, width, height):
         for _ in range(k):
             # Случайный угол и расстояние от r до 2r
             angle = random.uniform(0, 2 * math.pi)
-            distance = random.uniform(r, 2 * r)
+            distance = random.uniform(r, 10 * r)
             new_x = center[0] + distance * math.cos(angle)
             new_y = center[1] + distance * math.sin(angle)
 
@@ -48,6 +53,7 @@ def generate_poisson(r, k, width, height):
                     break
 
             if valid:
+                pointsCount += 1
                 points.append((new_x, new_y))
                 active.append((new_x, new_y))
                 found = True
@@ -56,6 +62,9 @@ def generate_poisson(r, k, width, height):
         # Удаляем центр из активного списка, если не удалось сгенерировать новую точку
         if not found:
             active.pop(idx)
+
+        if pointsCount >= count:
+            break
 
     return points
 
@@ -69,7 +78,7 @@ class MatrixMap:
         self.__size = size
 
         # Генерация карты дорог
-        matrix = MapGenerator.generateMap(self.__size, self.__size)
+        matrix = MapGenerator.TEST_MATRIX
         # Преобразование карты в матрицу состоящую из тайлов
         self.__matrix = [
             [
@@ -152,16 +161,17 @@ class MatrixMap:
 
     def randomPoints(self):
         size = self.__size * const.TILE_SIZE
-        radius = 40
-        poisson = PoissonDisk(
-            d=2,
-            radius=radius/size,
-            optimization="random-cd"
-        )
-        points = poisson.random(n=200)
+        radius = 60
+        # poisson = PoissonDisk(
+        #     d=2,
+        #     radius=radius/size,
+        #     optimization="random-cd"
+        # )
+        # points = poisson.random(n=7000)
+        points = generate_poisson(radius, 30, size, size, 3000)
         result = []
         for i in points:
-            x, y = i[0] * size, i[1] * size
+            x, y = i[0], i[1]
             if self.isWalkable(x, y):
                 result.append([int(x), int(y)])
 

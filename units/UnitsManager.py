@@ -31,12 +31,9 @@ class UnitsManager:
             self.units.append(enemy)
             enemy.setUnitManager(self)
 
-        print(len(self.units))
         points = tileMap.randomPoints()
         for i in points:
             self.units.append(BackgroundMapObject(i[0], i[1]))
-
-        print(len(self.units))
 
     def randomEnemy(self, x: int, y: int):
         """
