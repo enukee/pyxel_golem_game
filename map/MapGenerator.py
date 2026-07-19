@@ -51,7 +51,9 @@ class MapGenerator:
                 if matrix[i][j] == 1:
                     if i != 0 and j != len(matrix) - 1 and matrix[i - 1][j] != 0 and matrix[i][j + 1] != 0:
                         matrix[i][j] = 3
-                    elif i != 0 and i != len(matrix) - 1 and matrix[i - 1][j] != 0 and matrix[i + 1][j] != 0:
+                    elif (((i == len(matrix) - 1 or j == len(matrix) - 1) and (i != 0 and matrix[i - 1][j] != 0))
+                          or (i != 0 and matrix[i - 1][j] != 0) and ((i != len(matrix) - 1 and matrix[i + 1][j] != 0)
+                                                                     or (j != len(matrix) - 1 and matrix[i][j + 1] == 0))):
                         matrix[i][j] = 2
                     elif j != 0 and i != len(matrix) - 1 and j != len(matrix) - 1 and matrix[i][j - 1] != 0 and \
                             matrix[i + 1][j] != 0 and matrix[i][j + 1] == 0:

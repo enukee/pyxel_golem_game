@@ -139,6 +139,12 @@ class PyxelDrawer(Drawer):
         self.x, self.y = x, y
         pyxel.camera(x, y)
 
+    def drawGrid(self):
+        for i in range(const.TILE_COUNT):
+            for j in range(const.TILE_COUNT):
+                pyxel.rectb(i * const.TILE_SIZE, j * const.TILE_SIZE,
+                            const.TILE_SIZE, const.TILE_SIZE, 9)
+
     def drawHealth(self, val: int):
         # Отрисовка полоски здоровья в левом верхнем углу
         pyxel.rect(self.x + 2, self.y + 2, 102, 5, 6)

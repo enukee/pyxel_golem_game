@@ -55,6 +55,10 @@ class Drawer(ABC):
         pass
 
     @abstractmethod
+    def drawGrid(self):
+        pass
+
+    @abstractmethod
     def drawHealth(self, val: int):
         pass
 
