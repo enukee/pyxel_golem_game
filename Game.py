@@ -15,7 +15,7 @@ class Game:
         :param drawer: Инструмент отображения.
         :param control: Инструмент получения событий.
         """
-        self.tileMap = MatrixMap()
+        self.tileMap = MatrixMap(const.TILE_COUNT)
         playerStats = Stats(100, 12, 10, 50, 5)
         self.player = Player(30, 200, playerStats)
 

@@ -144,3 +144,9 @@ class PyxelDrawer(Drawer):
         pyxel.rect(self.x + 2, self.y + 2, 102, 5, 6)
         pyxel.rect(self.x + 3, self.y + 3, 100, 3, 0)
         pyxel.rect(self.x + 3, self.y + 3, val, 3, 8)
+
+    def saveImg(self, fileName: str):
+        pyxel.screen.save(fileName, 1)
+
+    def exit(self):
+        pyxel.quit()

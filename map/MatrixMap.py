@@ -3,6 +3,7 @@ import random
 
 from scipy.stats.qmc import PoissonDisk
 
+from debug_settings import DEBUG_SET_RENDER_ALL_MAP
 from map import MapGenerator
 from map.Tile import *
 import const
@@ -60,7 +61,7 @@ def generate_poisson(r, k, width, height):
 
 
 class MatrixMap:
-    def __init__(self, size=11):
+    def __init__(self, size=const.TILE_COUNT):
         """
         Матрица игрового поля содержащая тайлы.
         :param size: Размер игрового поля в тайлах.
@@ -89,8 +90,21 @@ class MatrixMap:
         :param x: Положение игрока по x.
         :param y: Положение игрока по y.
         """
-        for row in [-const.TILE_SIZE, 0, const.TILE_SIZE]:
-            for col in [-const.TILE_SIZE, 0, const.TILE_SIZE]:
+        rangeRow = [-const.TILE_SIZE, 0, const.TILE_SIZE]
+        rangeCol = [-const.TILE_SIZE, 0, const.TILE_SIZE]
+
+        # Параметр_отладки_____________________
+        if DEBUG_SET_RENDER_ALL_MAP:
+            rangeRow = []
+            rangeCol = []
+            x, y = 0, 0
+            for i in range(self.__size):
+                rangeRow.append(i * const.TILE_SIZE)
+                rangeCol.append(i * const.TILE_SIZE)
+        # _____________________________________
+
+        for row in rangeRow:
+            for col in rangeCol:
                 tile = self.getTile(x + col, y + row)
                 if tile is not None:
                     tile.draw(scene)

@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# generated map image
+screenshot_map.png
+
 # C extensions
 *.so
 

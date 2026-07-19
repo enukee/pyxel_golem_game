@@ -1,10 +1,16 @@
+from debug_settings import DEBUG_MAKE_IMG_MAP
+
 # размер тайла (TILE_SIZE x TILE_SIZE)
 TILE_SIZE = 256
 TILE_SECTOR_SIZE = TILE_SIZE // 2
+TILE_COUNT = 11
 
 # Размер окна
 WINDOW_WIDTH = 320
 WINDOW_HEIGHT = 240
+if DEBUG_MAKE_IMG_MAP:
+    WINDOW_WIDTH = TILE_SIZE * TILE_COUNT
+    WINDOW_HEIGHT = TILE_SIZE * TILE_COUNT
 
 # Частота кадров
 FPS = 60
@@ -174,11 +180,3 @@ TILE_STRUCTURE = {
     "lower_left_corner": [0, 1, 0, 0],
     "upper_right_corner": [1, None, 0, None],
 }
-
-# TODO перенести в отдельный файл настройки отладки
-# ________________________________________________________________
-# Настройки отладки
-
-# Выкл./Вкл. нанесение урона по врагам и игроку.
-# Установите False для выключения урона
-DEBUG_SET_TURNING_ON_DAMAGE = True

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import const
+from debug_settings import DEBUG_SET_TURNING_ON_DAMAGE
 from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
@@ -92,7 +93,7 @@ class GameActor(MovableObjects, ABC):
 
     def getDamage(self, val):
         # Настройка отладки
-        if not const.DEBUG_SET_TURNING_ON_DAMAGE:
+        if not DEBUG_SET_TURNING_ON_DAMAGE:
             return
 
         self._stats.takingDamage(val)

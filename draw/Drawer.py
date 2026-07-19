@@ -50,8 +50,18 @@ class Drawer(ABC):
     def mouseVisible(self, visible: bool):
         pass
 
+    @abstractmethod
     def setCamera(self, x: int, y: int):
         pass
 
+    @abstractmethod
     def drawHealth(self, val: int):
+        pass
+
+    @abstractmethod
+    def saveImg(self, fileName: str):
+        pass
+
+    @abstractmethod
+    def exit(self):
         pass

@@ -2,6 +2,7 @@ import pyxel
 
 import const
 from Game import Game
+from debug_settings import mapSaveImg, DEBUG_MAKE_IMG_MAP
 from game_windows import Menu
 from draw import PyxelDrawer
 from events import PyxelController
@@ -20,7 +21,10 @@ class Start:
             self.drawer.mouseVisible(False)
 
         def exitApp():
-            pyxel.quit()
+            self.drawer.exit()
+
+        if DEBUG_MAKE_IMG_MAP:
+            startGame()
 
         self.mainMenu.setHandler("play", startGame)
         self.mainMenu.setHandler("exit", exitApp)
@@ -43,6 +47,10 @@ class Start:
             # Очистка экрана
             self.drawer.drawBackground()
             self.game.draw()
+            if DEBUG_MAKE_IMG_MAP:
+                self.game.update()
+                mapSaveImg(self.drawer)
+                self.drawer.exit()
 
         else:
             self.mainMenu.draw()
