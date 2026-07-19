@@ -8,7 +8,7 @@ from units import EggheadEnemy, MimicEnemy, Stats, BackgroundMapObject
 
 
 class UnitsManager:
-    def __init__(self, player, tileMap: MatrixMap, chanceEnemy: dict, countEnemy=200, countBackObj=500):
+    def __init__(self, player, tileMap: MatrixMap, chanceEnemy: dict, countEnemy=200, countBackObj=900):
         """
         Менеджер юнитов, отображает и обновляет юниты на карте.
         :param player: Игрок.
@@ -31,9 +31,12 @@ class UnitsManager:
             self.units.append(enemy)
             enemy.setUnitManager(self)
 
-        for i in range(countBackObj):
-            x, y = tileMap.randomPoint()
-            self.units.append(BackgroundMapObject(x, y))
+        print(len(self.units))
+        points = tileMap.randomPoints()
+        for i in points:
+            self.units.append(BackgroundMapObject(i[0], i[1]))
+
+        print(len(self.units))
 
     def randomEnemy(self, x: int, y: int):
         """

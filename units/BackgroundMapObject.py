@@ -15,14 +15,10 @@ class BackgroundMapObject(MovableObjects):
         """
         super().__init__(x, y)
 
-        backObj = ['back_obj_grass', 'back_obj_flower', 'back_obj_stone',
-                   'back_obj_grass_r', 'back_obj_flower_r', 'back_obj_stone_r',
-                   'back_obj_bush', 'back_obj_bush_r']
+        backObj = [key for key in const.SPRITE_POS if key.startswith("back_obj")]
 
-        backObjOnFloor = ['back_obj_stone_floor_1', 'back_obj_stone_floor_2',
-                          'back_obj_stone_floor_3', 'back_obj_stone_floor_4',
-                          'back_obj_stone_floor_2_1', 'back_obj_stone_floor_2_2',
-                          'back_obj_stone_floor_2_3', 'back_obj_stone_floor_2_4']
+        # Напольные объекты
+        backObjOnFloor = []
 
         selectSprite = random.choice(backObj + backObjOnFloor)
         super().setSprite(selectSprite)

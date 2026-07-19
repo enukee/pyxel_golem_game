@@ -1,9 +1,62 @@
+import math
 import random
+
+from scipy.stats.qmc import PoissonDisk
 
 from map import MapGenerator
 from map.Tile import *
 import const
 from draw import Scene
+
+
+def generate_poisson(r, k, width, height):
+    # Результат и активный список
+    points = []
+    active = []
+
+    # Первая точка в центре
+    first_point = (width / 2, height / 2)
+    points.append(first_point)
+    active.append(first_point)
+
+    while active:
+        # Выбираем случайную точку из активного списка
+        idx = random.randint(0, len(active) - 1)
+        center = active[idx]
+
+        # Пробуем сгенерировать k точек вокруг неё
+        found = False
+        for _ in range(k):
+            # Случайный угол и расстояние от r до 2r
+            angle = random.uniform(0, 2 * math.pi)
+            distance = random.uniform(r, 2 * r)
+            new_x = center[0] + distance * math.cos(angle)
+            new_y = center[1] + distance * math.sin(angle)
+
+            # Проверяем, что точка внутри области
+            if not (0 <= new_x < width and 0 <= new_y < height):
+                continue
+
+            # Проверяем минимальное расстояние до всех существующих точек
+            valid = True
+            for point in points:
+                dx = new_x - point[0]
+                dy = new_y - point[1]
+                if dx * dx + dy * dy < r * r:
+                    valid = False
+                    break
+
+            if valid:
+                points.append((new_x, new_y))
+                active.append((new_x, new_y))
+                found = True
+                break
+
+        # Удаляем центр из активного списка, если не удалось сгенерировать новую точку
+        if not found:
+            active.pop(idx)
+
+    return points
 
 
 class MatrixMap:
@@ -82,3 +135,20 @@ class MatrixMap:
                     random.randint(0, size))
 
         return x, y
+
+    def randomPoints(self):
+        size = self.__size * const.TILE_SIZE
+        radius = 40
+        poisson = PoissonDisk(
+            d=2,
+            radius=radius/size,
+            optimization="random-cd"
+        )
+        points = poisson.random(n=200)
+        result = []
+        for i in points:
+            x, y = i[0] * size, i[1] * size
+            if self.isWalkable(x, y):
+                result.append([int(x), int(y)])
+
+        return result
