@@ -58,13 +58,17 @@ class PercentageIncrease(IncreaseParam):
 
 
 class Artifact(GameObject):
-    def __init__(self, x: float, y: float, icon: str):
+    def __init__(self, x: float, y: float, description: str, icon: str):
         super().__init__(x, y, icon)
 
         self.__increase = []
 
         # Описание предмета
-        self.__description = ""
+        self.__description = description
+
+    @property
+    def description(self):
+        return self.__description
 
     def update(self):
         pass
@@ -75,4 +79,6 @@ class Artifact(GameObject):
 
 class SilverFork(Artifact):
     def __init__(self, x: float, y: float):
-        super().__init__(x, y, "fork")
+        description = "73473647"
+
+        super().__init__(x, y, description, "fork")

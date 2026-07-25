@@ -111,7 +111,9 @@ class Block(Button):
         # При нажатии на блок он становится выбранным
         if control.isMouseClicked(self.posX, self.posY, self.width, self.height):
             Block.selectBlock = self
-        super().update(control)
+
+            if self.handler:
+                self.handler(self)
 
     def draw(self, scene: Scene):
         """
@@ -140,26 +142,38 @@ class BlockBox(BaseWindowsWidget):
             sizeY * const.BLOCK_SIZE + (sizeY + 2) * const.BLOCK_SIZE_OFFSET,
             title)
 
-        self._table = []
+        self._table = dict()
         self._max_size_table = sizeX * sizeY
 
         self._sizeX = sizeX
         self._sizeY = sizeY
+
+    def genAllBlockName(self):
+        for i in range(self._sizeX):
+            for j in range(self._sizeY):
+                yield "art" + str(i) + str(j)
 
     def fill(self):
         for i in range(self._sizeX):
             for j in range(self._sizeY):
                 self.pushBlock(i, j, "art" + str(i) + str(j))
 
+    def getBlockNum(self, title: str):
+        for i, blk in self._table.items():
+            if blk.title == title:
+                return i
+
+        return -1
+
     def pushBlock(self, i: int, j: int, blockName: str):
         if (len(self._table) < self._max_size_table and
                 i < self._sizeX and j < self._sizeY):
-            i = self.posX + i * const.BLOCK_SIZE + (i + 1) * const.BLOCK_SIZE_OFFSET
-            j = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
-            self._table.append(Block(i, j, const.BLOCK_SIZE, const.BLOCK_SIZE, blockName))
+            x = self.posX + i * const.BLOCK_SIZE + (i + 1) * const.BLOCK_SIZE_OFFSET
+            y = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
+            self._table[self.getNum(i, j)] = Block(x, y, const.BLOCK_SIZE, const.BLOCK_SIZE, blockName)
 
     def update(self, control: Controller):
-        for bl in self._table:
+        for _, bl in self._table.items():
             bl.update(control)
 
     def draw(self, scene: Scene):
@@ -168,12 +182,15 @@ class BlockBox(BaseWindowsWidget):
         :param scene: Сцена отрисовки.
         """
         scene.drawer.drawBox(self.posX, self.posY, self.width, self.height)
-        for bl in self._table:
+        for _, bl in self._table.items():
             bl.draw(scene)
 
     @property
     def maxCount(self):
         return self._max_size_table
+
+    def getNum(self, i, j):
+        return self._sizeX * i + j
 
     def getPos(self, n: int):
         """
@@ -189,6 +206,20 @@ class BlockBox(BaseWindowsWidget):
             y = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
 
         return x, y
+
+    def _find(self, title: str):
+        """
+        Поиск блока контейнера.
+        :param title: Надпись уникальная для этого окна.
+        :return: Элемент с заданной надписью(возвращает -1 если такой кнопки нет).
+        """
+        for _, blk in self._table.items():
+            if blk.title == title:
+                return blk
+
+    def setHandler(self, handler):
+        for _, blk in self._table.items():
+                blk.handler = handler
 
 
 class Screen:
@@ -235,7 +266,10 @@ class Screen:
         """
         btn = self._find(buttonTitle)
         if btn != -1:
-            btn.handler = handler
+            if isinstance(btn, BlockBox):
+                btn.setHandler(handler)
+            elif isinstance(btn, Button):
+                btn.handler = handler
 
     def _find(self, title: str):
         """
