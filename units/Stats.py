@@ -23,7 +23,7 @@ class Stats:
         self.__baseStats = [health, attack, attackSpeed, speed, acceleration]
 
         # Полные параметры объекта(с учётом всех усилений)
-        self.__fullStats = self.__baseStats
+        self.__fullStats = self.__baseStats.copy()
 
         # Текущие параметры
         self.__currentStats = [health]
@@ -50,7 +50,7 @@ class Stats:
         """
         Сброс параметров до базовых.
         """
-        self.__fullStats = self.__baseStats
+        self.__fullStats = self.__baseStats.copy()
 
     def healing(self, val: int):
         self.health = min(self.health + val, self.__fullStats[Stats.STAT_KEYS.index("health")])

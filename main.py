@@ -28,7 +28,7 @@ class Start:
             self.drawer.exit()
 
         if DEBUG_MAKE_IMG_MAP:
-            startGame()
+            startGame(None)
 
         self.mainMenu.setHandlerLeft("play", startGame)
         self.mainMenu.setHandlerLeft("exit", exitApp)

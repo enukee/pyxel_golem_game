@@ -21,8 +21,8 @@ class Inventory(Screen):
         super().addTxBox(self.statsTxBox)
 
         # Добавление окна отображения характеристик предмета.
-        self.artifactTxBox = TextBox(10, 50,
-                                     80, 50,
+        self.artifactTxBox = TextBox(30, 160,
+                                     190, 50,
                                      "", "art_stats")
         super().addTxBox(self.artifactTxBox)
 
@@ -89,6 +89,9 @@ class Inventory(Screen):
             return artifact, artList, num, x, y
 
         def swapArtifact(block):
+            if Block.selectBlock is None:
+                return
+
             artifact1, artList1, num1, x1, y1 = getArtifact(Block.selectBlock)
             artifact2, artList2, num2, x2, y2 = getArtifact(block)
 
@@ -100,8 +103,15 @@ class Inventory(Screen):
                 artifact2.x, artifact2.y = x1, y1
                 artList1[num1] = artifact2
 
+            self.statsUpdate()
+
         super().setHandlerLeft(box.title, showStats)
         super().setHandlerRight(box.title, swapArtifact)
+
+    def statsUpdate(self):
+        self.stats.reset()
+        for _, art in self.__activeArtifacts.items():
+            art.applyIncrease(self.stats)
 
     def update(self, control: Controller):
         super().update(control)

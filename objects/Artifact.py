@@ -27,6 +27,10 @@ class IncreaseParam(ABC):
         """
         pass
 
+    @property
+    def value(self):
+        return self.__value
+
 
 class IncreaseBySummation(IncreaseParam):
     def __init__(self, name: str, value):
@@ -38,7 +42,7 @@ class IncreaseBySummation(IncreaseParam):
         super().__init__(name, value)
 
     def increase(self, base):
-        return base + self.__value
+        return base + self.value
 
 
 class PercentageIncrease(IncreaseParam):
@@ -48,13 +52,13 @@ class PercentageIncrease(IncreaseParam):
         :param name: Имя характеристики.
         :param value: Значение прибавки к характеристике.
         """
-        if not 0 < abs(value) < 100:
+        if not -100 <= abs(value) <= 100:
             raise ValueError('The value must be a percentage.')
 
         super().__init__(name, 1 + value / 100)
 
     def increase(self, base):
-        return base * self.__value
+        return base * self.value
 
 
 class Artifact(GameObject):
@@ -65,6 +69,13 @@ class Artifact(GameObject):
 
         # Описание предмета
         self.__description = description
+
+    def addIncrease(self, inc: IncreaseParam):
+        self.__increase.append(inc)
+
+    def applyIncrease(self, stats):
+        for inc in self.__increase:
+            stats.increase(inc)
 
     @property
     def description(self):
@@ -79,20 +90,60 @@ class Artifact(GameObject):
 
 class SilverFork(Artifact):
     def __init__(self):
-        description = "73473647"
-
+        description = ("Silver Fork"
+                       "\nIncreases attack power by 5%")
         super().__init__(description, "fork")
+
+        super().addIncrease(PercentageIncrease("attack", 4))
+
+
+class FlowerVine(Artifact):
+    def __init__(self):
+        description = ("Flower Vine"
+                       "\nThe thorns of the vine deal 7 points of damage")
+        super().__init__(description, "vine")
+
+        super().addIncrease(IncreaseBySummation("attack", 7))
+
+
+class MedicinalClover(Artifact):
+    def __init__(self):
+        description = ("Medicinal Clover"
+                       "\nIncreases health by 25 units, and slightly "
+                       "\nincreases speed by 3 units")
+        super().__init__(description, "clover")
+
+        super().addIncrease(IncreaseBySummation("health", 25))
+        super().addIncrease(IncreaseBySummation("speed", 3))
+
+
+class ScarletBug(Artifact):
+    def __init__(self):
+        description = ("Scarlet beetle"
+                       "\nIncreases attack speed by 5%")
+        super().__init__(description, "bug")
+
+        super().addIncrease(IncreaseBySummation("speed", 5))
 
 
 class SilverRing(Artifact):
     def __init__(self):
-        description = "ring"
-
+        description = ("Silver Ring "
+                       "\nReduces the delay between projectile"
+                       "\ncreation by 30%, but reduces projectile"
+                       "\ndamage by 30%")
         super().__init__(description, "ring")
 
+        super().addIncrease(PercentageIncrease("attack_speed", -30))
+        super().addIncrease(PercentageIncrease("attack", -30))
 
-class LuckyClover(Artifact):
+
+class MagicAmanita(Artifact):
     def __init__(self):
-        description = "cldejiejdjeifjrfj"
+        description = ("Magic Amanita "
+                       "\nReduces health by 10 points, but increases "
+                       "\nattack by 10%")
+        super().__init__(description, "amanita")
 
-        super().__init__(description, "clover")
+        super().addIncrease(IncreaseBySummation("health", -10))
+        super().addIncrease(PercentageIncrease("attack", 5))
