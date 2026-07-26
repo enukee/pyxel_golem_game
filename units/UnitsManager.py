@@ -1,6 +1,7 @@
 import random
 
 import const
+from debug_settings import DEBUG_SET_RENDER_BACKGROUND_OBJ
 from draw import Scene
 from events import Events
 from map import MatrixMap
@@ -31,9 +32,10 @@ class UnitsManager:
             self.units.append(enemy)
             enemy.setUnitManager(self)
 
-        points = tileMap.randomPoints()
-        for i in points:
-            self.units.append(BackgroundMapObject(i[0], i[1]))
+        if DEBUG_SET_RENDER_BACKGROUND_OBJ:
+            points = tileMap.randomPoints()
+            for i in points:
+                self.units.append(BackgroundMapObject(i[0], i[1]))
 
     def randomEnemy(self, x: int, y: int):
         """
