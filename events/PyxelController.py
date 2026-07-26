@@ -7,7 +7,7 @@ class PyxelController(Controller):
     def __init__(self):
         super().__init__(pyxel.KEY_A, pyxel.KEY_D, pyxel.KEY_S, pyxel.KEY_W,
                          pyxel.KEY_SPACE, pyxel.KEY_E, pyxel.KEY_TAB,
-                         pyxel.MOUSE_BUTTON_LEFT)
+                         pyxel.MOUSE_BUTTON_LEFT, pyxel.MOUSE_BUTTON_RIGHT)
 
     def isBtnPress(self, btn) -> bool:
         return pyxel.btn(btn)

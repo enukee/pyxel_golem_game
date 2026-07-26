@@ -51,7 +51,7 @@ class Button(BaseWindowsWidget):
         self.handler = None
 
     def update(self, control: Controller):
-        if control.isMouseClicked(self.posX, self.posY, self.width, self.height) and self.handler:
+        if control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height) and self.handler:
             self.handler()
 
     def draw(self, scene: Scene):
@@ -109,7 +109,7 @@ class Block(Button):
 
     def update(self, control: Controller):
         # При нажатии на блок он становится выбранным
-        if control.isMouseClicked(self.posX, self.posY, self.width, self.height):
+        if control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height):
             Block.selectBlock = self
 
             if self.handler:
