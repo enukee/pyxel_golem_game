@@ -20,8 +20,12 @@ DELTA_TIME = 1 / FPS
 BUTTON_MENU_WIDTH = 40
 BUTTON_MENU_HEIGHT = 20
 
+# Минимальное время между кликами в сек.
+TIME_BETWEEN_CLICKS = 0.15
+
 BUTTON_MENU_POS_X = (WINDOW_WIDTH - BUTTON_MENU_WIDTH) / 2
 
+# Ширина всех юнитов
 CONST_WIDTH_ALL_UNIT = 4
 
 # Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE

@@ -1,5 +1,5 @@
 import const
-from draw import Screen, Drawer, TextBox, BlockBox, Scene
+from draw import Screen, Drawer, TextBox, BlockBox, Scene, Block
 from events import Controller
 from units import Stats
 
@@ -30,9 +30,10 @@ class Inventory(Screen):
         self.__createActiveInventory()
 
         self.__artifacts = dict()
+        self.__activeArtifacts = dict()
 
     def __createInventory(self):
-        self.inventoryBox = BlockBox(80, 50,
+        self.inventoryBox = BlockBox(100, 50,
                                      4, 4,
                                      "inventory_box")
         self.inventoryBox.fill()
@@ -40,7 +41,7 @@ class Inventory(Screen):
         self.__addHandlerShowStats(self.inventoryBox)
 
     def __createActiveInventory(self):
-        self.activeInventoryBox = BlockBox(10, 10,
+        self.activeInventoryBox = BlockBox(80, 10,
                                            7, 1,
                                            "active_inventory_box")
         self.activeInventoryBox.fill()
@@ -50,10 +51,57 @@ class Inventory(Screen):
     def __addHandlerShowStats(self, box):
         def showStats(block):
             num = box.getBlockNum(block.title)
-            if -1 != num and num in self.__artifacts:
-                self.artifactTxBox.text = self.__artifacts[num].description
+            if -1 != num:
+                if num in self.__artifacts:
+                    self.artifactTxBox.text = self.__artifacts[num].description
+                elif num in self.__activeArtifacts:
+                    self.artifactTxBox.text = self.__activeArtifacts[num].description
 
-        super().setHandler(box.title, showStats)
+        def getArtifact(block: Block):
+            """
+            Вынимает артефакт из списка и возвращает:
+            artifact - сам артефакт,
+            artList - словарь в котором он лежал,
+            num - его ключ в словаре,
+            x, y - позиция x и y экрана в котором был расположен артефакт.
+            """
+            num = self.inventoryBox.getBlockNum(block.title)
+            if num == -1:
+                num = self.activeInventoryBox.getBlockNum(block.title)
+
+                if num in self.__activeArtifacts:
+                    artifact = self.__activeArtifacts.pop(num)
+                else:
+                    artifact = None
+
+                artList = self.__activeArtifacts
+                x, y = self.activeInventoryBox.getPos(num)
+
+            else:
+                if num in self.__artifacts:
+                    artifact = self.__artifacts.pop(num)
+                else:
+                    artifact = None
+
+                artList = self.__artifacts
+                x, y = self.inventoryBox.getPos(num)
+
+            return artifact, artList, num, x, y
+
+        def swapArtifact(block):
+            artifact1, artList1, num1, x1, y1 = getArtifact(Block.selectBlock)
+            artifact2, artList2, num2, x2, y2 = getArtifact(block)
+
+            if artifact1 is not None:
+                artifact1.x, artifact1.y = x2, y2
+                artList2[num2] = artifact1
+
+            if artifact2 is not None:
+                artifact2.x, artifact2.y = x1, y1
+                artList1[num1] = artifact2
+
+        super().setHandlerLeft(box.title, showStats)
+        super().setHandlerRight(box.title, swapArtifact)
 
     def update(self, control: Controller):
         super().update(control)
@@ -62,6 +110,9 @@ class Inventory(Screen):
         self.statsTxBox.text = self.stats.getAllStats()
         super().draw()
         for _, art in self.__artifacts.items():
+            art.draw(self._scene)
+
+        for _, art in self.__activeArtifacts.items():
             art.draw(self._scene)
 
     def pushArtifact(self, artifact):

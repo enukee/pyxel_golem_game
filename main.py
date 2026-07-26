@@ -16,7 +16,7 @@ class Start:
         self.game = None
         self.mainMenu = Menu(self.drawer)
 
-        def startGame():
+        def startGame(btn):
             self.game = Game(self.drawer, self.control)
             self.drawer.mouseVisible(False)
 
@@ -24,14 +24,14 @@ class Start:
                 self.game.player._MovableObjects__x = 0
                 self.game.player._MovableObjects__y = 0
 
-        def exitApp():
+        def exitApp(btn):
             self.drawer.exit()
 
         if DEBUG_MAKE_IMG_MAP:
             startGame()
 
-        self.mainMenu.setHandler("play", startGame)
-        self.mainMenu.setHandler("exit", exitApp)
+        self.mainMenu.setHandlerLeft("play", startGame)
+        self.mainMenu.setHandlerLeft("exit", exitApp)
 
         pyxel.mouse(True)
         pyxel.run(self.update, self.draw)

@@ -1,3 +1,4 @@
+import time
 from typing import Union
 from abc import ABC
 
@@ -48,11 +49,24 @@ class Button(BaseWindowsWidget):
         """
         super().__init__(posX, posY, width, height, title)
 
-        self.handler = None
+        self.__handlerLeft = None
+        self.__handlerRight = None
+        self.__lastClickTime = 0
 
     def update(self, control: Controller):
-        if control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height) and self.handler:
-            self.handler()
+        # Исключение чрезмерно частого нажатия на кнопку
+        currentTime = time.time()
+        if currentTime - self.__lastClickTime < const.TIME_BETWEEN_CLICKS:
+            return
+        self.__lastClickTime = currentTime
+
+        if (control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height)
+                and self.__handlerLeft):
+            self.__handlerLeft(self)
+
+        if (control.isMouseClickedRight(self.posX, self.posY, self.width, self.height)
+                and self.__handlerRight):
+            self.__handlerRight(self)
 
     def draw(self, scene: Scene):
         """
@@ -60,6 +74,12 @@ class Button(BaseWindowsWidget):
         :param scene: Сцена отрисовки.
         """
         scene.drawer.drawButton(self.posX, self.posY, self.width, self.height, self.title)
+
+    def setHandlerLeft(self, handler):
+        self.__handlerLeft = handler
+
+    def setHandlerRight(self, handler):
+        self.__handlerRight = handler
 
 
 class TextBox(BaseWindowsWidget):
@@ -112,8 +132,7 @@ class Block(Button):
         if control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height):
             Block.selectBlock = self
 
-            if self.handler:
-                self.handler(self)
+        super().update(control)
 
     def draw(self, scene: Scene):
         """
@@ -151,12 +170,12 @@ class BlockBox(BaseWindowsWidget):
     def genAllBlockName(self):
         for i in range(self._sizeX):
             for j in range(self._sizeY):
-                yield "art" + str(i) + str(j)
+                yield self.title + str(i) + str(j)
 
     def fill(self):
         for i in range(self._sizeX):
             for j in range(self._sizeY):
-                self.pushBlock(i, j, "art" + str(i) + str(j))
+                self.pushBlock(i, j, self.title + str(i) + str(j))
 
     def getBlockNum(self, title: str):
         for i, blk in self._table.items():
@@ -207,7 +226,7 @@ class BlockBox(BaseWindowsWidget):
 
         return x, y
 
-    def _find(self, title: str):
+    def find(self, title: str):
         """
         Поиск блока контейнера.
         :param title: Надпись уникальная для этого окна.
@@ -217,9 +236,15 @@ class BlockBox(BaseWindowsWidget):
             if blk.title == title:
                 return blk
 
-    def setHandler(self, handler):
+        return -1
+
+    def setHandlerLeft(self, handler):
         for _, blk in self._table.items():
-            blk.handler = handler
+            blk.setHandlerLeft(handler)
+
+    def setHandlerRight(self, handler):
+        for _, blk in self._table.items():
+            blk.setHandlerRight(handler)
 
 
 class Screen:
@@ -236,29 +261,26 @@ class Screen:
 
     def addBtn(self, btn: Button):
         """
-        Добавление кнопки.
-        :param btn: Кнопка с уникальным(для этого окна именем).
+        Добавление кнопки с уникальным (для этого окна) именем.
         """
-        if self._find(btn.title) == -1:  # Надпись кнопки является уникальным ключом.
+        if self._find(btn.title) == -1:
             self.__buttons.append(btn)
 
     def addTxBox(self, txBox: TextBox):
         """
-        Добавление текстового поля.
-        :param txBox: Текстовое поле с уникальным именем.
+        Добавление текстового поля с уникальным (для этого окна) именем.
         """
-        if self._find(txBox.title) == -1:  # Название поля является уникальным ключом.
+        if self._find(txBox.title) == -1:
             self.__textBoxs.append(txBox)
 
     def addBlBox(self, blBox: BlockBox):
         """
-        Добавление текстового поля.
-        :param blBox: Контейнер блоков с уникальным именем.
+        Добавление текстового поля с уникальным (для этого окна) именем.
         """
-        if self._find(blBox.title) == -1:  # Название поля является уникальным ключом.
+        if self._find(blBox.title) == -1:
             self.__blockBox.append(blBox)
 
-    def setHandler(self, objTitle: str, handler):
+    def setHandlerLeft(self, objTitle: str, handler):
         """
         Установка обработчика нажатия на кнопку.
         :param objTitle: Надпись на кнопке.
@@ -266,10 +288,17 @@ class Screen:
         """
         obj = self._find(objTitle)
         if obj != -1:
-            if isinstance(obj, BlockBox):
-                obj.setHandler(handler)
-            elif isinstance(obj, Button):
-                obj.handler = handler
+            obj.setHandlerLeft(handler)
+
+    def setHandlerRight(self, objTitle: str, handler):
+        """
+        Установка обработчика нажатия на кнопку.
+        :param objTitle: Надпись на кнопке.
+        :param handler: Обработчик события нажатия.
+        """
+        obj = self._find(objTitle)
+        if obj != -1:
+            obj.setHandlerRight(handler)
 
     def _find(self, title: str):
         """
