@@ -2,6 +2,7 @@ import const
 from events import Events, PyxelController
 from map import MatrixMap
 from objects import SilverFork
+from objects.Artifact import SilverRing, LuckyClover
 from units import Player, Stats, UnitsManager
 from events import Controller
 from draw import Scene, Drawer
@@ -21,7 +22,9 @@ class Game:
 
         # Окно инвентаря и характеристик
         self.inventory = Inventory(drawer, playerStats)
-        self.inventory.pushArtifact(SilverFork(0, 0))
+        self.inventory.pushArtifact(SilverFork())
+        self.inventory.pushArtifact(SilverRing())
+        self.inventory.pushArtifact(LuckyClover())
 
         chanceEnemy = {
             "mimic":    0.65,

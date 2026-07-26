@@ -170,7 +170,7 @@ class BlockBox(BaseWindowsWidget):
                 i < self._sizeX and j < self._sizeY):
             x = self.posX + i * const.BLOCK_SIZE + (i + 1) * const.BLOCK_SIZE_OFFSET
             y = self.posY + j * const.BLOCK_SIZE + (j + 1) * const.BLOCK_SIZE_OFFSET
-            self._table[self.getNum(i, j)] = Block(x, y, const.BLOCK_SIZE, const.BLOCK_SIZE, blockName)
+            self._table[self.getNum(j, i)] = Block(x, y, const.BLOCK_SIZE, const.BLOCK_SIZE, blockName)
 
     def update(self, control: Controller):
         for _, bl in self._table.items():
@@ -219,7 +219,7 @@ class BlockBox(BaseWindowsWidget):
 
     def setHandler(self, handler):
         for _, blk in self._table.items():
-                blk.handler = handler
+            blk.handler = handler
 
 
 class Screen:
@@ -232,7 +232,7 @@ class Screen:
 
         self.__buttons = []  # Набор кнопок окна.
         self.__textBoxs = []  # Набор текстовых полей окна.
-        self.__blockBox = []    # Набор контейнеров с блоками.
+        self.__blockBox = []  # Набор контейнеров с блоками.
 
     def addBtn(self, btn: Button):
         """
@@ -258,18 +258,18 @@ class Screen:
         if self._find(blBox.title) == -1:  # Название поля является уникальным ключом.
             self.__blockBox.append(blBox)
 
-    def setHandler(self, buttonTitle: str, handler):
+    def setHandler(self, objTitle: str, handler):
         """
         Установка обработчика нажатия на кнопку.
-        :param buttonTitle: Надпись на кнопке.
+        :param objTitle: Надпись на кнопке.
         :param handler: Обработчик события нажатия.
         """
-        btn = self._find(buttonTitle)
-        if btn != -1:
-            if isinstance(btn, BlockBox):
-                btn.setHandler(handler)
-            elif isinstance(btn, Button):
-                btn.handler = handler
+        obj = self._find(objTitle)
+        if obj != -1:
+            if isinstance(obj, BlockBox):
+                obj.setHandler(handler)
+            elif isinstance(obj, Button):
+                obj.handler = handler
 
     def _find(self, title: str):
         """
