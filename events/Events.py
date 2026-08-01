@@ -14,7 +14,8 @@ class Events:
 
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
-        self._inventoryIsOpen = []          # Обработчики события при обновлении инвентаря
+        self._inventoryIsOpenHandler = []          # Обработчики события при обновлении инвентаря
+        self._interactionHandler = []               # Обработчик при событии взаимодействия с некоторым объектом
 
     @property
     def frameCount(self):
@@ -27,17 +28,7 @@ class Events:
         self.__updateInventory()
 
         if not self.gameInPause():
-            # Получаем направление движения игрока от контроллера
-            dirX, dirY = self._controller.getDirection()
-
-            # Обработка события движения игрока
-            for handler in self._playerMovementHandler:
-                handler(dirX, dirY)
-
-            # Обработка события атаки
-            if self._controller.isShootButtonPressed():
-                for handler in self._playerAttackHandler:
-                    handler(self.frameCount)
+            self.__updateGameEvents()
 
     def gameInPause(self):
         """
@@ -52,7 +43,25 @@ class Events:
             self._drawer.mouseVisible(self._isInventoryAvailable)
 
         if self._isInventoryAvailable:
-            for handler in self._inventoryIsOpen:
+            for handler in self._inventoryIsOpenHandler:
+                handler()
+
+    def __updateGameEvents(self):
+        # Получаем направление движения игрока от контроллера
+        dirX, dirY = self._controller.getDirection()
+
+        # Обработка события движения игрока
+        for handler in self._playerMovementHandler:
+            handler(dirX, dirY)
+
+        # Обработка события атаки
+        if self._controller.isShootButtonPressed():
+            for handler in self._playerAttackHandler:
+                handler(self.frameCount)
+
+        # Обработка события взаимодействия с объектом
+        if self._controller.isInteractButtonPressed():
+            for handler in self._interactionHandler:
                 handler()
 
     def addPlayerMovementHandler(self, handler):
@@ -70,7 +79,10 @@ class Events:
         self._playerAttackHandler.append(handler)
 
     def addOpenInventoryHandler(self, handler):
-        self._inventoryIsOpen.append(handler)
+        self._inventoryIsOpenHandler.append(handler)
+
+    def addInteractHandler(self, handler):
+        self._interactionHandler.append(handler)
 
     def isInventoryAvailable(self):
         return self._isInventoryAvailable

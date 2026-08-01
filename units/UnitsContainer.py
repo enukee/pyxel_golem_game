@@ -101,3 +101,19 @@ class UnitsContainer:
                 return u
 
         return None
+
+    def findUnitsInRadius(self, x, y, radius):
+        """
+        Поиск юнитов в определённой окружности.
+        :param x координата по оси X центра окружности.
+        :param y координата по оси X центра окружности.
+        :param radius радиус окружности.
+        """
+        unitsInRad = []
+        for u in self.units:
+            dx = u.x - x
+            dy = u - y
+            if dx * dx + dy * dy <= radius:
+                unitsInRad.append(u)
+
+        return unitsInRad

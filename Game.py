@@ -3,10 +3,11 @@ from events import Events, PyxelController
 from map import MatrixMap
 from objects import SilverFork
 from objects.Artifact import SilverRing, MagicAmanita, FlowerVine, MedicinalClover, ScarletBug
-from units import Player, Stats, UnitsContainer
+from units import Player, Stats, UnitsContainer, InteractiveObject
 from events import Controller
 from draw import Scene, Drawer
 from game_windows import Inventory
+from units.InteractiveObject import BoxCreator
 
 
 class Game:
@@ -29,12 +30,19 @@ class Game:
         self.inventory.pushArtifact(SilverRing())
         self.inventory.pushArtifact(MagicAmanita())
 
+        def boxOpenHandler():
+            pass
+
+        boxCreator = BoxCreator(boxOpenHandler)
+
         self.units = UnitsContainer(self.player, self.tileMap, 50)
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
         self.events = Events(control, drawer)
+        self.__initHandlers(control)
 
+    def __initHandlers(self, control: Controller):
         def movement(dirX, dirY):
             """
             Обработчик события движения игрока.
@@ -57,6 +65,15 @@ class Game:
             self.inventory.update(control)
 
         self.events.addOpenInventoryHandler(updateInventory)
+
+        def interactWithObj():
+            objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
+                                                   const.INTERACT_RADIUS_WITH_OBJECT)
+            for obj in objects:
+                if isinstance(obj, InteractiveObject):
+                    obj.update()
+
+        self.events.addInteractHandler(interactWithObj)
 
     def update(self) -> bool:
         self.events.update()

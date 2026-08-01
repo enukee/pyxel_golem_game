@@ -7,3 +7,4 @@ from .Player import Player
 from .Enemy import Enemy, EggheadEnemy, MimicEnemy
 from .BackgroundMapObject import BackgroundMapObject
 from .UnitsContainer import UnitsContainer
+from .InteractiveObject import InteractiveObject
