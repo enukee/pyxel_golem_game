@@ -1,5 +1,5 @@
-import const
-from draw import Screen, Drawer, TextBox, BlockBox, Scene, Block
+from draw import Drawer
+from game_windows.Screen import Screen, TextBox, BlockBox, Block
 from events import Controller
 from units import Stats
 

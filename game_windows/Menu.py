@@ -1,6 +1,7 @@
 import const
-from draw import Screen, Drawer, Button
+from draw import Drawer
 from events import Controller
+from game_windows.Screen import Screen, Button
 
 
 class Menu(Screen):

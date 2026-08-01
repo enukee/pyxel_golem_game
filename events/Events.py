@@ -11,8 +11,10 @@ class Events:
         self._controller = controller
         self._drawer = drawer
         self._isInventoryAvailable = False  # Флаг, указывающий, доступен ли инвентарь игрока
+
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
+        self._inventoryIsOpen = []          # Обработчики события при обновлении инвентаря
 
     @property
     def frameCount(self):
@@ -22,13 +24,9 @@ class Events:
         """
         Обработка событий.
         """
-        if self._isInventoryAvailable:
-            # Закрытие инвентаря
-            if self._controller.isInventoryButtonPressed():
-                self._drawer.mouseVisible(False)
-                self._isInventoryAvailable = False
+        self.__updateInventory()
 
-        else:
+        if not self.gameInPause():
             # Получаем направление движения игрока от контроллера
             dirX, dirY = self._controller.getDirection()
 
@@ -41,10 +39,21 @@ class Events:
                 for handler in self._playerAttackHandler:
                     handler(self.frameCount)
 
-            # Открытие инвентаря
-            if self._controller.isInventoryButtonPressed():
-                self._drawer.mouseVisible(True)
-                self._isInventoryAvailable = True
+    def gameInPause(self):
+        """
+        При открытии любого игрового окна игра ставится на паузу.
+        Если открыто какое-либо окно возвращает True.
+        """
+        return self._isInventoryAvailable
+
+    def __updateInventory(self):
+        if self._controller.isInventoryButtonPressed():
+            self._isInventoryAvailable = not self._isInventoryAvailable
+            self._drawer.mouseVisible(self._isInventoryAvailable)
+
+        if self._isInventoryAvailable:
+            for handler in self._inventoryIsOpen:
+                handler()
 
     def addPlayerMovementHandler(self, handler):
         """
@@ -60,8 +69,8 @@ class Events:
         """
         self._playerAttackHandler.append(handler)
 
+    def addOpenInventoryHandler(self, handler):
+        self._inventoryIsOpen.append(handler)
+
     def isInventoryAvailable(self):
         return self._isInventoryAvailable
-
-    def updateWindow(self, window):
-        window.update(self._controller)

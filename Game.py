@@ -57,12 +57,16 @@ class Game:
 
         self.events.addPlayerAttackHandler(attack)
 
+        def updateInventory():
+            self.inventory.update(control)
+
+        self.events.addOpenInventoryHandler(updateInventory)
+
     def update(self) -> bool:
         self.events.update()
 
         # Обновление инвентаря
         if self.events.isInventoryAvailable():
-            self.events.updateWindow(self.inventory)
             # Пока открыт инвентарь игра не может закончиться
             # так как игрок не может умереть
             return False
