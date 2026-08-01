@@ -1,34 +1,30 @@
-import random
-
 import const
 from debug_settings import DEBUG_SET_RENDER_BACKGROUND_OBJ
 from draw import Scene
 from events import Events
 from map import MatrixMap
 from units import EggheadEnemy, MimicEnemy, Stats, BackgroundMapObject
+from units.EnemyCreator import EnemyCreator
 
 
-class UnitsManager:
-    def __init__(self, player, tileMap: MatrixMap, chanceEnemy: dict, countEnemy=200, countBackObj=900):
+class UnitsContainer:
+    def __init__(self, player, tileMap: MatrixMap, countEnemy=200, countBackObj=900):
         """
-        Менеджер юнитов, отображает и обновляет юниты на карте.
+        Контейнер юнитов, отображает и обновляет юниты на карте.
         :param player: Игрок.
         :param tileMap: Карта тайлов.
         """
         self.units = []         # Список всех юнитов на карте
         self.nearbyUnits = []   # Список отображаемых юнитов
 
-        # Вероятности появления врага
-        self.keysEnemy = list(chanceEnemy.keys())
-        self.chance = list(chanceEnemy.values())
-
         self.player = player
         self.player.setUnitManager(self)
         self.bullets = []
 
+        enemyCreator = EnemyCreator(self.player)
         for i in range(countEnemy):
             x, y = tileMap.randomPoint()
-            enemy = self.randomEnemy(x, y)
+            enemy = enemyCreator.randomEnemy(x, y)
             self.units.append(enemy)
             enemy.setUnitManager(self)
 
@@ -37,37 +33,34 @@ class UnitsManager:
             for i in points:
                 self.units.append(BackgroundMapObject(i[0], i[1]))
 
-    def randomEnemy(self, x: int, y: int):
-        """
-        Создание случайного юнита.
-        :param x: Стартовая позиция юнита по оси X.
-        :param y: Стартовая позиция юнита по оси Y.
-        :return: Юнит.
-        """
-
-        # Выбор врага
-        enemy = random.choices(self.keysEnemy, weights=self.chance, k=1)[0]
-
-        if enemy == "mimic":
-            return MimicEnemy(x, y, self.player,
-                              Stats(80,
-                                    random.randint(5, 10),
-                                    random.randint(50, 150),
-                                    25, 0))
-
-        elif enemy == "egg_head":
-            return EggheadEnemy(x, y, self.player,
-                                Stats(60,
-                                      random.randint(3, 8),
-                                      random.randint(70, 100),
-                                      55, 0))
-
     def update(self, events: Events, tileMap: MatrixMap) -> bool:
         """
         Обновление юнитов.
         :param events:  Инструмент получения событий.
         :param tileMap: Карта тайлов.
         :return: Возвращает False если игрок жив.
+        """
+        # Получение списка юнитов вблизи
+        self.nearbyUnits = list(self.__nearbyUnitGenerator())
+
+        # Обновление отображаемых юнитов
+        for u in self.nearbyUnits:
+            # Фоновые объекты не нужно обновлять т.к. они чисто декоративные
+            if isinstance(u, BackgroundMapObject):
+                continue
+
+            if u in self.nearbyUnits and u.update(events, tileMap):
+                # Удаление юнита из всех списков в случае его смерти
+                self.units.remove(u)
+                self.nearbyUnits.remove(u)
+
+        # Добавление игрока в список отображаемых юнитов
+        self.nearbyUnits.append(self.player)
+        return self.player.update(events, tileMap)
+
+    def __nearbyUnitGenerator(self):
+        """
+        Генератор отбора юнитов вблизи.
         """
         # Габариты окна отрисовки спрайтов
         left = self.player.x - const.WINDOW_WIDTH
@@ -76,29 +69,9 @@ class UnitsManager:
         up = self.player.y - const.WINDOW_HEIGHT
         down = up + 2 * const.WINDOW_HEIGHT
 
-        # Генератор отбора юнитов вблизи
-        def gen():
-            for u in self.units:
-                if left < u.x < right and up < u.y < down:
-                    yield u
-
-        # Получение списка юнитов вблизи
-        self.nearbyUnits = list(gen())
-
-        # Обновление отображаемых юнитов
-        for u in self.nearbyUnits:
-            # Фоновые объекты не нужно обновлять т.к. они чисто декоративные
-            if isinstance(u, BackgroundMapObject):
-                continue
-
-            if u.update(events, tileMap) and u in self.nearbyUnits:
-                # Удаление юнита из всех списков в случае его смерти
-                self.units.remove(u)
-                self.nearbyUnits.remove(u)
-
-        # Добавление игрока в список отображаемых юнитов
-        self.nearbyUnits.append(self.player)
-        return self.player.update(events, tileMap)
+        for u in self.units:
+            if left < u.x < right and up < u.y < down:
+                yield u
 
     def draw(self, scene: Scene):
         """
@@ -110,6 +83,9 @@ class UnitsManager:
             u.draw(scene)
 
     def isWalkable(self, x2, y2, unit):
+        """
+        Проверка сталкивается ли unit с каким-либо другим юнитом.
+        """
         for u in self.nearbyUnits:
             # Проверка, что это не один и тот же юнит
             if unit == u:

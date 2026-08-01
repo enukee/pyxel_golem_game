@@ -3,7 +3,7 @@ from events import Events, PyxelController
 from map import MatrixMap
 from objects import SilverFork
 from objects.Artifact import SilverRing, MagicAmanita, FlowerVine, MedicinalClover, ScarletBug
-from units import Player, Stats, UnitsManager
+from units import Player, Stats, UnitsContainer
 from events import Controller
 from draw import Scene, Drawer
 from game_windows import Inventory
@@ -29,11 +29,7 @@ class Game:
         self.inventory.pushArtifact(SilverRing())
         self.inventory.pushArtifact(MagicAmanita())
 
-        chanceEnemy = {
-            "mimic":    0.65,
-            "egg_head": 0.35
-        }
-        self.units = UnitsManager(self.player, self.tileMap, chanceEnemy, 50)
+        self.units = UnitsContainer(self.player, self.tileMap, 50)
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
