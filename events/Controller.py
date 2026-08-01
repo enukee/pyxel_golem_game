@@ -41,13 +41,13 @@ class Controller(ABC):
         """
         Нажатие левой кнопки мыши в некоторой области (x, y) размером w на h.
         """
-        return self.__isMouseInArea(x, y, w, h) and self.isBtnPress(self.mouseBtnLeft)
+        return self.__isMouseInArea(x, y, w, h) and self.isBtnClick(self.mouseBtnLeft)
 
     def isMouseClickedRight(self, x: int, y: int, w: int, h: int):
         """
         Нажатие левой кнопки мыши в некоторой области (x, y) размером w на h.
         """
-        return self.__isMouseInArea(x, y, w, h) and self.isBtnPress(self.mouseBtnRight)
+        return self.__isMouseInArea(x, y, w, h) and self.isBtnClick(self.mouseBtnRight)
 
     def isLeftButtonPressed(self) -> bool:
         """

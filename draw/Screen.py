@@ -1,5 +1,3 @@
-import time
-from typing import Union
 from abc import ABC
 
 import const
@@ -51,15 +49,8 @@ class Button(BaseWindowsWidget):
 
         self.__handlerLeft = None
         self.__handlerRight = None
-        self.__lastClickTime = 0
 
     def update(self, control: Controller):
-        # Исключение чрезмерно частого нажатия на кнопку
-        currentTime = time.time()
-        if currentTime - self.__lastClickTime < const.TIME_BETWEEN_CLICKS:
-            return
-        self.__lastClickTime = currentTime
-
         if (control.isMouseClickedLeft(self.posX, self.posY, self.width, self.height)
                 and self.__handlerLeft):
             self.__handlerLeft(self)
