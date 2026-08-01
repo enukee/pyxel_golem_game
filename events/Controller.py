@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 class Controller(ABC):
     def __init__(self, buttonLeft, buttonRight, buttonDown, buttonUp, buttonShoot,
-                 buttonRaise, buttonInventory, mouseBtnLeft, mouseBtnRight):
+                 buttonInteract, buttonInventory, mouseBtnLeft, mouseBtnRight):
         self.buttonLeft = buttonLeft
         self.buttonRight = buttonRight
         self.buttonDown = buttonDown
         self.buttonUp = buttonUp
         self.buttonShoot = buttonShoot
-        self.buttonRaise = buttonRaise
+        self.buttonInteract = buttonInteract
         self.buttonInventory = buttonInventory
         self.mouseBtnLeft = mouseBtnLeft
         self.mouseBtnRight = mouseBtnRight
@@ -103,11 +103,11 @@ class Controller(ABC):
 
         return False
 
-    def isRaiseButtonPressed(self) -> bool:
+    def isInteractButtonPressed(self) -> bool:
         """
-        Кнопка открыть/закрыть сундук.
+        Кнопка взаимодействия с объектом.
         """
-        if self.isBtnPress(self.buttonRaise):
+        if self.isBtnClick(self.buttonInteract):
             return True
 
         return False
