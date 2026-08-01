@@ -1,10 +1,10 @@
 from draw import Drawer
-from game_windows.Screen import Screen, TextBox, BlockBox, Block
-from events import Controller
+from game_windows.Screen import TextBox, BlockBox
+from game_windows.ScreenWithBlockBox import ScreenWithBlockBox
 from units import Stats
 
 
-class Inventory(Screen):
+class Inventory(ScreenWithBlockBox):
     def __init__(self, drawer: Drawer, playerStats: Stats):
         """
         Окно инвентаря игрока и характеристик.
@@ -25,12 +25,14 @@ class Inventory(Screen):
                                      190, 50,
                                      "", "art_stats")
         super().addTxBox(self.artifactTxBox)
-
-        self.__createInventory()
-        self.__createActiveInventory()
+        super().setStatsBox(self.artifactTxBox)
 
         self.__artifacts = dict()
         self.__activeArtifacts = dict()
+
+        self.__createInventory()
+        self.__createActiveInventory()
+        super().updateHandlers()
 
     def __createInventory(self):
         self.inventoryBox = BlockBox(100, 50,
@@ -38,7 +40,7 @@ class Inventory(Screen):
                                      "inventory_box")
         self.inventoryBox.fill()
         super().addBlBox(self.inventoryBox)
-        self.__addHandlerShowStats(self.inventoryBox)
+        super().setFirstBox(self.inventoryBox, self.__artifacts)
 
     def __createActiveInventory(self):
         self.activeInventoryBox = BlockBox(80, 10,
@@ -46,75 +48,12 @@ class Inventory(Screen):
                                            "active_inventory_box")
         self.activeInventoryBox.fill()
         super().addBlBox(self.activeInventoryBox)
-        self.__addHandlerShowStats(self.activeInventoryBox)
+        super().setSecondBox(self.activeInventoryBox, self.__activeArtifacts)
 
-    def __addHandlerShowStats(self, box):
-        def showStats(block):
-            num = box.getBlockNum(block.title)
-            if -1 != num:
-                if num in self.__artifacts:
-                    self.artifactTxBox.text = self.__artifacts[num].description
-                elif num in self.__activeArtifacts:
-                    self.artifactTxBox.text = self.__activeArtifacts[num].description
-
-        def getArtifact(block: Block):
-            """
-            Вынимает артефакт из списка и возвращает:
-            artifact - сам артефакт,
-            artList - словарь в котором он лежал,
-            num - его ключ в словаре,
-            x, y - позиция x и y экрана в котором был расположен артефакт.
-            """
-            num = self.inventoryBox.getBlockNum(block.title)
-            if num == -1:
-                num = self.activeInventoryBox.getBlockNum(block.title)
-
-                if num in self.__activeArtifacts:
-                    artifact = self.__activeArtifacts.pop(num)
-                else:
-                    artifact = None
-
-                artList = self.__activeArtifacts
-                x, y = self.activeInventoryBox.getPos(num)
-
-            else:
-                if num in self.__artifacts:
-                    artifact = self.__artifacts.pop(num)
-                else:
-                    artifact = None
-
-                artList = self.__artifacts
-                x, y = self.inventoryBox.getPos(num)
-
-            return artifact, artList, num, x, y
-
-        def swapArtifact(block):
-            if Block.selectBlock is None:
-                return
-
-            artifact1, artList1, num1, x1, y1 = getArtifact(Block.selectBlock)
-            artifact2, artList2, num2, x2, y2 = getArtifact(block)
-
-            if artifact1 is not None:
-                artifact1.x, artifact1.y = x2, y2
-                artList2[num2] = artifact1
-
-            if artifact2 is not None:
-                artifact2.x, artifact2.y = x1, y1
-                artList1[num1] = artifact2
-
-            self.statsUpdate()
-
-        super().setHandlerLeft(box.title, showStats)
-        super().setHandlerRight(box.title, swapArtifact)
-
-    def statsUpdate(self):
+    def updateArtPosition(self):
         self.stats.reset()
         for _, art in self.__activeArtifacts.items():
             art.applyIncrease(self.stats)
-
-    def update(self, control: Controller):
-        super().update(control)
 
     def draw(self):
         self.statsTxBox.text = self.stats.getAllStats()
