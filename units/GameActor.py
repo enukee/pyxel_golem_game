@@ -5,7 +5,8 @@ from debug_settings import DEBUG_SET_TURNING_ON_DAMAGE
 from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
-from units import MovableObjects, SpriteManager, Stats
+from objects import Stats
+from units import MovableObjects, SpriteManager
 
 
 class GameActor(MovableObjects, ABC):

@@ -1,7 +1,8 @@
 from random import randint, choices
 
 import const
-from units import MimicEnemy, EggheadEnemy, Stats
+from objects import Stats
+from units import MimicEnemy, EggheadEnemy
 
 
 class EnemyCreator:

@@ -31,9 +31,11 @@ CHANCE_ENEMY = {
     "mimic":    0.65,
     "egg_head": 0.35
 }
+ENEMIES_COUNT = 200
+BOX_COUNT = 100
 
 # Максимальное расстояние на котором игрок может взаимодействовать с объектом
-INTERACT_RADIUS_WITH_OBJECT = 10
+INTERACT_RADIUS_WITH_OBJECT = 30
 
 # Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE
 BLOCK_SIZE = 18
@@ -134,6 +136,7 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "enemy_bullet_up": [92, 2, 4, 4, 90],
               "enemy_bullet_down": [92, 2, 4, -4, 90],
 
+              "box":                [88, 240, 17, 16, 0],
 
               "wall":               [0, 240, 16, 16, 0],
 

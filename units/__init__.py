@@ -1,6 +1,5 @@
 from .SpriteManager import SpriteManager
 from .MovableObjects import MovableObjects
-from .Stats import Stats
 from .GameActor import GameActor
 from .Bullet import Bullet, EnemyBullet, FireBullet
 from .Player import Player

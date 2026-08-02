@@ -1,7 +1,7 @@
 from typing import Union
 
 from draw import Scene
-from objects import IncreaseParam
+from objects._Artifact import IncreaseParam
 
 
 class Stats:

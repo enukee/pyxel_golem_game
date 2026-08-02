@@ -1,7 +1,7 @@
 from draw import Drawer
 from game_windows.Screen import TextBox, BlockBox
 from game_windows.ScreenWithBlockBox import ScreenWithBlockBox
-from units import Stats
+from objects import Stats
 
 
 class Inventory(ScreenWithBlockBox):

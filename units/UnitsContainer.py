@@ -3,12 +3,11 @@ from debug_settings import DEBUG_SET_RENDER_BACKGROUND_OBJ
 from draw import Scene
 from events import Events
 from map import MatrixMap
-from units import EggheadEnemy, MimicEnemy, Stats, BackgroundMapObject
-from units.EnemyCreator import EnemyCreator
+from units import EggheadEnemy, MimicEnemy, BackgroundMapObject
 
 
 class UnitsContainer:
-    def __init__(self, player, tileMap: MatrixMap, countEnemy=200, countBackObj=900):
+    def __init__(self, player, tileMap: MatrixMap, enemyCreator, interObjCreator):
         """
         Контейнер юнитов, отображает и обновляет юниты на карте.
         :param player: Игрок.
@@ -21,8 +20,7 @@ class UnitsContainer:
         self.player.setUnitManager(self)
         self.bullets = []
 
-        enemyCreator = EnemyCreator(self.player)
-        for i in range(countEnemy):
+        for i in range(const.ENEMIES_COUNT):
             x, y = tileMap.randomPoint()
             enemy = enemyCreator.randomEnemy(x, y)
             self.units.append(enemy)
@@ -32,6 +30,11 @@ class UnitsContainer:
             points = tileMap.randomPoints()
             for i in points:
                 self.units.append(BackgroundMapObject(i[0], i[1]))
+
+        # Создание сундуков
+        for _ in range(const.BOX_COUNT):
+            x, y = tileMap.randomPoint()
+            self.units.append(interObjCreator.randomObj(x, y))
 
     def update(self, events: Events, tileMap: MatrixMap) -> bool:
         """
@@ -112,8 +115,8 @@ class UnitsContainer:
         unitsInRad = []
         for u in self.units:
             dx = u.x - x
-            dy = u - y
-            if dx * dx + dy * dy <= radius:
+            dy = u.y - y
+            if dx * dx + dy * dy <= radius * radius:
                 unitsInRad.append(u)
 
         return unitsInRad

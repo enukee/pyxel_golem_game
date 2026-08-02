@@ -1,3 +1,3 @@
 from .GameObject import GameObject
-from .Artifact import IncreaseParam, IncreaseBySummation, PercentageIncrease
-from .Artifact import SilverFork
+from .ArtifactGenerator import ArtifactGenerator
+from .Stats import Stats

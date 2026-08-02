@@ -1,13 +1,13 @@
 import const
-from events import Events, PyxelController
+from events import Events
 from map import MatrixMap
-from objects import SilverFork
-from objects.Artifact import SilverRing, MagicAmanita, FlowerVine, MedicinalClover, ScarletBug
-from units import Player, Stats, UnitsContainer, InteractiveObject
+from objects import Stats
+from units import Player, UnitsContainer, InteractiveObject
 from events import Controller
 from draw import Scene, Drawer
 from game_windows import Inventory, BoxInteract
-from units.InteractiveObject import BoxCreator
+from units.InteractiveObject import BoxCreator, BoxObject
+from units.EnemyCreator import EnemyCreator
 
 
 class Game:
@@ -23,16 +23,18 @@ class Game:
 
         # Окно инвентаря и характеристик
         self.inventory = Inventory(drawer, playerStats)
-        self.inventory.pushArtifact(SilverFork())
-        self.inventory.pushArtifact(FlowerVine())
-        self.inventory.pushArtifact(MedicinalClover())
-        self.inventory.pushArtifact(ScarletBug())
-        self.inventory.pushArtifact(SilverRing())
-        self.inventory.pushArtifact(MagicAmanita())
+        self.boxInv = None
 
-        self.boxInv = BoxInteract(drawer, self.inventory.artifacts)
+        def openBox(box: BoxObject):
+            # Окно взаимодействия с сундуком
+            self.boxInv = BoxInteract(drawer, self.inventory.artifacts, box.artifacts)
+            self.boxInv.updateArtifacts()
+            self.boxInv.update(control)
 
-        self.units = UnitsContainer(self.player, self.tileMap, 50)
+        interactCreator = BoxCreator(openBox)
+        enemyCreator = EnemyCreator(self.player)
+
+        self.units = UnitsContainer(self.player, self.tileMap, enemyCreator, interactCreator)
 
         self.scene = Scene(drawer, self.player.x - const.WINDOW_WIDTH // 2,
                            self.player.y - const.WINDOW_HEIGHT // 2)
@@ -65,13 +67,14 @@ class Game:
         self.events.addOpenInventoryHandler(updateInventory)
 
         def interactWithObj():
-            self.boxInv.updateArtifacts()
-            self.boxInv.update(control)
-            # objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
-            #                                        const.INTERACT_RADIUS_WITH_OBJECT)
-            # for obj in objects:
-            #     if isinstance(obj, InteractiveObject):
-            #         obj.update()
+            objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
+                                                   const.INTERACT_RADIUS_WITH_OBJECT)
+            for obj in objects:
+                if isinstance(obj, InteractiveObject):
+                    obj.interact()
+                    return True
+
+            return False
 
         self.events.addInteractHandler(interactWithObj)
 
@@ -94,7 +97,7 @@ class Game:
             self.inventory.draw()
             return
 
-        if self.events.isInteractBoxAvailable():
+        if self.events.isInteractBoxAvailable() and self.boxInv is not None:
             self.boxInv.draw()
             return
 

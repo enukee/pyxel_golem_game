@@ -2,7 +2,8 @@ import const
 from events import Events
 from map.MatrixMap import MatrixMap
 from draw import Scene
-from units import GameActor, Stats
+from objects import Stats
+from units import GameActor
 from units import FireBullet
 
 

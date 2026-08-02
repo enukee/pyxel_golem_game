@@ -4,7 +4,8 @@ import random
 
 import const
 from events import Events
-from units import GameActor, Player, Stats
+from objects import Stats
+from units import GameActor, Player
 from map import MatrixMap
 from draw import Scene
 

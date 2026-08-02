@@ -78,9 +78,14 @@ class Events:
             self._drawer.mouseVisible(self._isInteractBoxAvailable)
 
         # Обработка события взаимодействия с сундуком
+        isObjNear = False
         if self._isInteractBoxAvailable:
             for handler in self._interactionHandler:
-                handler()
+                if handler():
+                    isObjNear = True
+
+        if not isObjNear:
+            self._isInteractBoxAvailable = False
 
     def addPlayerMovementHandler(self, handler):
         """
