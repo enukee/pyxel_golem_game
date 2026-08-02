@@ -94,7 +94,7 @@ class MovableObjects:
     @property
     def x(self):
         """
-        :return: Координата по оси Y верхнего левого угла спрайта
+        :return: Координата по оси X верхнего левого угла спрайта
         """
         return self.__x
 
@@ -109,9 +109,17 @@ class MovableObjects:
     def standY(self):
         """
         :return: Координата по Y соответсвующая позиции в которой "стоит" объект
-        (координата нижнего левого угла относительно спрайта)
+        (координата нижнего правого угла относительно спрайта)
         """
         return self.__y + const.getHeightSprite(self.currentSprite)
+
+    @property
+    def rightX(self):
+        """
+        :return: Координата по X, являющаяся правой границей спрайта.
+        (координата нижнего правого угла относительно спрайта)
+        """
+        return self.__x + const.getWidthSprite(self.currentSprite)
 
     @property
     def standPos(self):

@@ -4,7 +4,7 @@ from draw import Drawer
 
 # Отрисовка объектов фона,
 # не влияет на процесс игры
-DEBUG_SET_RENDER_BACKGROUND_OBJ = False
+DEBUG_SET_RENDER_BACKGROUND_OBJ = True
 
 # Выкл./Вкл. нанесение урона по врагам и игроку.
 # Установите False для выключения урона

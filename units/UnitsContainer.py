@@ -23,18 +23,26 @@ class UnitsContainer:
         for i in range(const.ENEMIES_COUNT):
             x, y = tileMap.randomPoint()
             enemy = enemyCreator.randomEnemy(x, y)
-            self.units.append(enemy)
-            enemy.setUnitManager(self)
+            if tileMap.isWalkable(enemy.rightX + const.CONST_OFFSET_OF_EDGE,
+                                  enemy.standY + const.CONST_OFFSET_OF_EDGE):
+                self.units.append(enemy)
+                enemy.setUnitManager(self)
 
         if DEBUG_SET_RENDER_BACKGROUND_OBJ:
             points = tileMap.randomPoints()
             for i in points:
-                self.units.append(BackgroundMapObject(i[0], i[1]))
+                backObj = BackgroundMapObject(i[0], i[1])
+                if tileMap.isWalkable(backObj.rightX + const.CONST_OFFSET_OF_EDGE,
+                                      backObj.standY + const.CONST_OFFSET_OF_EDGE):
+                    self.units.append(backObj)
 
         # Создание сундуков
         for _ in range(const.BOX_COUNT):
             x, y = tileMap.randomPoint()
-            self.units.append(interObjCreator.randomObj(x, y))
+            interObj = interObjCreator.randomObj(x, y)
+            if tileMap.isWalkable(interObj.rightX + const.CONST_OFFSET_OF_EDGE,
+                                  interObj.standY + const.CONST_OFFSET_OF_EDGE):
+                self.units.append(interObj)
 
     def update(self, events: Events, tileMap: MatrixMap) -> bool:
         """
