@@ -4,7 +4,7 @@ from game_windows.ScreenWithBlockBox import ScreenWithBlockBox
 
 
 class BoxInteract(ScreenWithBlockBox):
-    def __init__(self, drawer: Drawer, atrInventory: dict, artBox: dict):
+    def __init__(self, drawer: Drawer, atrInventory: dict):
         """
         Окно для взаимодействия игрока с сундуком,
         позволяет переложить предметы в инвентарь.
@@ -29,7 +29,7 @@ class BoxInteract(ScreenWithBlockBox):
         self.setFirstBox(self.inventoryBox, self.__artInventory)
 
         # Контейнер с артефактами из сундука
-        self.__artBox = artBox
+        self.__artBox = dict()
         self.currentBox = BlockBox(150, 50,
                                    4, 4,
                                    "current_box")
@@ -38,3 +38,8 @@ class BoxInteract(ScreenWithBlockBox):
         self.setSecondBox(self.currentBox, self.__artBox)
 
         super().updateHandlers()
+
+    def setArtifactsInBox(self, artifacts):
+        self.__artBox = artifacts
+        self.setSecondBox(self.currentBox, self.__artBox)
+

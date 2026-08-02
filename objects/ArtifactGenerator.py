@@ -1,3 +1,4 @@
+from copy import deepcopy
 from random import choices
 
 from objects._Artifact import *
@@ -18,5 +19,9 @@ class ArtifactGenerator:
         self.chance = list(artifacts.values())
 
     def genArtifactsBox(self, n):
+        artList = []
         for _ in range(n):
-            yield choices(self.keys, weights=self.chance, k=1)[0]
+            artifact = choices(self.keys, weights=self.chance, k=1)[0]
+            artList.append(deepcopy(artifact))
+
+        return artList

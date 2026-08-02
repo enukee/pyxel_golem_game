@@ -23,13 +23,12 @@ class Game:
 
         # Окно инвентаря и характеристик
         self.inventory = Inventory(drawer, playerStats)
-        self.boxInv = None
+        self.boxInv = BoxInteract(drawer, self.inventory.artifacts)
 
         def openBox(box: BoxObject):
             # Окно взаимодействия с сундуком
-            self.boxInv = BoxInteract(drawer, self.inventory.artifacts, box.artifacts)
+            self.boxInv.setArtifactsInBox(box.artifacts)
             self.boxInv.updateArtifacts()
-            self.boxInv.update(control)
 
         interactCreator = BoxCreator(openBox)
         enemyCreator = EnemyCreator(self.player)
@@ -64,7 +63,13 @@ class Game:
             self.inventory.updateArtifacts()
             self.inventory.update(control)
 
-        self.events.addOpenInventoryHandler(updateInventory)
+        self.events.addUpdateInventoryHandler(updateInventory)
+
+        def updateInteract():
+            self.boxInv.updateArtifacts()
+            self.boxInv.update(control)
+
+        self.events.addUpdateInteractHandler(updateInteract)
 
         def interactWithObj():
             objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
@@ -76,7 +81,7 @@ class Game:
 
             return False
 
-        self.events.addInteractHandler(interactWithObj)
+        self.events.addOpenInteractHandler(interactWithObj)
 
     def update(self) -> bool:
         self.events.update()

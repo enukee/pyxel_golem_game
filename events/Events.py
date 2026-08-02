@@ -15,8 +15,9 @@ class Events:
 
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
-        self._inventoryIsOpenHandler = []          # Обработчики события при обновлении инвентаря
-        self._interactionHandler = []               # Обработчик при событии взаимодействия с некоторым объектом
+        self._inventoryUpdateHandler = []          # Обработчики события при обновлении инвентаря
+        self._interactionUpdateHandler = []               # Обработчик при событии взаимодействия с некоторым объектом
+        self._interactionOpenHandler = []
 
     @property
     def frameCount(self):
@@ -51,7 +52,7 @@ class Events:
             self._drawer.mouseVisible(self._isInventoryAvailable)
 
         if self._isInventoryAvailable:
-            for handler in self._inventoryIsOpenHandler:
+            for handler in self._inventoryUpdateHandler:
                 handler()
 
     def __updateGameEvents(self):
@@ -77,15 +78,15 @@ class Events:
             self._isInteractBoxAvailable = not self._isInteractBoxAvailable
             self._drawer.mouseVisible(self._isInteractBoxAvailable)
 
-        # Обработка события взаимодействия с сундуком
-        isObjNear = False
-        if self._isInteractBoxAvailable:
-            for handler in self._interactionHandler:
-                if handler():
-                    isObjNear = True
+            # Если взаимодействовать не с чем не открываем окно
+            for handler in self._interactionOpenHandler:
+                if not handler():
+                    self._isInteractBoxAvailable = False
 
-        if not isObjNear:
-            self._isInteractBoxAvailable = False
+        # Обработка события взаимодействия с сундуком
+        if self._isInteractBoxAvailable:
+            for handler in self._interactionUpdateHandler:
+                handler()
 
     def addPlayerMovementHandler(self, handler):
         """
@@ -101,11 +102,14 @@ class Events:
         """
         self._playerAttackHandler.append(handler)
 
-    def addOpenInventoryHandler(self, handler):
-        self._inventoryIsOpenHandler.append(handler)
+    def addUpdateInventoryHandler(self, handler):
+        self._inventoryUpdateHandler.append(handler)
 
-    def addInteractHandler(self, handler):
-        self._interactionHandler.append(handler)
+    def addUpdateInteractHandler(self, handler):
+        self._interactionUpdateHandler.append(handler)
+
+    def addOpenInteractHandler(self, handler):
+        self._interactionOpenHandler.append(handler)
 
     def isInventoryAvailable(self):
         return self._isInventoryAvailable
