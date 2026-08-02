@@ -27,6 +27,15 @@ class ScreenWithBlockBox(Screen):
         self.__secondBox = box
         self.__secondArtList = artList
 
+    def updateArtifacts(self):
+        self.__updatePosArtifacts(self.__firstBox, self.__firstArtList)
+        self.__updatePosArtifacts(self.__secondBox, self.__secondArtList)
+
+    @staticmethod
+    def __updatePosArtifacts(box: BlockBox, atrList: dict):
+        for i, art in atrList.items():
+            art.x, art.y = box.getPos(i)
+
     def setStatsBox(self, textBox: TextBox):
         self.__statsArtTextBox = textBox
 
@@ -105,3 +114,12 @@ class ScreenWithBlockBox(Screen):
 
         super().setHandlerLeft(box.title, showStats)
         super().setHandlerRight(box.title, swapArtifact)
+
+    def draw(self):
+        super().draw()
+
+        for _, art in self.__firstArtList.items():
+            art.draw(self._scene)
+
+        for _, art in self.__secondArtList.items():
+            art.draw(self._scene)

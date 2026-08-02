@@ -11,6 +11,7 @@ class Events:
         self._controller = controller
         self._drawer = drawer
         self._isInventoryAvailable = False  # Флаг, указывающий, доступен ли инвентарь игрока
+        self._isInteractBoxAvailable = False
 
         self._playerMovementHandler = []    # Список обработчиков движения игрока
         self._playerAttackHandler = []    # Список обработчиков движения игрок
@@ -27,6 +28,8 @@ class Events:
         """
         self.__updateInventory()
 
+        self.__updateInteractBox()
+
         if not self.gameInPause():
             self.__updateGameEvents()
 
@@ -35,9 +38,14 @@ class Events:
         При открытии любого игрового окна игра ставится на паузу.
         Если открыто какое-либо окно возвращает True.
         """
-        return self._isInventoryAvailable
+        return self._isInventoryAvailable or self._isInteractBoxAvailable
 
     def __updateInventory(self):
+        # Если игра на паузе и инвентарь не доступен(обрабатывается другое окно),
+        # то инвентарь не обновляется
+        if self.gameInPause() and not self._isInventoryAvailable:
+            return
+
         if self._controller.isInventoryButtonPressed():
             self._isInventoryAvailable = not self._isInventoryAvailable
             self._drawer.mouseVisible(self._isInventoryAvailable)
@@ -59,8 +67,18 @@ class Events:
             for handler in self._playerAttackHandler:
                 handler(self.frameCount)
 
-        # Обработка события взаимодействия с объектом
+    def __updateInteractBox(self):
+        # Если игра на паузе и окно взаимодействия с сундуком не доступен(обрабатывается другое окно),
+        # то окно взаимодействия с сундуком не обновляется
+        if self.gameInPause() and not self._isInteractBoxAvailable:
+            return
+
         if self._controller.isInteractButtonPressed():
+            self._isInteractBoxAvailable = not self._isInteractBoxAvailable
+            self._drawer.mouseVisible(self._isInteractBoxAvailable)
+
+        # Обработка события взаимодействия с сундуком
+        if self._isInteractBoxAvailable:
             for handler in self._interactionHandler:
                 handler()
 
@@ -86,3 +104,6 @@ class Events:
 
     def isInventoryAvailable(self):
         return self._isInventoryAvailable
+
+    def isInteractBoxAvailable(self):
+        return self._isInteractBoxAvailable

@@ -6,7 +6,7 @@ from objects.Artifact import SilverRing, MagicAmanita, FlowerVine, MedicinalClov
 from units import Player, Stats, UnitsContainer, InteractiveObject
 from events import Controller
 from draw import Scene, Drawer
-from game_windows import Inventory
+from game_windows import Inventory, BoxInteract
 from units.InteractiveObject import BoxCreator
 
 
@@ -30,10 +30,7 @@ class Game:
         self.inventory.pushArtifact(SilverRing())
         self.inventory.pushArtifact(MagicAmanita())
 
-        def boxOpenHandler():
-            pass
-
-        boxCreator = BoxCreator(boxOpenHandler)
+        self.boxInv = BoxInteract(drawer, self.inventory.artifacts)
 
         self.units = UnitsContainer(self.player, self.tileMap, 50)
 
@@ -62,16 +59,19 @@ class Game:
         self.events.addPlayerAttackHandler(attack)
 
         def updateInventory():
+            self.inventory.updateArtifacts()
             self.inventory.update(control)
 
         self.events.addOpenInventoryHandler(updateInventory)
 
         def interactWithObj():
-            objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
-                                                   const.INTERACT_RADIUS_WITH_OBJECT)
-            for obj in objects:
-                if isinstance(obj, InteractiveObject):
-                    obj.update()
+            self.boxInv.updateArtifacts()
+            self.boxInv.update(control)
+            # objects = self.units.findUnitsInRadius(self.player.x, self.player.y,
+            #                                        const.INTERACT_RADIUS_WITH_OBJECT)
+            # for obj in objects:
+            #     if isinstance(obj, InteractiveObject):
+            #         obj.update()
 
         self.events.addInteractHandler(interactWithObj)
 
@@ -79,8 +79,8 @@ class Game:
         self.events.update()
 
         # Обновление инвентаря
-        if self.events.isInventoryAvailable():
-            # Пока открыт инвентарь игра не может закончиться
+        if self.events.gameInPause():
+            # Пока открыт любое окно, игра не может закончиться
             # так как игрок не может умереть
             return False
 
@@ -92,6 +92,10 @@ class Game:
         # Отрисовка инвентаря
         if self.events.isInventoryAvailable():
             self.inventory.draw()
+            return
+
+        if self.events.isInteractBoxAvailable():
+            self.boxInv.draw()
             return
 
         self.tileMap.draw(self.scene, self.player.x, self.player.y)

@@ -58,11 +58,6 @@ class Inventory(ScreenWithBlockBox):
     def draw(self):
         self.statsTxBox.text = self.stats.getAllStats()
         super().draw()
-        for _, art in self.__artifacts.items():
-            art.draw(self._scene)
-
-        for _, art in self.__activeArtifacts.items():
-            art.draw(self._scene)
 
     def pushArtifact(self, artifact):
         for i in range(self.inventoryBox.maxCount):
@@ -70,3 +65,7 @@ class Inventory(ScreenWithBlockBox):
                 artifact.x, artifact.y = self.inventoryBox.getPos(i)
                 self.__artifacts[i] = artifact
                 return
+
+    @property
+    def artifacts(self):
+        return self.__artifacts
