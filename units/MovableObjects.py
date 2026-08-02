@@ -29,42 +29,53 @@ class MovableObjects:
         """
         dx += self.pushOffsetX
         dy += self.pushOffsetY
-
         self.pushOffsetX, self.pushOffsetY = 0, 0
-        ret = True
 
-        # Проверка превышения правой границы с учётом ширины спрайта
-        spriteWidth = const.getWidthSprite(self.currentSprite)
-        if not tile_map.isWalkable(self.x + dx + spriteWidth, self.y):
-            dx = min(dx, 0)
-            ret = False
+        retValue, dx, dy = self.__tryMoveBySpriteSize(dx, dy, tile_map)
 
-        # Проверка превышения нижней границы с учётом высоты спрайта
-        spriteHeight = const.getHeightSprite(self.currentSprite)
-        if not tile_map.isWalkable(self.x, self.y + dy + spriteHeight):
-            dy = min(dy, 0)
-            ret = False
-
-        new_x, new_y = self.__x + dx, self.__y + dy
-        newStandY = new_y + spriteHeight
+        new_x, new_y, width, height = self.__getStandPosWithOffset(dx, dy)
+        newStandY = new_y + height - const.CONST_WIDTH_ALL_UNIT
         if tile_map.isWalkable(new_x, newStandY):
             if self.unitManager is None:
-                self.__x, self.__y = new_x, new_y
+                self.__setOffset(dx, dy)
             else:
                 unit = self.unitManager.isWalkable(new_x,
-                                                   newStandY - const.CONST_WIDTH_ALL_UNIT,
+                                                   newStandY,
                                                    self)
                 if unit is None:
-                    self.__x, self.__y = new_x, new_y
+                    self.__setOffset(dx, dy)
                 else:
                     unit.setPush(dx, dy)
                     self.pushUnit(unit)
                     unit.pushUnit(self)
 
         else:
-            ret = False
+            retValue = False
 
-        return ret
+        return retValue
+
+    def __tryMoveBySpriteSize(self, dx: float, dy: float, tile_map: MatrixMap):
+        new_x, new_y, width, height = self.__getStandPosWithOffset(dx, dy)
+        retValue = True
+
+        # Проверка превышения правой границы с учётом ширины спрайта
+        if not tile_map.isWalkable(new_x + width, new_y):
+            dx = min(dx, 0)
+            retValue = False
+
+        # Проверка превышения нижней границы с учётом высоты спрайта
+        if not tile_map.isWalkable(new_x, new_y + height):
+            dy = min(dy, 0)
+            retValue = False
+
+        return retValue, dx, dy
+
+    def __getStandPosWithOffset(self, dx, dy):
+        new_x, new_y, width, height = self.standPos
+        return new_x + dx, new_y + dy, width, height
+
+    def __setOffset(self, dx, dy):
+        self.__x, self.__y = self.__x + dx, self.__y + dy
 
     def setPush(self, x, y):
         """
