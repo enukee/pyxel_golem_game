@@ -1,20 +1,59 @@
+import const
+
+
+class SpriteInfo:
+    def __init__(self, name, time, shiftX, shiftY):
+        # Название
+        self.spriteName = name
+        # Время показа спрайта
+        self.time = time
+        # Сдвиг спрайта при отрисовке
+        self.shiftX = shiftX
+        self.shiftY = shiftY
+
 
 class SpriteManager:
     class SpritesTuple:
-        def __init__(self):
+        def __init__(self, isApplyDir=False, isSingleExecute=False):
             """
-            Набор модификаторов спрайтов.
+            Набор спрайтов для одного движения действия.
             """
-            self.sprites = []               # Названия спрайтов
-            self.spritesShowTime = []       # Время показа спрайтов
-            self.spritesShift = []          # Сдвиг спрайта при отрисовке
+            self.__sprites = []
+
+            # Добавление модификатора направления (если имеются разные спрайты
+            # в зависимости от направления движения)
+            self.__isApplyDir = isApplyDir
+            # Выполняется единожды (после показа каждого спрайта действия завершается)
+            self.__isSingleExecute = isSingleExecute
+
+        def addSprite(self, name, time, shift):
+            """
+            Добавление спрайта в анимацию.
+            @param name: Модификатор спрайта(добавляется к базовому имени спрайта).
+            @param time: Время показа данного спрайта.
+            @param shift: Список из координат смещения спрайта при показе.
+            """
+            self.__sprites.append(
+                SpriteInfo(name, time, shift[0], shift[1])
+            )
+
+        def getSpriteInfo(self, i):
+            if self.count < i:
+                raise "Набор спрайтов содержит только " + str(self.count) + " спрайтов"
+
+            return self.__sprites[i]
 
         @property
         def count(self):
-            """
-            Количество спрайтов.
-            """
-            return len(self.sprites)
+            return len(self.__sprites)
+
+        @property
+        def isApplyDir(self):
+            return self.__isApplyDir
+
+        @property
+        def isSingleExecute(self):
+            return self.__isSingleExecute
 
     def __init__(self, baseSpriteName: str):
         """
@@ -22,22 +61,50 @@ class SpriteManager:
         :param baseSpriteName: Базовое имя спрайта.
         """
         self.__step = 0
-        self.__baseName = baseSpriteName        # Базовое имя спрайта(имя спрайта должно начинаться с базового имени)
+        # Базовое имя спрайта(имя спрайта должно начинаться с базового имени)
+        self.__baseName = baseSpriteName
 
-        self.__isMoving = False
-        self.__spritesMoving = SpriteManager.SpritesTuple()   # Стандартные спрайты передвижения юнита
-        self.__direction = "_down"                            # Направление движения спрайта
+        # Имя текущего действия
+        self.__currentAction = const.ACTION_NONE
+        # Имя базового действия на которое будет переключено
+        # после выполнения действия выполняемого единожды
+        self.__baseAction = const.ACTION_NONE
+        # Набор спрайтов для каждого действия
+        self.__sprites = {}
+        # Направление движения спрайта
+        self.__direction = "_down"
 
-        self.__isStartAttack = False
-        self.__spritesAttack = SpriteManager.SpritesTuple()   # Стандартные спрайты атаки
-
-    def startAttack(self):
+    def setBaseAction(self, actionName):
         """
-        Начало атаки.
+        Действия на которое будет переключено
+        после выполнения действия выполняемого единожды
         """
-        if not self.__isStartAttack:
-            self.__isStartAttack = True
-            self.__step = 0
+        if actionName not in self.__sprites:
+            self.__baseAction = actionName
+
+    def addAction(self, actionName, isApplyDir=False, isSingleExecute=False):
+        if actionName not in self.__sprites:
+            self.__sprites[actionName] = SpriteManager.SpritesTuple(isApplyDir, isSingleExecute)
+
+    def setAction(self, actionName):
+        if actionName in self.__sprites:
+            self.__currentAction = actionName
+
+    def addSprite(self, actionName, spriteModifier, time: float = 0.3, shiftX=0, shiftY=0):
+        """
+                Добавление спрайта к действию.
+                :param actionName: Название действия.
+                :param spriteModifier: Модификатор названия спрайта добавляемый к базовому имени.
+                :param time: Время отображения спрайта.
+                :param shiftX: Сдвиг спрайта по оси X.
+                :param shiftY: Сдвиг спрайта по оси Y.
+                """
+        if actionName not in self.__sprites:
+            return
+
+        self.__sprites[actionName].addSprite(
+            self.__baseName + spriteModifier, time, [shiftX, shiftY]
+        )
 
     @property
     def dirX(self):
@@ -66,9 +133,8 @@ class SpriteManager:
         :param dirY: Направление по оси Y
         """
         if dirX == 0 and dirY == 0:
-            self.__isMoving = False
+            return
         else:
-            self.__isMoving = True
             if dirY > 0:
                 self.__direction = "_down"
             elif dirY < 0:
@@ -78,74 +144,40 @@ class SpriteManager:
             elif dirX < 0:
                 self.__direction = "_left"
 
-    def getSprite(self, speed: float = 1,  applyDir=False):
+    def __getCurSpriteTuple(self):
+        if self.__currentAction not in self.__sprites:
+            raise "Текущее действие не найдено в наборе существующих действий"
+
+        currentAction = self.__sprites[self.__currentAction]
+        if currentAction.count == 0:
+            raise "Данное действие не содержит спрайтов"
+
+        return currentAction
+
+    def getSprite(self, speed: float = 1):
         """
         Получение спрайта для текущего шага в зависимости от флагов.
         :param speed: Время между кадрами.
-        :param applyDir: Флаг добавления модификатора направления.
         :return: Имя спрайта.
         """
-        dir = self.__direction if applyDir else ""
+        currentAction = self.__getCurSpriteTuple()
 
-        if self.__spritesAttack.count and self.__isStartAttack:      # Если режим атаки активен
-            return self.getSpriteAttack(speed) + dir, self.__spritesAttack.spritesShift[int(self.__step)]
-
-        return self.getSpriteMoving(speed) + dir, self.__spritesMoving.spritesShift[int(self.__step)]
-
-    def addSpriteAttack(self, sprite: str, time: float = 0.3, shiftX=0, shiftY=0):
-        """
-        Добавление спрайта передвижения атаки.
-        :param sprite: Название спрайта.
-        :param time: Время отображения спрайта.
-        :param shiftX: Сдвиг спрайта по оси X.
-        :param shiftY: Сдвиг спрайта по оси Y.
-        """
-        self.__spritesAttack.sprites.append(self.__baseName + sprite)
-        self.__spritesAttack.spritesShowTime.append(time)
-        self.__spritesAttack.spritesShift.append([shiftX, shiftY])
-
-    def getSpriteAttack(self, speed: float = 1):
-        """
-        Получение спрайта для текущего шага.
-        :param speed: Время между кадрами.
-        :return имя спрайта.
-        """
-        # Увеличение шага
-        self.__step += self.__spritesAttack.spritesShowTime[int(self.__step)] * speed
-        if round(self.__step) >= self.__spritesAttack.count:
+        # Если у спрайта есть условие "выполнять единожды",
+        # то проверяем не закончился цикл выполнения
+        if round(self.__step) >= currentAction.count:
             self.__step = 0
-            self.__isStartAttack = False        # Анимация атаки срабатывает один раз
-            # после флаг активности атаки сбрасывается автоматически
+            if currentAction.isSingleExecute:
+                self.__currentAction = self.__baseAction
+                currentAction = self.__getCurSpriteTuple()
 
-        return self.__spritesAttack.sprites[int(self.__step)]
+        curSprite = currentAction.getSpriteInfo(round(self.__step))
+        self.__step += curSprite.time * speed
 
-    def addSpriteMoving(self, sprite: str, time: float = 0.3, shiftX=0, shiftY=0):
-        """
-        Добавление спрайта передвижения юнита.
-        :param sprite: Название спрайта.
-        :param time: Время отображения спрайта.
-        :param shiftX: Сдвиг спрайта по оси X.
-        :param shiftY: Сдвиг спрайта по оси Y.
-        """
-        self.__spritesMoving.sprites.append(self.__baseName + sprite)
-        self.__spritesMoving.spritesShowTime.append(time)
-        self.__spritesMoving.spritesShift.append([shiftX, shiftY])
+        spriteName = curSprite.spriteName
+        if currentAction.isApplyDir:
+            spriteName += self.__direction
 
-    def getSpriteMoving(self, speed: float = 1):
-        """
-        Получение спрайта для текущего шага.
-        :param speed: Время между кадрами.
-        :return имя спрайта.
-        """
-        if self.__isMoving:     # Передвижение с направлением
-            # Увеличение шага
-            self.__step += self.__spritesMoving.spritesShowTime[int(self.__step)] * speed
-            self.__step = self.__step % self.__spritesMoving.count
-
-        else:
-            self.__step = 0     # Отрисовка спрайта без движения
-
-        return self.__spritesMoving.sprites[int(self.__step)]
+        return spriteName, [curSprite.shiftX, curSprite.shiftY]
 
     @property
     def baseSpriteName(self):

@@ -41,10 +41,8 @@ class Enemy(GameActor, ABC):
         """
         if frameCount - self.lastAttackTime > self._stats.attackSpeed:
             self.lastAttackTime = frameCount
-            self.spriteManager.startAttack()
+            self.spriteManager.setAction(const.ACTION_ATTACK)
             self.player.getDamage(self._stats.attack)
-
-        self.spriteManager.startAttack()
 
     def isPlayerNearby(self, radiusSquare: float):
         """
@@ -122,15 +120,21 @@ class EggheadEnemy(Enemy):
         super().__init__(x, y, player, "egghead",
                          stats, 80, 13)
 
-        self.spriteManager.addSpriteMoving("_pos0")
-        self.spriteManager.addSpriteMoving("_pos1")
-        self.spriteManager.addSpriteMoving("_pos0")
-        self.spriteManager.addSpriteMoving("_pos2")
+        self.spriteManager.addAction(const.ACTION_NONE, True)
+        self.spriteManager.addSprite(const.ACTION_NONE, "_pos0")
+        self.spriteManager.setBaseAction(const.ACTION_NONE)
 
-        self.spriteManager.addSpriteAttack("_pos0")
-        self.spriteManager.addSpriteAttack("_pos0", shiftY=-1)
-        self.spriteManager.addSpriteAttack("_pos0", shiftY=-2)
-        self.spriteManager.addSpriteAttack("_pos0", shiftY=-1)
+        self.spriteManager.addAction(const.ACTION_MOVING, True)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos1")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos2")
+
+        self.spriteManager.addAction(const.ACTION_ATTACK, isSingleExecute=True)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-1)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-2)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-1)
 
     def attack(self, frameCount):
         super().attack(frameCount)
@@ -160,11 +164,10 @@ class EggheadEnemy(Enemy):
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time,
-                                                          applyDir=True)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
-        y = int(self.y + shifts[1]) #- const.getHeightSprite(self.spriteManager.baseSpriteName)
+        y = int(self.y + shifts[1])
 
         # Установка спрайта гарантирует корректный расчёт столкновения спрайтов
         super().setSprite(spriteName)
@@ -194,14 +197,20 @@ class MimicEnemy(Enemy):
         self.target_x = 0
         self.target_y = 0
 
-        self.spriteManager.addSpriteMoving("")
-        self.spriteManager.addSpriteMoving("")
-        self.spriteManager.addSpriteMoving("")
-        self.spriteManager.addSpriteMoving("")
-        self.spriteManager.addSpriteMoving("_bite", shiftY=2)
+        self.spriteManager.addAction(const.ACTION_NONE)
+        self.spriteManager.addSprite(const.ACTION_NONE, "")
+        self.spriteManager.setBaseAction(const.ACTION_NONE)
 
-        self.spriteManager.addSpriteAttack("")
-        self.spriteManager.addSpriteAttack("_bite", shiftY=2)
+        self.spriteManager.addAction(const.ACTION_MOVING)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_bite", shiftY=2)
+
+        self.spriteManager.addAction(const.ACTION_ATTACK)
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "")
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "_bite", shiftY=2)
 
     def setDir(self, dirX, dirY):
         """
@@ -248,6 +257,13 @@ class MimicEnemy(Enemy):
         elif random.random() < 0.05:  # 5% шанс сменить направление
             self.setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
 
+    def __setSpriteManagerAction(self):
+        if self.dirX == 0 and self.dirY == 0:
+            self.spriteManager.setAction(const.ACTION_NONE)
+        else:
+            self.spriteManager.setAction(const.ACTION_MOVING)
+            self.spriteManager.setDir(self._dirX, self._dirY)
+
     def jumping(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Итерация прыжка из точки (self.start_x, self.start_y) в точку (self.target_x, self.target_y).
@@ -258,6 +274,10 @@ class MimicEnemy(Enemy):
         self.jump_progress += step
         # Прогресс прыжка от 0 до 1
         progress = self.jump_progress / self.jump_duration
+
+        # Обновление спрайт менеджера
+        # (т.к. базовый метод передвижения GameActor не используется)
+        self.__setSpriteManagerAction()
 
         if progress <= 1:
             # Вычисляем приращения dx и dy
@@ -278,11 +298,10 @@ class MimicEnemy(Enemy):
         :param scene: Сцена для отображения объектов
         """
         self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time,
-                                                          applyDir=False)  # Получение имя спрайта
+        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time)  # Получение имя спрайта
 
         x = int(self.x + shifts[0])
-        y = int(self.y + shifts[1])# - const.getHeightSprite(self.spriteManager.baseSpriteName)
+        y = int(self.y + shifts[1])
 
         # Установка спрайта гарантирует корректный расчёт столкновения спрайтов
         super().setSprite(spriteName)

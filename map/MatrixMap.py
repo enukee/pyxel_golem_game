@@ -1,7 +1,6 @@
 import math
 import random
 
-from scipy.stats.qmc import PoissonDisk
 
 from debug_settings import DEBUG_SET_RENDER_ALL_MAP
 from map import MapGenerator

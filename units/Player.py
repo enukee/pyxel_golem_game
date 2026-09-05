@@ -17,15 +17,19 @@ class Player(GameActor):
         """
         super().__init__(x, y, "player", stats)
 
-        # Установка последовательности смены спрайтов во время движения
-        self.spriteManager.addSpriteMoving("_pos0")
-        self.spriteManager.addSpriteMoving("_pos1")
-        self.spriteManager.addSpriteMoving("_pos2")
-        self.spriteManager.addSpriteMoving("_pos1")
-        self.spriteManager.addSpriteMoving("_pos0")
-        self.spriteManager.addSpriteMoving("_pos3")
-        self.spriteManager.addSpriteMoving("_pos4")
-        self.spriteManager.addSpriteMoving("_pos3")
+        self.spriteManager.addAction(const.ACTION_NONE, True)
+        self.spriteManager.addSprite(const.ACTION_NONE, "_pos0")
+        self.spriteManager.setBaseAction(const.ACTION_NONE)
+
+        self.spriteManager.addAction(const.ACTION_MOVING, True)
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos1")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos2")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos1")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos3")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos4")
+        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos3")
 
         self.bullets = []
 
@@ -55,6 +59,7 @@ class Player(GameActor):
         """
         if super().dirX == 0 and super().dirY == 0:
             self._currentSpeed = 0
+            self.spriteManager.setAction(const.ACTION_NONE)
 
         elif self._currentSpeed == 0:
             super().speedReset()
@@ -78,6 +83,9 @@ class Player(GameActor):
             if self.spriteManager.dirY == 1:
                 y += 10
 
+            # Направление в менеджере спрайтов не должно быть (0, 0)
+            # т.к. спрайт всегда повернут в какое-либо направление.
+            # Направление в снаряде тоже не должно быть (0, 0)
             bullet = FireBullet(self.x, y,
                                 self.spriteManager.dirX,
                                 self.spriteManager.dirY,

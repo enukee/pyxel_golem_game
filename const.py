@@ -28,7 +28,7 @@ TIME_BETWEEN_CLICKS = 0.1
 CONST_WIDTH_ALL_UNIT = 4
 
 CHANCE_ENEMY = {
-    "mimic":    0.65,
+    "mimic": 0.65,
     "egg_head": 0.35
 }
 ENEMIES_COUNT = 200
@@ -51,14 +51,14 @@ def getWidthSprite(sprite: str):
     if sprite in SPRITE_POS:
         return abs(SPRITE_POS[sprite][2])
 
-    return None
+    return 0
 
 
 def getHeightSprite(sprite: str):
     if sprite in SPRITE_POS:
         return abs(SPRITE_POS[sprite][3])
 
-    return None
+    return 0
 
 
 def rectanglesIntersect(x1, y1, width1, height1, x2, y2, width2, height2):
@@ -81,47 +81,52 @@ def rectanglesIntersect(x1, y1, width1, height1, x2, y2, width2, height2):
     return True
 
 
+# Действия
+ACTION_NONE = "None"
+ACTION_MOVING = "Moving"
+ACTION_ATTACK = "Attack"
+
 # Параметры спрайта: положение по x, положение по y, ширина, высота, поворот
-SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
-              "player":             [15, 1, 13, 21, 0],
-              "player_pos0_down":   [15, 1, 13, 21, 0],
-              "player_pos0_up":     [1, 1, 13, 21, 0],
-              "player_pos0_left":   [29, 1, 13, 21, 0],
-              "player_pos0_right":  [29, 1, -13, 21, 0],
-              "player_pos1_down":   [15, 23, 13, 21, 0],
-              "player_pos1_up":     [1, 23, 13, 21, 0],
-              "player_pos1_left":   [29, 23, 13, 21, 0],
-              "player_pos1_right":  [29, 23, -13, 21, 0],
-              "player_pos2_down":   [15, 45, 13, 21, 0],
-              "player_pos2_up":     [1, 45, 13, 21, 0],
-              "player_pos2_left":   [29, 45, 13, 21, 0],
-              "player_pos2_right":  [29, 45, -13, 21, 0],
-              "player_pos3_down":   [15, 67, 13, 21, 0],
-              "player_pos3_up":     [1, 67, 13, 21, 0],
-              "player_pos3_left":   [29, 67, 13, 21, 0],
-              "player_pos3_right":  [29, 67, -13, 21, 0],
-              "player_pos4_down":   [15, 89, 13, 21, 0],
-              "player_pos4_up":     [1, 89, 13, 21, 0],
-              "player_pos4_left":   [29, 89, 13, 21, 0],
-              "player_pos4_right":  [29, 89, -13, 21, 0],
-              "player_shoot":       [71, 23, 13, 21, 0],
+SPRITE_POS = {"stub_sprite": [85, 2, 6, 6, 0],
+              "player": [15, 1, 13, 21, 0],
+              "player_pos0_down": [15, 1, 13, 21, 0],
+              "player_pos0_up": [1, 1, 13, 21, 0],
+              "player_pos0_left": [29, 1, 13, 21, 0],
+              "player_pos0_right": [29, 1, -13, 21, 0],
+              "player_pos1_down": [15, 23, 13, 21, 0],
+              "player_pos1_up": [1, 23, 13, 21, 0],
+              "player_pos1_left": [29, 23, 13, 21, 0],
+              "player_pos1_right": [29, 23, -13, 21, 0],
+              "player_pos2_down": [15, 45, 13, 21, 0],
+              "player_pos2_up": [1, 45, 13, 21, 0],
+              "player_pos2_left": [29, 45, 13, 21, 0],
+              "player_pos2_right": [29, 45, -13, 21, 0],
+              "player_pos3_down": [15, 67, 13, 21, 0],
+              "player_pos3_up": [1, 67, 13, 21, 0],
+              "player_pos3_left": [29, 67, 13, 21, 0],
+              "player_pos3_right": [29, 67, -13, 21, 0],
+              "player_pos4_down": [15, 89, 13, 21, 0],
+              "player_pos4_up": [1, 89, 13, 21, 0],
+              "player_pos4_left": [29, 89, 13, 21, 0],
+              "player_pos4_right": [29, 89, -13, 21, 0],
+              "player_shoot": [71, 23, 13, 21, 0],
 
-              "egghead":              [1, 111, 11, 15, 0],
-              "egghead_pos0_down":    [1, 111, 11, 15, 0],
-              "egghead_pos0_up":      [1, 127, 11, 15, 0],
-              "egghead_pos0_left":    [1, 111, 11, 15, 0],
-              "egghead_pos0_right":   [1, 111, -11, 15, 0],
-              "egghead_pos1_down":    [13, 111, 11, 15, 0],
-              "egghead_pos1_up":      [13, 127, 11, 15, 0],
-              "egghead_pos1_left":    [13, 111, 11, 15, 0],
-              "egghead_pos1_right":   [13, 111, -11, 15, 0],
-              "egghead_pos2_down":    [25, 111, 11, 15, 0],
-              "egghead_pos2_up":      [25, 127, 11, 15, 0],
-              "egghead_pos2_left":    [25, 111, 11, 15, 0],
-              "egghead_pos2_right":   [25, 111, -11, 15, 0],
+              "egghead": [1, 111, 11, 15, 0],
+              "egghead_pos0_down": [1, 111, 11, 15, 0],
+              "egghead_pos0_up": [1, 127, 11, 15, 0],
+              "egghead_pos0_left": [1, 111, 11, 15, 0],
+              "egghead_pos0_right": [1, 111, -11, 15, 0],
+              "egghead_pos1_down": [13, 111, 11, 15, 0],
+              "egghead_pos1_up": [13, 127, 11, 15, 0],
+              "egghead_pos1_left": [13, 111, 11, 15, 0],
+              "egghead_pos1_right": [13, 111, -11, 15, 0],
+              "egghead_pos2_down": [25, 111, 11, 15, 0],
+              "egghead_pos2_up": [25, 127, 11, 15, 0],
+              "egghead_pos2_left": [25, 111, 11, 15, 0],
+              "egghead_pos2_right": [25, 111, -11, 15, 0],
 
-              "mimic":                  [34, 236, 17, 20, 0],
-              "mimic_bite":             [16, 238, 17, 18, 0],
+              "mimic": [34, 236, 17, 20, 0],
+              "mimic_bite": [16, 238, 17, 18, 0],
 
               "base_bullet_right": [103, 6, 5, 1, 0],
               "base_bullet_left": [103, 6, -5, 1, 0],
@@ -140,29 +145,29 @@ SPRITE_POS = {"stub_sprite":        [85, 2, 6, 6, 0],
               "enemy_bullet_up": [92, 2, 4, 4, 90],
               "enemy_bullet_down": [92, 2, 4, -4, 90],
 
-              "box":                [88, 240, 17, 16, 0],
+              "box": [88, 240, 17, 16, 0],
 
-              "wall":               [0, 240, 16, 16, 0],
+              "wall": [0, 240, 16, 16, 0],
 
               # Фоновые объекты
-              "back_obj_grass1":                [85, 8, 5, 4, 0],
-              "back_obj_grass1_r":              [85, 8, -5, 4, 0],
-              "back_obj_grass2":                [91, 8, 3, 5, 0],
-              "back_obj_grass2_r":              [91, 8, -3, 5, 0],
-              "back_obj_stone1":                [97, 9, 4, 2, 0],
-              "back_obj_stone1_r":              [97, 9, -4, 2, 0],
-              "back_obj_stone1_w_glass":        [95, 8, 6, 3, 0],
-              "back_obj_stone1_w_glass_r":      [95, 8, -6, 3, 0],
-              "back_obj_stone2":                [97, 12, 7, 2, 0],
-              "back_obj_stone2_r":              [97, 12, -7, 2, 0],
-              "back_obj_stone2_w_glass":        [97, 11, 9, 3, 0],
-              "back_obj_stone2_w_glass_r":      [97, 11, -9, 3, 0],
-              "back_obj_stone3":                [97, 15, 3, 2, 0],
-              "back_obj_stone3_r":              [97, 15, -3, 2, 0],
-              "back_obj_stone3_w_glass":        [97, 15, 5, 3, 0],
-              "back_obj_stone3_w_glass_r":      [97, 15, -5, 3, 0],
-              "back_obj_antique_column":        [84, 13, 10, 16, 0],
-              "back_obj_antique_column_r":      [84, 13, -10, 16, 0],
+              "back_obj_grass1": [85, 8, 5, 4, 0],
+              "back_obj_grass1_r": [85, 8, -5, 4, 0],
+              "back_obj_grass2": [91, 8, 3, 5, 0],
+              "back_obj_grass2_r": [91, 8, -3, 5, 0],
+              "back_obj_stone1": [97, 9, 4, 2, 0],
+              "back_obj_stone1_r": [97, 9, -4, 2, 0],
+              "back_obj_stone1_w_glass": [95, 8, 6, 3, 0],
+              "back_obj_stone1_w_glass_r": [95, 8, -6, 3, 0],
+              "back_obj_stone2": [97, 12, 7, 2, 0],
+              "back_obj_stone2_r": [97, 12, -7, 2, 0],
+              "back_obj_stone2_w_glass": [97, 11, 9, 3, 0],
+              "back_obj_stone2_w_glass_r": [97, 11, -9, 3, 0],
+              "back_obj_stone3": [97, 15, 3, 2, 0],
+              "back_obj_stone3_r": [97, 15, -3, 2, 0],
+              "back_obj_stone3_w_glass": [97, 15, 5, 3, 0],
+              "back_obj_stone3_w_glass_r": [97, 15, -5, 3, 0],
+              "back_obj_antique_column": [84, 13, 10, 16, 0],
+              "back_obj_antique_column_r": [84, 13, -10, 16, 0],
               }
 
 # Константы отображения окон
@@ -177,15 +182,15 @@ WIN_COLOR_BLOCK_EDGING = 0
 WIN_COLOR_BLOCK_EDGING_SELECT = 9
 
 # Позиции иконок
-ICON_POS = {"fork":                 [0, 0, 16, 16, 0],
-            "vine":                 [16, 0, 16, 16, 0],
-            "clover":               [32, 0, 16, 16, 0],
-            "bug":                  [48, 0, 16, 16, 0],
+ICON_POS = {"fork": [0, 0, 16, 16, 0],
+            "vine": [16, 0, 16, 16, 0],
+            "clover": [32, 0, 16, 16, 0],
+            "bug": [48, 0, 16, 16, 0],
 
-            "ring":                 [0, 16, 16, 16, 0],
-            "eye":                  [16, 16, 16, 16, 0],
-            "book":                 [32, 16, 16, 16, 0],
-            "amanita":              [48, 16, 16, 16, 0],
+            "ring": [0, 16, 16, 16, 0],
+            "eye": [16, 16, 16, 16, 0],
+            "book": [32, 16, 16, 16, 0],
+            "amanita": [48, 16, 16, 16, 0],
             }
 
 # Тайл делится на 4 равных сектора

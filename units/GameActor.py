@@ -43,8 +43,7 @@ class GameActor(MovableObjects, ABC):
         :param delta_time: Время между кадрами.
         """
         self.spriteManager.setDir(self.dirX, self.dirY)  # Установка направления игрока
-        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed * delta_time,
-                                                         applyDir=True)  # Получение имя спрайта
+        spriteName, shift = self.spriteManager.getSprite(self._currentSpeed * delta_time)  # Получение имя спрайта
 
         super().setSprite(spriteName)
         super().draw(scene, delta_time)
@@ -82,6 +81,13 @@ class GameActor(MovableObjects, ABC):
         # Вычисление смещения за текущий кадр
         step_x = self._dirX * self._currentSpeed * delta_time
         step_y = self._dirY * self._currentSpeed * delta_time
+
+        # Обновление анимации
+        if step_x == 0 and step_y == 0:
+            self.spriteManager.setAction(const.ACTION_NONE)
+        else:
+            self.spriteManager.setAction(const.ACTION_MOVING)
+            self.spriteManager.setDir(self._dirX, self._dirY)
 
         # Обновление позиции
         super().tryMove(step_x, step_y, tileMap)
