@@ -108,85 +108,21 @@ class Enemy(GameActor, ABC):
             super().setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
 
 
-class EggheadEnemy(Enemy):
-    def __init__(self, x: float, y: float, player: Player, stats: Stats):
+class JumpingEnemy(Enemy, ABC):
+    def __init__(self, x: float, y: float, player: Player, baseSpriteName: str,
+                 stats: Stats, detectionRadius: float, attackRadius: float,
+                 jumpHeight=10, jumpDuration=10):
         """
-        Юнит врага Egghead.
+        Юнит врага способного прыгать.
         :param x: Начальная координата X.
         :param y: Начальная координата Y.
         :param player: Ссылка на игрока.
         :param stats: Характеристики врага.
         """
-        super().__init__(x, y, player, "egghead",
-                         stats, 80, 13)
+        super().__init__(x, y, player, baseSpriteName, stats, detectionRadius, attackRadius)
 
-        self.spriteManager.addAction(const.ACTION_NONE, True)
-        self.spriteManager.addSprite(const.ACTION_NONE, "_pos0")
-        self.spriteManager.setBaseAction(const.ACTION_NONE)
-
-        self.spriteManager.addAction(const.ACTION_MOVING, True)
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos1")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos2")
-
-        self.spriteManager.addAction(const.ACTION_ATTACK, True, True)
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0")
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-1)
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-2)
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-1)
-
-    def attack(self, frameCount):
-        super().attack(frameCount)
-
-    def movementToTarget(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
-        """
-        Перемещение к игроку.
-        :param events:  Инструмент получения событий.
-        :param tileMap: Карта тайлов.
-        :param delta_time:  Время между кадрами.
-        """
-        super().movementToTarget(events, tileMap, delta_time)
-
-    def randomMovement(self, events: Events, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
-        """
-        Перемещение в случайном направлении.
-        :param events:  Инструмент получения событий.
-        :param tileMap: Карта тайлов.
-        :param delta_time:  Время между кадрами.
-        """
-        super().randomMovement(events, tileMap, delta_time)
-
-    def draw(self, scene: Scene, delta_time: float = const.DELTA_TIME):
-        """
-        Отрисовка врага.
-        :param delta_time: Время между кадрами.
-        :param scene: Сцена для отображения объектов
-        """
-        self.spriteManager.setDir(super().dirX, super().dirY)  # Установка направления движения
-        spriteName, shifts = self.spriteManager.getSprite(self._currentSpeed * delta_time)  # Получение имя спрайта
-
-        x = int(self.x + shifts[0])
-        y = int(self.y + shifts[1])
-
-        # Установка спрайта гарантирует корректный расчёт столкновения спрайтов
-        super().setSprite(spriteName)
-        scene.drawSprite(spriteName, x, y)
-
-
-class MimicEnemy(Enemy):
-    def __init__(self, x: float, y: float, player: Player, stats: Stats):
-        """
-        Юнит врага Mimic.
-        :param x: Начальная координата X.
-        :param y: Начальная координата Y.
-        :param player: Ссылка на игрока.
-        :param stats: Характеристики врага.
-        """
-        super().__init__(x, y, player, "mimic", stats, 90, 15)
-
-        self.jump_height = 10  # Максимальная высота прыжка
-        self.jump_duration = 10  # Длительность прыжка в кадрах
+        self.jump_height = jumpHeight  # Максимальная высота прыжка
+        self.jump_duration = jumpDuration  # Длительность прыжка в кадрах
         self.isJumping = False
         self.jump_progress = 0
 
@@ -196,21 +132,6 @@ class MimicEnemy(Enemy):
         # Целевая позиция при прыжке
         self.target_x = 0
         self.target_y = 0
-
-        self.spriteManager.addAction(const.ACTION_NONE)
-        self.spriteManager.addSprite(const.ACTION_NONE, "")
-        self.spriteManager.setBaseAction(const.ACTION_NONE)
-
-        self.spriteManager.addAction(const.ACTION_MOVING)
-        self.spriteManager.addSprite(const.ACTION_MOVING, "")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_bite", shiftY=2)
-
-        self.spriteManager.addAction(const.ACTION_ATTACK)
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "")
-        self.spriteManager.addSprite(const.ACTION_ATTACK, "_bite", shiftY=2)
 
     def setDir(self, dirX, dirY):
         """

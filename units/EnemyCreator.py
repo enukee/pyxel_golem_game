@@ -2,7 +2,7 @@ from random import randint, choices
 
 import const
 from objects import Stats
-from units import MimicEnemy, EggheadEnemy
+from units import MimicEnemy, EggheadEnemy, SlugEnemy
 
 
 class EnemyCreator:
@@ -37,3 +37,10 @@ class EnemyCreator:
                                       randint(3, 8),
                                       randint(70, 100),
                                       55, 0))
+
+        elif enemy == "slug":
+            return SlugEnemy(x, y, self.player,
+                             Stats(20,
+                                   randint(19, 30),
+                                   randint(50, 100),
+                                   40, 6))
