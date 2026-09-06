@@ -24,6 +24,8 @@ BUTTON_MENU_POS_X = (WINDOW_WIDTH - BUTTON_MENU_WIDTH) / 2
 # Минимальное время между кликами в сек.
 TIME_BETWEEN_CLICKS = 0.1
 
+# ------------- Константы настройки отображения юнитов, -------------
+# ------------ настройка генерации мира и взаимодействия ------------
 # Ширина всех юнитов
 CONST_WIDTH_ALL_UNIT = 4
 
@@ -42,12 +44,10 @@ CONST_OFFSET_OF_EDGE = 10
 # Максимальное расстояние на котором игрок может взаимодействовать с объектом
 INTERACT_RADIUS_WITH_OBJECT = 30
 
-# Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE
-BLOCK_SIZE = 18
-# Расстояние между ячейками блоков при отображении
-BLOCK_SIZE_OFFSET = 2
+MIMIC_WAKE_UP_DISTANCE = 40
 
 
+# ------------- Вспомогательные методы -------------
 def getWidthSprite(sprite: str):
     if sprite in SPRITE_POS:
         return abs(SPRITE_POS[sprite][2])
@@ -82,6 +82,7 @@ def rectanglesIntersect(x1, y1, width1, height1, x2, y2, width2, height2):
     return True
 
 
+# ------------- Константы отрисовки спрайтов -------------
 # Действия
 ACTION_NONE = "None"
 ACTION_MOVING = "Moving"
@@ -173,6 +174,12 @@ SPRITE_POS = {"stub_sprite": [85, 2, 6, 6, 0],
               "back_obj_antique_column_r": [84, 13, -10, 16, 0],
               }
 
+# ------------- Константы отображения окон -------------
+# Блок (навык, предмет) размещается в ячейке размером BLOCK_SIZE x BLOCK_SIZE
+BLOCK_SIZE = 18
+# Расстояние между ячейками блоков при отображении
+BLOCK_SIZE_OFFSET = 2
+
 # Константы отображения окон
 WIN_COLOR_TEXT = 5
 WIN_COLOR_BACKGROUND = 14
@@ -196,6 +203,7 @@ ICON_POS = {"fork": [0, 0, 16, 16, 0],
             "amanita": [48, 16, 16, 16, 0],
             }
 
+# ------------- Константы отображения тайлов -------------
 # Тайл делится на 4 равных сектора
 # 0 - сектор пола
 # 1 - сектор стены

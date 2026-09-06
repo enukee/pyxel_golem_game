@@ -1,9 +1,9 @@
 import const
 
 
-class SpriteInfo:
+class SpriteModifier:
     def __init__(self, name, time, shiftX, shiftY):
-        # Название
+        # Модификатор
         self.spriteName = name
         # Время показа спрайта
         self.time = time
@@ -34,7 +34,7 @@ class SpriteManager:
             @param shift: Список из координат смещения спрайта при показе.
             """
             self.__sprites.append(
-                SpriteInfo(name, time, shift[0], shift[1])
+                SpriteModifier(name, time, shift[0], shift[1])
             )
 
         def getSpriteInfo(self, i):
@@ -103,7 +103,7 @@ class SpriteManager:
             return
 
         self.__sprites[actionName].addSprite(
-            self.__baseName + spriteModifier, time, [shiftX, shiftY]
+             spriteModifier, time, [shiftX, shiftY]
         )
 
     @property
@@ -173,7 +173,7 @@ class SpriteManager:
         curSprite = currentAction.getSpriteInfo(round(self.__step))
         self.__step += curSprite.time * speed
 
-        spriteName = curSprite.spriteName
+        spriteName = self.__baseName + curSprite.spriteName
         if currentAction.isApplyDir:
             spriteName += self.__direction
 
@@ -182,6 +182,10 @@ class SpriteManager:
     @property
     def baseSpriteName(self):
         return self.__baseName
+
+    @baseSpriteName.setter
+    def baseSpriteName(self, spriteName):
+        self.__baseName = spriteName
 
     @property
     def currentAction(self):
