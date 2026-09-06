@@ -91,7 +91,7 @@ class Artifact(GameObject):
 class SilverFork(Artifact):
     def __init__(self):
         description = ("Silver Fork"
-                       "\nIncreases attack power by 5%")
+                       "\nattack: +5%")
         super().__init__(description, "fork")
 
         super().addIncrease(PercentageIncrease("attack", 4))
@@ -100,7 +100,7 @@ class SilverFork(Artifact):
 class FlowerVine(Artifact):
     def __init__(self):
         description = ("Flower Vine"
-                       "\nThe thorns of the vine deal 7 points of damage")
+                       "\nattack: +7 points")
         super().__init__(description, "vine")
 
         super().addIncrease(IncreaseBySummation("attack", 7))
@@ -109,8 +109,8 @@ class FlowerVine(Artifact):
 class MedicinalClover(Artifact):
     def __init__(self):
         description = ("Medicinal Clover"
-                       "\nIncreases health by 25 units, and slightly "
-                       "\nincreases speed by 3 units")
+                       "\nhealth: +25 points"
+                       "\nspeed: +3 points")
         super().__init__(description, "clover")
 
         super().addIncrease(IncreaseBySummation("health", 25))
@@ -120,29 +120,28 @@ class MedicinalClover(Artifact):
 class ScarletBug(Artifact):
     def __init__(self):
         description = ("Scarlet beetle"
-                       "\nIncreases attack speed by 5%")
+                       "\nattack speed: +3 points")
         super().__init__(description, "bug")
 
-        super().addIncrease(IncreaseBySummation("speed", 5))
+        super().addIncrease(IncreaseBySummation("attack_speed", 5))
 
 
 class SilverRing(Artifact):
     def __init__(self):
         description = ("Silver Ring "
-                       "\nReduces the delay between projectile"
-                       "\ncreation by 30%, but reduces projectile"
-                       "\ndamage by 30%")
+                       "\nattack_speed: -30%"
+                       "\nattack: +30%")
         super().__init__(description, "ring")
 
         super().addIncrease(PercentageIncrease("attack_speed", -30))
-        super().addIncrease(PercentageIncrease("attack", -30))
+        super().addIncrease(PercentageIncrease("attack", +30))
 
 
 class MagicAmanita(Artifact):
     def __init__(self):
         description = ("Magic Amanita "
-                       "\nReduces health by 10 points, but increases "
-                       "\nattack by 10%")
+                       "\nhealth: -10 points"
+                       "\nattack: +5%")
         super().__init__(description, "amanita")
 
         super().addIncrease(IncreaseBySummation("health", -10))
