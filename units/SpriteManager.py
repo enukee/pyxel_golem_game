@@ -182,3 +182,7 @@ class SpriteManager:
     @property
     def baseSpriteName(self):
         return self.__baseName
+
+    @property
+    def currentAction(self):
+        return self.__currentAction

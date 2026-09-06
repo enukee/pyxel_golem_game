@@ -84,7 +84,8 @@ class GameActor(MovableObjects, ABC):
 
         # Обновление анимации
         if step_x == 0 and step_y == 0:
-            self.spriteManager.setAction(const.ACTION_NONE)
+            if self.spriteManager.currentAction != const.ACTION_ATTACK:
+                self.spriteManager.setAction(const.ACTION_NONE)
         else:
             self.spriteManager.setAction(const.ACTION_MOVING)
             self.spriteManager.setDir(self._dirX, self._dirY)

@@ -130,11 +130,11 @@ class EggheadEnemy(Enemy):
         self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
         self.spriteManager.addSprite(const.ACTION_MOVING, "_pos2")
 
-        self.spriteManager.addAction(const.ACTION_ATTACK, isSingleExecute=True)
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0")
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-1)
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-2)
-        self.spriteManager.addSprite(const.ACTION_MOVING, "_pos0", shiftY=-1)
+        self.spriteManager.addAction(const.ACTION_ATTACK, True, True)
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0")
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-1)
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-2)
+        self.spriteManager.addSprite(const.ACTION_ATTACK, "_pos0", shiftY=-1)
 
     def attack(self, frameCount):
         super().attack(frameCount)
@@ -257,13 +257,6 @@ class MimicEnemy(Enemy):
         elif random.random() < 0.05:  # 5% шанс сменить направление
             self.setDir(random.choice([-1, 0, 1]), random.choice([-1, 0, 1]))
 
-    def __setSpriteManagerAction(self):
-        if self.dirX == 0 and self.dirY == 0:
-            self.spriteManager.setAction(const.ACTION_NONE)
-        else:
-            self.spriteManager.setAction(const.ACTION_MOVING)
-            self.spriteManager.setDir(self._dirX, self._dirY)
-
     def jumping(self, tileMap: MatrixMap, delta_time: float = const.DELTA_TIME):
         """
         Итерация прыжка из точки (self.start_x, self.start_y) в точку (self.target_x, self.target_y).
@@ -274,10 +267,6 @@ class MimicEnemy(Enemy):
         self.jump_progress += step
         # Прогресс прыжка от 0 до 1
         progress = self.jump_progress / self.jump_duration
-
-        # Обновление спрайт менеджера
-        # (т.к. базовый метод передвижения GameActor не используется)
-        self.__setSpriteManagerAction()
 
         if progress <= 1:
             # Вычисляем приращения dx и dy
